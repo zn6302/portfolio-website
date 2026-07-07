@@ -7,7 +7,7 @@ import { assets } from "../../data";
 export function AvailabilityPill({ className = "" }: { className?: string }) {
   return (
     <div
-      className={`flex w-fit items-center gap-3 h-14 py-2 pl-2 pr-[18px] rounded-full border border-line bg-white/[.88] shadow-[0_2px_12px_rgba(0,0,0,0.04)] backdrop-blur-[14px] text-base font-light whitespace-nowrap max-[760px]:w-[278px] max-[760px]:pr-16 max-[380px]:text-sm ${className}`}
+      className={`flex w-fit items-center gap-3 h-14 py-2 pl-2 pr-[18px] rounded-full border border-line bg-white/[.88] shadow-[0_2px_12px_rgba(0,0,0,0.04)] backdrop-blur-[14px] text-base font-normal whitespace-nowrap max-[760px]:w-[278px] max-[760px]:pr-16 max-[380px]:text-sm ${className}`}
     >
       <img
         src={assets.avatar}

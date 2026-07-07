@@ -1,4 +1,4 @@
-/* Google Fonts (Antonio, Inter) are loaded via <link rel="preconnect"> +
+/* Google Fonts (Noto Sans TC, IBM Plex Mono) are loaded via <link rel="preconnect"> +
    <link rel="stylesheet"> in index.html instead of an @import here — @import
    is render-blocking and can't start its DNS/connection until this stylesheet
    itself has already been fetched and parsed, whereas the <link> tags in
@@ -37,7 +37,7 @@
 
   --shadow-card: 0 2px 8px rgb(41 32 37 / 0.06);
   --shadow-hover: 0 8px 24px rgb(41 32 37 / 0.1);
-  font-family: "Inter", "Inter Placeholder", sans-serif;
+  font-family: "Noto Sans TC", sans-serif;
   color: var(--ink);
   background: var(--soft);
   font-synthesis: none;
@@ -129,7 +129,7 @@ img {
   align-items: center;
   gap: 28px;
   font-size: 16px;
-  font-weight: 300;
+  font-weight: 400;
 }
 
 .site-nav nav a {
@@ -149,7 +149,7 @@ img {
   background: var(--dark);
   color: #fff;
   font-size: 16px;
-  font-weight: 300;
+  font-weight: 400;
 }
 
 .availability {
@@ -165,7 +165,7 @@ img {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
   backdrop-filter: blur(14px);
   font-size: 16px;
-  font-weight: 300;
+  font-weight: 400;
   white-space: nowrap;
 }
 
@@ -333,27 +333,41 @@ img {
 
 .eyebrow {
   margin: 0 0 16px;
-  font-family: "Antonio", "Antonio Placeholder", sans-serif;
+  font-family: "Noto Sans TC", sans-serif;
   font-size: 32px;
+  font-weight: 900;
   line-height: 1.1;
   text-transform: uppercase;
 }
 
-h1,
+h1 {
+  font-family: "Noto Sans TC", sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
 h2,
-h3,
+h3 {
+  font-family: "Noto Sans TC", sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
 .outline-button,
 .submit-button {
-  font-family: "Antonio", "Antonio Placeholder", sans-serif;
-  font-weight: 600;
+  font-family: "Noto Sans TC", sans-serif;
+  font-weight: 700;
   text-transform: uppercase;
 }
 
 h1 {
   margin: 0;
-  font-size: clamp(88px, 9vw, 124px);
-  line-height: 0.88;
-  letter-spacing: 0;
+  /* Noto Sans TC 900 is wider than Antonio's condensed display cut at the
+     same font-size — trim the clamp ceiling (124px → 108px) so "HCI" /
+     "CODING" don't push past the hero grid on desktop widths. */
+  font-size: clamp(72px, 8vw, 108px);
+  line-height: 0.95;
+  letter-spacing: -0.01em;
 }
 
 .hero-right {
@@ -367,7 +381,7 @@ h1 {
   width: min(370px, 100%);
   margin: 20px auto 0;
   font-size: 18px;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.45;
 }
 
@@ -428,7 +442,7 @@ h1 {
   position: absolute;
   opacity: 0;
   font-size: 44px;
-  font-weight: 300;
+  font-weight: 400;
   transition: opacity 160ms ease;
 }
 
@@ -495,7 +509,7 @@ h2 {
   max-width: 560px;
   color: var(--ink);
   font-size: 18px;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.55;
 }
 
@@ -526,9 +540,9 @@ h2 {
 }
 
 .accordion-item button span {
-  font-family: "Antonio", "Antonio Placeholder", sans-serif;
-  font-size: 36px;
-  font-weight: 600;
+  font-family: "Noto Sans TC", sans-serif;
+  font-size: 32px;
+  font-weight: 700;
   line-height: 1.1;
 }
 
@@ -551,7 +565,7 @@ h2 {
   overflow: hidden;
   color: var(--muted);
   font-size: 18px;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.45;
   transition: max-height 240ms ease, padding 240ms ease;
 }
@@ -644,9 +658,9 @@ h2 {
 .stats-row strong {
   display: block;
   color: var(--violet);
-  font-family: "Antonio", "Antonio Placeholder", sans-serif;
-  font-size: 58px;
-  font-weight: 700;
+  font-family: "Noto Sans TC", sans-serif;
+  font-size: 50px;
+  font-weight: 900;
   line-height: 0.98;
 }
 
@@ -892,7 +906,7 @@ h2 {
   margin: 0;
   color: var(--muted);
   font-size: 18px;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.7;
 }
 
@@ -931,8 +945,10 @@ h2 {
   align-items: center;
   gap: 12px;
   color: var(--ink);
-  font-family: "Antonio", "Antonio Placeholder", sans-serif;
-  font-size: 24px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
 }
 
 .project-loop-count i {
@@ -1015,7 +1031,7 @@ h2 {
   background: var(--violet);
   color: #fff;
   font-size: 14px;
-  font-weight: 300;
+  font-weight: 400;
 }
 
 .project-copy h3 {
@@ -1028,7 +1044,7 @@ h2 {
   max-width: 620px;
   margin: 0;
   font-size: 16px;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.5;
 }
 
@@ -1095,7 +1111,7 @@ h2 {
   gap: 12px;
   color: var(--muted);
   font-size: 14px;
-  font-weight: 300;
+  font-weight: 400;
 }
 
 .contact-form input,
@@ -1108,7 +1124,7 @@ h2 {
   color: var(--ink);
   outline: none;
   font-size: 16px;
-  font-weight: 300;
+  font-weight: 400;
   transition: border-color 160ms ease, box-shadow 160ms ease;
 }
 
@@ -1186,7 +1202,7 @@ h2 {
 .footer-top span,
 .footer-bottom {
   font-size: 14px;
-  font-weight: 300;
+  font-weight: 400;
 }
 
 .footer-top a:not(.socials a) {
@@ -1232,7 +1248,7 @@ h2 {
   }
 
   h1 {
-    font-size: 92px;
+    font-size: 78px;
   }
 
   .section-grid,
@@ -1301,8 +1317,8 @@ h2 {
   }
 
   h1 {
-    font-size: 64px;
-    line-height: 0.92;
+    font-size: 56px;
+    line-height: 0.95;
   }
 
   .portrait-card > img {
@@ -1599,7 +1615,7 @@ h2 {
   }
 
   h1 {
-    font-size: 58px;
+    font-size: 50px;
   }
 
   .availability {
@@ -1666,23 +1682,27 @@ h2 {
 
 .hero-intro-eyebrow {
   margin: 0;
-  font-family: "Antonio", sans-serif;
-  font-size: clamp(20px, 3vw, 30px);
-  letter-spacing: 0.14em;
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 500;
+  font-size: clamp(16px, 2.4vw, 22px);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .hero-intro-title {
   margin: 0;
   max-width: 14ch;
-  font-size: clamp(40px, 7vw, 96px);
+  /* Noto Sans TC 700 runs wider than Antonio at the same size; trim the
+     clamp ceiling (96px → 84px) so "FRONTEND / CREATIVE CODER" doesn't
+     overflow its 14ch cap on desktop. */
+  font-size: clamp(36px, 6.2vw, 84px);
   line-height: 0.95;
 }
 
 .hero-intro-hint {
   margin: 10px 0 0;
   font-size: 15px;
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   opacity: 0.85;
