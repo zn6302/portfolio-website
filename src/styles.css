@@ -1683,18 +1683,27 @@ h2 {
     line-height: 1.55;
   }
 
-  /* Show the Services / About portrait cards on phones too (were display:none).
+  /* Show the Services portrait card on phones too (was display:none).
      Single-column stack: center, drop the desktop tilt so the rotated bounding
      box can't overflow a narrow screen (see RWD指南.md §3-4), and scale the
-     fixed-size images down to fit. Flip is already disabled here, so the card
-     sits in its static front-face state. */
-  .services-image,
-  .about-image {
+     fixed-size image down to fit. Flip is already disabled here, so the card
+     sits in its static front-face state. .about-image stays hidden on
+     phones — About is text-only there by design. */
+  .services-image {
     justify-self: center;
     width: min(260px, 100%);
     margin: 36px auto 0;
     transform: none;
     border-radius: 16px;
+  }
+
+  .services-image img {
+    width: 100%;
+    height: auto;
+  }
+
+  .about-image {
+    display: none;
   }
 
   .services-image img,
