@@ -70,9 +70,9 @@
   box-sizing: border-box;
 }
 
-html {
-  scroll-behavior: smooth;
-}
+/* No `scroll-behavior: smooth` here: anchor jumps are driven by GSAP
+   ScrollToPlugin (see useAnchorScroll) so they don't double-drive and land
+   imprecisely against the Projects up/down scroll animation. */
 
 body {
   margin: 0;
