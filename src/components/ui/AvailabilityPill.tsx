@@ -14,7 +14,7 @@ export function AvailabilityPill({ className = "" }: { className?: string }) {
         alt="Portfolio creator avatar"
         className="w-10 h-10 rounded-full object-cover"
       />
-      <span>Open to internship</span>
+      <span>OPEN TO 2026 INTERNSHIP</span>
       <i className="shrink-0 w-[7px] h-[7px] rounded-full bg-jade shadow-[0_0_12px_rgb(72_187_170/0.7)]" />
     </div>
   );

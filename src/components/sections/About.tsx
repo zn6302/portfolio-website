@@ -26,21 +26,21 @@ export function About({ disableCardFlip = false }: AboutProps) {
           <AvailabilityPill className="inline-availability" />
           <h2>ABOUT</h2>
           <p className="lead">
-            我是葉子倪，正在準備 2026 實習申請。作品集聚焦 HCI、互動設計、前端實作與 creative coding，
-            期待用真實作品呈現我如何思考、做原型與迭代體驗。
+            我是葉子倪，政大數位內容碩一，核心興趣是 HCI 與互動藝術，目標是成為 Creative Coder。
+            碩論進行中：用 Meta Ray-Ban Display 智慧眼鏡打造智慧博物館導覽（GraphRAG · VideoRAG · LLM）。
           </p>
           <div className="stats-row">
             <div>
-              <strong>HCI</strong>
-              <span>Interaction Research</span>
+              <strong>1</strong>
+              <span>個已上線官網</span>
             </div>
             <div>
-              <strong>React</strong>
-              <span>Frontend Prototype</span>
+              <strong>5+</strong>
+              <span>Side Projects</span>
             </div>
             <div>
-              <strong>GSAP</strong>
-              <span>Creative Coding</span>
+              <strong>Stack</strong>
+              <span>React · Next.js · Flutter</span>
             </div>
           </div>
           <div className="contact-row">
@@ -52,12 +52,12 @@ export function About({ disableCardFlip = false }: AboutProps) {
             </div>
             <div>
               <b>Now :</b>
-              <span>Internship application portfolio</span>
+              <span>Open to 2026 internship</span>
             </div>
           </div>
           <Socials />
-          <a className="outline-button" href="#about">
-            ABOUT
+          <a className="outline-button" href="#skills">
+            SKILLS
           </a>
         </div>
         <div className="tilt-frame about-image scroll-flip-card" ref={cardRef}>

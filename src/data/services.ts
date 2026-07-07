@@ -2,39 +2,19 @@ import type { Service } from "../types";
 
 export const services: Service[] = [
   {
-    title: "1. HCI RESEARCH",
-    items: [
-      "User observation and problem framing",
-      "Interview notes and insight synthesis",
-      "Interaction flows and task scenarios",
-      "Usability testing and iteration notes",
-    ],
+    title: "1. 前端工程",
+    items: ["JavaScript", "TypeScript", "React 19", "Next.js 15", "Tailwind", "Flutter"],
   },
   {
-    title: "2. INTERACTION PROTOTYPING",
-    items: [
-      "Wireframes and clickable prototypes",
-      "React-based interface experiments",
-      "Motion studies for scroll and state changes",
-      "Accessible UI structure and responsive layouts",
-    ],
+    title: "2. 互動 / 動畫",
+    items: ["GSAP", "Framer Motion", "Tone.js", "Canvas", "IntersectionObserver"],
   },
   {
-    title: "3. CREATIVE CODING",
-    items: [
-      "GSAP and ScrollTrigger interactions",
-      "Canvas / WebGL / generative visual sketches",
-      "Micro-interaction and motion systems",
-      "Experimental visual storytelling",
-    ],
+    title: "3. 後端與資料",
+    items: ["Node.js", "Vercel Serverless", "Supabase", "Firebase", "MySQL"],
   },
   {
-    title: "4. FRONTEND BUILD",
-    items: [
-      "React 19 + Vite + TypeScript",
-      "Component-based portfolio pages",
-      "Performance-minded media handling",
-      "Build and deployment preparation",
-    ],
+    title: "4. AI / 研究",
+    items: ["LLM 串接", "BERT", "GraphRAG / VideoRAG", "Claude Code 工作流"],
   },
 ];

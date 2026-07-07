@@ -10,7 +10,7 @@ export const HeroIntro = forwardRef<HTMLDivElement>(function HeroIntro(_props, r
   return (
     <div className="hero-intro" ref={ref}>
       <p className="hero-intro-eyebrow">YEH TZU-NI</p>
-      <h2 className="hero-intro-title">HCI × CREATIVE CODING PORTFOLIO</h2>
+      <h2 className="hero-intro-title">FRONTEND / CREATIVE CODER</h2>
       <p className="hero-intro-hint">
         Scroll <span aria-hidden="true">↓</span>
       </p>

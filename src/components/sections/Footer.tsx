@@ -80,7 +80,7 @@ export function Footer() {
         </div>
         <div>
           <span>Now :</span>
-          <span>Open to internship</span>
+          <span>OPEN TO 2026 INTERNSHIP</span>
         </div>
         <div>
           <span>Social :</span>

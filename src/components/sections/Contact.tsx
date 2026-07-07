@@ -13,7 +13,7 @@ export function Contact() {
           <AvailabilityPill className="inline-availability" />
           <h2>CONTACT</h2>
           <p className="lead">
-            如果你是實習審查者、研究/設計團隊，或想了解我的作品，歡迎直接聯絡我。
+            想看更多或聊聊互動專案，歡迎透過以下方式找我。
           </p>
           <div className="contact-direct-links">
             <a
