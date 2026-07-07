@@ -6,7 +6,7 @@
   },
   "env": {
     "production": {
-      "name": "portfolio-website-prod",
+      "name": "portfolio-website",
       "routes": [
         { "pattern": "znye6302.com", "custom_domain": true },
         { "pattern": "www.znye6302.com", "custom_domain": true }
