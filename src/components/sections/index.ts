@@ -1,15 +1,8 @@
 export { Header } from "./Header";
 export { HeroCardJourney } from "./HeroCardJourney";
 export { HeroTransition } from "./HeroTransition";
-export { HeroAnimation } from "./HeroAnimation";
-export { HeroServicesAbout } from "./HeroServicesAbout";
-export { Hero } from "./Hero";
 export { Services } from "./Services";
 export { About } from "./About";
 export { Projects } from "./Projects";
-export { Testimonials } from "./Testimonials";
-export { FAQ } from "./FAQ";
-export { Insights } from "./Insights";
 export { Contact } from "./Contact";
 export { Footer } from "./Footer";
-export { ScrollFlipCard } from "./ScrollFlipCard";
