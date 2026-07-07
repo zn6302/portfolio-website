@@ -439,9 +439,14 @@ img {
 }
 
 @media (min-width: 1081px) {
+  /* The journey card lands on these slots, so the placeholders are hidden —
+     but visibility:hidden still contributes scroll overflow, and the rotate()
+     bounding box pokes past the viewport on 1081–1240px. Un-rotate while
+     hidden; the visible journey card lands straight anyway. */
   .hero-card-journey .services-image,
   .hero-card-journey .about-image {
     visibility: hidden;
+    transform: none;
   }
 }
 
@@ -602,6 +607,16 @@ h1 {
   font-size: 34px;
 }
 
+/* Decorative overhang rule: an element hanging outside the content box must
+   never overhang more than the page margin available at that band, or the
+   viewport clips it. Below 1240px the centered contact grid's side offset
+   drops under the 62px overhang, so pull the bubble in. */
+@media (max-width: 1240px) {
+  .hi-bubble.small {
+    left: -26px;
+  }
+}
+
 .section {
   padding: 80px 0;
 }
@@ -742,9 +757,14 @@ h2 {
   padding-top: 40px;
 }
 
+/* Fixed tracks total 990px; the gap absorbs the shortfall between the 1120px
+   design width and the real content width (100vw - 40px page margins), so the
+   grid fits exactly from the 1081px desktop breakpoint up to 1160px where the
+   130px design gap takes over. Never re-fix this with a hardcoded gap: any
+   fixed-track grid must shrink *something* below 1160px or it clips. */
 .about-grid {
-  grid-template-columns: 600px 390px;
-  gap: 130px;
+  grid-template-columns: minmax(0, 600px) 390px;
+  gap: clamp(51px, calc(100vw - 1030px), 130px);
 }
 
 .about-image {
@@ -1497,6 +1517,12 @@ h2 {
     justify-self: center;
   }
 
+  /* Single-column band: center the portrait (like phones already do) so the
+     hi-bubble's left overhang stays inside the viewport. */
+  .contact-portrait {
+    justify-self: center;
+  }
+
   .testimonial-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -1618,7 +1644,9 @@ h2 {
   }
 
   .hero-right p {
-    width: 320px;
+    /* min(): 320px design width, but never wider than the column — a fixed
+       320px clips the CTA on 320–359px devices. */
+    width: min(320px, 100%);
     margin-top: 12px;
     font-size: 16px;
   }
@@ -2201,6 +2229,36 @@ h2 {
   border-radius: 18px;
 }
 
+/* In-flow slot video. Only shown in the reduced-motion static fallback
+   (`.hero-static`) — see below. Desktop keeps the slot empty so the floating
+   journey card is the only video; motion-mobile uses `.hero-mobile-media`. */
+.profile-card-slot-video {
+  display: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: inherit;
+}
+
+/* Mobile shrink video: fullscreen at rest, GSAP scrubs it into the hero card
+   slot. Hidden on desktop; revealed at <=1080px (motion) below. It lives inside
+   the pinned .hero-sticky, so once the pin releases it scrolls away with the
+   hero — no separate sticky to coordinate. */
+.hero-mobile-media {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 0;
+  z-index: 2;
+  will-change: width, height, transform, border-radius;
+}
+
 .hero-profile-actions {
   display: flex;
   flex-wrap: wrap;
@@ -2218,6 +2276,13 @@ h2 {
 }
 
 @media (max-width: 1080px) {
+  /* The desktop journey card is hidden below 1080px; the mobile shrink video
+     plays the intro phase instead. GSAP still fades the intro out and the
+     profile in, so the pinned .hero-transition / .hero-sticky stay as-is. */
+  .hero-mobile-media {
+    display: block;
+  }
+
   .hero-profile {
     grid-template-columns: 1fr;
     justify-items: center;
@@ -2239,6 +2304,42 @@ h2 {
   .hero-profile-actions {
     justify-content: center;
   }
+}
+
+/* Reduced-motion static fallback (any width). No pin, no scrubbed shrink: the
+   hero becomes an ordinary block with the video parked in the card slot, the
+   intro overlay removed and the profile always visible. Applied by adding
+   `.hero-static` to the journey root in HeroCardJourney. */
+.hero-static .hero-transition {
+  height: auto;
+}
+
+.hero-static .hero-sticky {
+  position: static;
+  height: auto;
+  overflow: visible;
+  padding: 96px 0 64px;
+}
+
+.hero-static .hero-intro,
+.hero-static .hero-mobile-media {
+  display: none;
+}
+
+.hero-static .hero-profile {
+  position: static;
+  opacity: 1;
+  visibility: visible;
+}
+
+.hero-static .profile-card-slot {
+  overflow: hidden;
+  border: 2px solid var(--ink, #2d2121);
+  box-shadow: var(--shadow-soft, 0 16px 40px rgba(45, 33, 33, 0.08));
+}
+
+.hero-static .profile-card-slot-video {
+  display: block;
 }
 
 @media (max-width: 760px) {

@@ -91,11 +91,106 @@ export function HeroCardJourney() {
       return;
     }
 
-    // Below the desktop breakpoint (or reduced motion) skip the whole journey:
-    // hide the floating card and let each section show its own static card.
-    if (window.matchMedia("(max-width: 1080px), (prefers-reduced-motion: reduce)").matches) {
+    // Reduced motion: no pin, no scrubbed shrink. `.hero-static` (added here)
+    // collapses the hero into an ordinary block; just hide the floating card and
+    // the intro overlay and reveal the profile with its parked slot video.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      root.classList.add("hero-static");
       gsap.set(card, { autoAlpha: 0 });
+      gsap.set(intro, { autoAlpha: 0 });
+      gsap.set(profile, { autoAlpha: 1 });
       return;
+    }
+
+    // Mobile (motion): the desktop journey card is hidden below 1080px. Run only
+    // the intro "shrink into card" phase on `.hero-mobile-media`, scrubbed while
+    // .hero-sticky is pinned. The video lives inside .hero-sticky, so once the
+    // pin releases it scrolls away with the hero — no second sticky to sync, and
+    // Services/About keep their own static cards below.
+    const heroMobileMedia = root.querySelector<HTMLVideoElement>(".hero-mobile-media");
+    const heroSticky = root.querySelector<HTMLElement>(".hero-sticky");
+    if (window.matchMedia("(max-width: 1080px)").matches && heroMobileMedia && heroSticky) {
+      gsap.set(card, { autoAlpha: 0 });
+
+      const mobileCtx = gsap.context(() => {
+        let timeline: gsap.core.Timeline | undefined;
+        let trigger: ScrollTrigger | undefined;
+
+        // Slot geometry measured relative to .hero-sticky (the media's offset
+        // parent), so it's correct regardless of scroll/pin state.
+        const target = { width: 0, height: 0, x: 0, y: 0, radius: "18px" };
+        const measure = () => {
+          const slot = profileSlot.getBoundingClientRect();
+          const sticky = heroSticky.getBoundingClientRect();
+          target.width = slot.width;
+          target.height = slot.height;
+          target.x = slot.left - sticky.left;
+          target.y = slot.top - sticky.top;
+          target.radius = getComputedStyle(profileSlot).borderRadius;
+        };
+
+        const build = () => {
+          measure();
+          timeline?.kill();
+          trigger?.kill();
+
+          gsap.set(heroMobileMedia, {
+            width: "100%",
+            height: "100%",
+            x: 0,
+            y: 0,
+            borderRadius: 0,
+            autoAlpha: 1,
+          });
+          gsap.set(intro, { autoAlpha: 1 });
+          gsap.set(profile, { autoAlpha: 0 });
+
+          timeline = gsap.timeline({ paused: true });
+          timeline
+            .to(
+              heroMobileMedia,
+              {
+                width: () => target.width,
+                height: () => target.height,
+                x: () => target.x,
+                y: () => target.y,
+                borderRadius: () => target.radius,
+                ease: "none",
+              },
+              0,
+            )
+            .to(intro, { autoAlpha: 0, ease: "none" }, 0)
+            .to(profile, { autoAlpha: 1, ease: "none" }, 0);
+
+          // Finish the shrink at ~72% of the pin so the formed card rests a beat
+          // before .hero-sticky releases and the whole hero scrolls away.
+          const pin = Math.max(1, heroTransition.offsetHeight - window.innerHeight);
+          trigger = ScrollTrigger.create({
+            trigger: heroTransition,
+            start: "top top",
+            end: () => "+=" + Math.round(pin * 0.72),
+            scrub: 1,
+            invalidateOnRefresh: true,
+            onRefreshInit: measure,
+            animation: timeline,
+          });
+        };
+
+        build();
+        document.fonts?.ready.then(build);
+        let resizeId = 0;
+        const onResize = () => {
+          window.clearTimeout(resizeId);
+          resizeId = window.setTimeout(build, 200);
+        };
+        window.addEventListener("resize", onResize);
+        return () => {
+          window.clearTimeout(resizeId);
+          window.removeEventListener("resize", onResize);
+        };
+      }, root);
+
+      return () => mobileCtx.revert();
     }
 
     const state = {

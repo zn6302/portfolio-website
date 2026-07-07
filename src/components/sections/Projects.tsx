@@ -20,6 +20,9 @@ export function Projects() {
   const stageRef = useRef<HTMLDivElement>(null);
   const panelRefs = useRef<HTMLElement[]>([]);
   const triggerRef = useRef<ScrollTrigger | null>(null);
+  // Click-driven panel switcher for the no-pin mode (≤1080px / reduced motion),
+  // where the scroll-scrubbed deck is disabled and the arrows must still work.
+  const clickNavRef = useRef<((direction: 1 | -1) => void) | null>(null);
   const panelData = useMemo(
     () =>
       projects.length > 0
@@ -41,11 +44,44 @@ export function Projects() {
 
     // Below desktop (or reduced motion) pinning the whole section for several
     // viewport-heights of scroll feels heavy-handed, and short/variable mobile
-    // viewports make pin math unreliable — just show the first project.
+    // viewports make pin math unreliable — switch the deck to arrow-driven
+    // navigation using the same slide transition the scrubbed desktop deck has.
     if (window.matchMedia("(max-width: 1080px), (prefers-reduced-motion: reduce)").matches) {
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       gsap.set(panels, { autoAlpha: 0, yPercent: 0, scale: 1 });
       gsap.set(panels[0], { autoAlpha: 1 });
-      return;
+
+      let index = 0;
+      let animating = false;
+      clickNavRef.current = (direction) => {
+        const target = gsap.utils.clamp(0, panels.length - 1, index + direction);
+        if (target === index || animating) return;
+        const current = panels[index];
+        const next = panels[target];
+        index = target;
+        setActiveIndex(target);
+
+        if (reduceMotion) {
+          gsap.set(current, { autoAlpha: 0 });
+          gsap.set(next, { autoAlpha: 1, yPercent: 0, scale: 1 });
+          return;
+        }
+
+        animating = true;
+        gsap
+          .timeline({ onComplete: () => (animating = false) })
+          .to(current, { yPercent: -100 * direction, autoAlpha: 0, scale: 0.96, duration: 0.55, ease: "power2.inOut" }, 0)
+          .fromTo(
+            next,
+            { yPercent: 100 * direction, autoAlpha: 0, scale: 0.96 },
+            { yPercent: 0, autoAlpha: 1, scale: 1, duration: 0.55, ease: "power2.inOut" },
+            0,
+          );
+      };
+
+      return () => {
+        clickNavRef.current = null;
+      };
     }
 
     const ctx = gsap.context(() => {
@@ -115,6 +151,11 @@ export function Projects() {
   }, [panelData.length]);
 
   const goTo = (direction: 1 | -1) => {
+    if (clickNavRef.current) {
+      clickNavRef.current(direction);
+      return;
+    }
+
     const trigger = triggerRef.current;
     if (!trigger) return;
 
