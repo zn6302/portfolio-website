@@ -46,9 +46,9 @@ export function Footer() {
           });
           gsap.to(curve, {
             attr: { d: makeFooterCurve(restingCurve) },
-            duration: 1.45,
+            duration: 0.7,
             delay: 0.04,
-            ease: "elastic.out(1.25, 0.34)",
+            ease: "power3.out",
             overwrite: "auto",
           });
         },
