@@ -1,4 +1,8 @@
-@import url("https://fonts.googleapis.com/css2?family=Antonio:wght@400;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap");
+/* Google Fonts (Antonio, Inter) are loaded via <link rel="preconnect"> +
+   <link rel="stylesheet"> in index.html instead of an @import here — @import
+   is render-blocking and can't start its DNS/connection until this stylesheet
+   itself has already been fetched and parsed, whereas the <link> tags in
+   <head> let the browser open the connection immediately. */
 
 :root {
   /* Palette — sampled from the hero illustration (see design-system.md) */
