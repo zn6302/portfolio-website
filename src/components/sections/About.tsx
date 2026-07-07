@@ -20,7 +20,7 @@ export function About({ disableCardFlip = false }: AboutProps) {
   useScrollFlip(cardRef, { ...ABOUT_FLIP, triggerRef: sectionRef, disabled: disableCardFlip });
 
   return (
-    <section className="section about-section" ref={sectionRef}>
+    <section className="section about-section" id="about" ref={sectionRef}>
       <div className="section-grid about-grid">
         <div>
           <AvailabilityPill className="inline-availability" />
