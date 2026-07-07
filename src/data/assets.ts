@@ -13,7 +13,7 @@ export const assets = {
   // Keyframe grabbed from the hero mp4 (public/hero/hero-animation.mp4 @ 0.2s),
   // cropped to a bust portrait so the About card matches the hero illustration
   // instead of the unrelated stock headshot.
-  aboutKeyframe: "/hero/about-keyframe.png",
+  aboutKeyframe: "/hero/about-keyframe.webp",
   // User photo (public/thisME.JPG), cropped to a bust portrait. Used for the
   // "WHAT I CAN DO FOR YOU" services card; `portrait` above reuses this same
   // file for the contact card since both slots share the same aspect ratio.
