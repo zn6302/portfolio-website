@@ -6,6 +6,7 @@ import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { projects } from "../../data";
 import type { Project } from "../../types";
 import { AvailabilityPill } from "../ui";
+import { ProjectOverlay } from "./ProjectOverlay";
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
@@ -60,12 +61,22 @@ function ProjectBody({ project }: { project: Project }) {
       {(project.links?.live || project.links?.github) && (
         <div className="project-links">
           {project.links?.live && (
-            <a href={project.links.live} target="_blank" rel="noopener noreferrer">
+            <a
+              href={project.links.live}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(event) => event.stopPropagation()}
+            >
               LIVE SITE ↗
             </a>
           )}
           {project.links?.github && (
-            <a href={project.links.github} target="_blank" rel="noopener noreferrer">
+            <a
+              href={project.links.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(event) => event.stopPropagation()}
+            >
               GITHUB ↗
             </a>
           )}
@@ -78,10 +89,20 @@ function ProjectBody({ project }: { project: Project }) {
 export function Projects() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isCompact, setIsCompact] = useState(readIsCompact);
+  const [activeProject, setActiveProject] = useState<Project | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const panelRefs = useRef<HTMLElement[]>([]);
   const triggerRef = useRef<ScrollTrigger | null>(null);
+  const activeCardRef = useRef<HTMLElement | null>(null);
+
+  const openProject = (project: Project, event: { currentTarget: HTMLElement }) => {
+    if (!project.id) return; // placeholder card, nothing to open
+    activeCardRef.current = event.currentTarget;
+    setActiveProject(project);
+  };
+
+  const closeProject = () => setActiveProject(null);
   const panelData = useMemo(
     () =>
       projects.length > 0
@@ -210,7 +231,21 @@ export function Projects() {
         {sectionHead}
         <div className="project-stack">
           {panelData.map((project, index) => (
-            <article className="project-list-card" key={`${project.id || "empty-project"}-${index}`}>
+            <article
+              className={`project-list-card${project.id ? " project-card-clickable" : ""}`}
+              key={`${project.id || "empty-project"}-${index}`}
+              role={project.id ? "button" : undefined}
+              tabIndex={project.id ? 0 : undefined}
+              aria-haspopup={project.id ? "dialog" : undefined}
+              onClick={(event) => openProject(project, event)}
+              onKeyDown={(event) => {
+                if (!project.id) return;
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  openProject(project, event);
+                }
+              }}
+            >
               <div className="project-loop-card">
                 <ProjectMedia project={project} />
                 <ProjectBody project={project} />
@@ -218,6 +253,7 @@ export function Projects() {
             </article>
           ))}
         </div>
+        <ProjectOverlay project={activeProject} onClose={closeProject} returnFocusRef={activeCardRef.current} />
       </section>
     );
   }
@@ -239,15 +275,31 @@ export function Projects() {
         <div className="project-loop-panels">
           {panelData.map((project, index) => (
             <article
-              className="project-loop-panel"
+              className={`project-loop-panel${project.id ? " project-card-clickable" : ""}`}
               key={`${project.id || "empty-project"}-${index}`}
               ref={(node) => {
                 if (node) panelRefs.current[index] = node;
+              }}
+              role={project.id ? "button" : undefined}
+              tabIndex={project.id ? 0 : undefined}
+              aria-haspopup={project.id ? "dialog" : undefined}
+              onClick={(event) => openProject(project, event)}
+              onKeyDown={(event) => {
+                if (!project.id) return;
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  openProject(project, event);
+                }
               }}
             >
               <div className="project-loop-card">
                 <ProjectMedia project={project} />
                 <ProjectBody project={project} />
+                {project.id && (
+                  <span className="project-card-affordance" aria-hidden="true">
+                    查看詳情 ↗
+                  </span>
+                )}
               </div>
             </article>
           ))}
@@ -259,6 +311,7 @@ export function Projects() {
           <span>{String(panelData.length).padStart(2, "0")}</span>
         </div>
       </div>
+      <ProjectOverlay project={activeProject} onClose={closeProject} returnFocusRef={activeCardRef.current} />
     </section>
   );
 }
