@@ -3,5 +3,14 @@
   "compatibility_date": "2026-07-07",
   "assets": {
     "directory": "./dist"
+  },
+  "env": {
+    "production": {
+      "name": "portfolio-website-prod",
+      "routes": [
+        { "pattern": "znye6302.com", "custom_domain": true },
+        { "pattern": "www.znye6302.com", "custom_domain": true }
+      ]
+    }
   }
 }
