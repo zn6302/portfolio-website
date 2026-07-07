@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { assets } from "../../data";
+import { useHeroVideoSources } from "../../hooks";
 import { About } from "./About";
 import { HeroTransition } from "./HeroTransition";
 import { Services } from "./Services";
@@ -62,6 +63,7 @@ export function HeroCardJourney() {
   const cardRef = useRef<HTMLDivElement>(null);
   const videoLayerRef = useRef<HTMLVideoElement>(null);
   const portraitLayerRef = useRef<HTMLImageElement>(null);
+  const loadVideo = useHeroVideoSources();
 
   useLayoutEffect(() => {
     const root = rootRef.current;
@@ -346,13 +348,20 @@ export function HeroCardJourney() {
             <video
               ref={videoLayerRef}
               className="linked-card-media"
-              src="/hero/hero-animation.mp4"
+              poster={assets.aboutKeyframe}
               autoPlay
               muted
               loop
               playsInline
-              preload="auto"
-            />
+              preload="metadata"
+            >
+              {loadVideo && (
+                <>
+                  <source src="/hero/hero-animation.webm" type="video/webm" />
+                  <source src="/hero/hero-animation.mp4" type="video/mp4" />
+                </>
+              )}
+            </video>
             <img
               ref={portraitLayerRef}
               className="linked-card-media linked-card-portrait"

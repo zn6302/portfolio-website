@@ -24,15 +24,15 @@ export const HeroProfile = forwardRef<HTMLDivElement, HeroProfileProps>(function
       </div>
 
       {/* Flip landing target. On desktop it stays empty — the floating journey
-          video flips into this exact footprint. On mobile that journey is
-          disabled and the floating card is hidden, so this slot renders its own
-          static hero video (revealed via CSS below 1080px). */}
+          video flips into this exact footprint. This element is only ever
+          revealed by CSS in the reduced-motion static fallback (`.hero-static`),
+          and reduced motion means "no autoplaying video" — so it never gets a
+          `<source>` at all, just the poster/first-frame image, matching the
+          prefers-reduced-motion contract everywhere else on the site. */}
       <div className="profile-card-slot" ref={slotRef} aria-hidden="true">
         <video
           className="profile-card-slot-video"
-          src="/hero/hero-animation.mp4"
           poster={assets.aboutKeyframe}
-          autoPlay
           muted
           loop
           playsInline
