@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { assets } from "../../data";
-import { useScrollFlip } from "../../hooks";
+import { useScrollFlip, useMagnetic } from "../../hooks";
 import { AvailabilityPill, Socials } from "../ui";
 
 const ABOUT_FLIP = {
@@ -18,6 +18,7 @@ export function About({ disableCardFlip = false }: AboutProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   useScrollFlip(cardRef, { ...ABOUT_FLIP, triggerRef: sectionRef, disabled: disableCardFlip });
+  const magnetic = useMagnetic();
 
   return (
     <section className="section about-section" id="about" ref={sectionRef}>
@@ -56,7 +57,7 @@ export function About({ disableCardFlip = false }: AboutProps) {
             </div>
           </div>
           <Socials />
-          <a className="outline-button" href="#skills">
+          <a ref={magnetic} className="outline-button" href="#skills">
             SKILLS
           </a>
         </div>

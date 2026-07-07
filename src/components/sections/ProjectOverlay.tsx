@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import type { Project } from "../../types";
+import { useMagnetic } from "../../hooks";
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
@@ -20,6 +21,8 @@ export function ProjectOverlay({ project, onClose, returnFocusRef }: ProjectOver
   const panelRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const scrollPositionRef = useRef(0);
+  const magneticLive = useMagnetic();
+  const magneticGithub = useMagnetic();
 
   // Lock background scrolling while the overlay is open. This intentionally
   // does NOT toggle body's `overflow`/`position` (the classic scroll-lock
@@ -180,6 +183,7 @@ export function ProjectOverlay({ project, onClose, returnFocusRef }: ProjectOver
           <div className="project-overlay-actions">
             {project.links?.live && (
               <a
+                ref={magneticLive}
                 className="project-overlay-cta project-overlay-cta-primary"
                 href={project.links.live}
                 target="_blank"
@@ -190,6 +194,7 @@ export function ProjectOverlay({ project, onClose, returnFocusRef }: ProjectOver
             )}
             {project.links?.github && (
               <a
+                ref={magneticGithub}
                 className="project-overlay-cta project-overlay-cta-secondary"
                 href={project.links.github}
                 target="_blank"

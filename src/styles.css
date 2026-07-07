@@ -731,6 +731,17 @@ h2 {
   transform: translateY(-2px);
 }
 
+/* While useMagnetic controls a button's transform (desktop, pointer:fine),
+   drop the CSS transform hover/transition so it doesn't fight GSAP quickTo.
+   Colour transitions stay. */
+.magnetic-active {
+  transition-property: background, color, border-color;
+}
+
+.magnetic-active:hover {
+  transform: none;
+}
+
 .section-head {
   position: relative;
   max-width: 620px;

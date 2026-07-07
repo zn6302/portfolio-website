@@ -1,7 +1,11 @@
 import { assets } from "../../data";
+import { useMagnetic } from "../../hooks";
 import { AvailabilityPill, HiBubble } from "../ui";
 
 export function Contact() {
+  const magneticEmail = useMagnetic();
+  const magneticGithub = useMagnetic();
+
   return (
     <section className="section contact-section" id="contact">
       <div className="contact-grid">
@@ -17,12 +21,14 @@ export function Contact() {
           </p>
           <div className="contact-direct-links">
             <a
+              ref={magneticEmail}
               className="outline-button contact-direct-link"
               href="mailto:vivian20021213@gmail.com"
             >
               EMAIL ME ↗
             </a>
             <a
+              ref={magneticGithub}
               className="outline-button contact-direct-link"
               href="https://github.com/zn6302"
               target="_blank"

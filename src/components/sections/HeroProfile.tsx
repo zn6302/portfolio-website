@@ -1,5 +1,6 @@
 import { forwardRef, type RefObject } from "react";
 import { assets } from "../../data";
+import { useMagnetic } from "../../hooks";
 import { AvailabilityPill } from "../ui";
 
 interface HeroProfileProps {
@@ -16,6 +17,8 @@ export const HeroProfile = forwardRef<HTMLDivElement, HeroProfileProps>(function
   { slotRef },
   ref,
 ) {
+  const magnetic = useMagnetic();
+
   return (
     <div className="hero-profile" ref={ref}>
       <div className="hero-left">
@@ -47,7 +50,7 @@ export const HeroProfile = forwardRef<HTMLDivElement, HeroProfileProps>(function
         </p>
         <div className="hero-profile-actions">
           <AvailabilityPill className="hero-profile-badge" />
-          <a className="outline-button hero-profile-cta" href="#contact">
+          <a ref={magnetic} className="outline-button hero-profile-cta" href="#contact">
             CONTACT
           </a>
         </div>
