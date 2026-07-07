@@ -1,0 +1,60 @@
+/*
+ * Tailwind v4 entry — incremental adoption.
+ *
+ * We import ONLY the theme + utilities layers, NOT preflight. The site's visual
+ * baseline still lives in styles.css (hand-written, 2200+ lines); loading
+ * Tailwind's preflight reset would change that baseline. Skipping it lets
+ * utilities coexist with the existing CSS without any visual regression.
+ *
+ * Tailwind utilities land in @layer utilities; styles.css rules are unlayered,
+ * so existing component styles always win. A component only picks up Tailwind
+ * behaviour once we strip its old class and hand-author it with utilities.
+ */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/*
+ * Color tokens — the CURRENT (legacy) palette from styles.css :root, tokenized
+ * 1:1 so utilities render identical pixels. Names mirror styles.css variables
+ * (raw palette + semantic aliases) to keep component migration a direct mapping.
+ * NOTE: this is intentionally the old mist/slate/jade/coral palette, not the
+ * CLAUDE.md paper/matcha/clay tokens — a palette refresh is a separate task.
+ */
+@theme {
+  /* Raw palette (sampled from the hero illustration) */
+  --color-mist: #e9edf4;
+  --color-paper: #fdfdfd;
+  --color-paper-deep: #3a4652;
+  --color-paper-light: #f0ebe2;
+  --color-periwinkle: #cdd8e8;
+  --color-slate: #728f9d;
+  --color-slate-deep: #52707e;
+  --color-jade: #48bbaa;
+  --color-jade-deep: #2e8577;
+  --color-coral: #cf4140;
+  --color-coral-deep: #b03432;
+  --color-peach: #ffd9ca;
+  --color-sand: #dcc5b3;
+  --color-ink: #292025;
+
+  /* Semantic aliases (match styles.css var names for 1:1 migration) */
+  --color-soft: #e9edf4;
+  --color-line: #cdd8e8;
+  --color-muted: #52707e;
+  --color-violet: #52707e;
+  --color-brand: #728f9d;
+  --color-brand-deep: #52707e;
+  --color-accent: #cf4140;
+  --color-accent-deep: #b03432;
+  --color-dark: #292025;
+
+  /* Typography */
+  --font-display: "Antonio", "Antonio Placeholder", sans-serif;
+  --font-body: "Inter", "Inter Placeholder", sans-serif;
+
+  /* Radius + shadow (from styles.css :root) */
+  --radius-card: 24px;
+  --shadow-card: 0 2px 8px rgb(41 32 37 / 0.06);
+  --shadow-hover: 0 8px 24px rgb(41 32 37 / 0.1);
+}
