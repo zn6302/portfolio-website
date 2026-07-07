@@ -1079,6 +1079,29 @@ h2 {
   transform: translateY(0);
 }
 
+/* When the shared-element FLIP is driving the open/close (desktop, motion),
+   hand transform + opacity entirely to GSAP so the CSS fade transition doesn't
+   fight it. The inner wrapper is what GSAP cross-fades while the panel box
+   expands/collapses between the card footprint and the full panel. */
+.project-overlay-backdrop.flip-active {
+  opacity: 1;
+  transition: none;
+}
+
+.project-overlay-panel.flip-active {
+  opacity: 1;
+  transform: none;
+  transition: none;
+  will-change: transform;
+}
+
+/* Plain block wrapper so GSAP can cross-fade panel content independently of
+   the box expand. Kept static so the absolutely-positioned close button still
+   anchors to the panel. */
+.project-overlay-inner {
+  display: block;
+}
+
 .project-overlay-close {
   position: absolute;
   top: 20px;

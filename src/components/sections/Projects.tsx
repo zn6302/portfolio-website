@@ -253,7 +253,7 @@ export function Projects() {
             </article>
           ))}
         </div>
-        <ProjectOverlay project={activeProject} onClose={closeProject} returnFocusRef={activeCardRef.current} />
+        <ProjectOverlay project={activeProject} originEl={activeCardRef.current} onClose={closeProject} returnFocusRef={activeCardRef.current} />
       </section>
     );
   }
@@ -311,7 +311,7 @@ export function Projects() {
           <span>{String(panelData.length).padStart(2, "0")}</span>
         </div>
       </div>
-      <ProjectOverlay project={activeProject} onClose={closeProject} returnFocusRef={activeCardRef.current} />
+      <ProjectOverlay project={activeProject} originEl={activeCardRef.current} onClose={closeProject} returnFocusRef={activeCardRef.current} />
     </section>
   );
 }
