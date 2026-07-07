@@ -15,39 +15,52 @@
 @import "tailwindcss/utilities.css" layer(utilities);
 
 /*
- * Color tokens — the CURRENT (legacy) palette from styles.css :root, tokenized
- * 1:1 so utilities render identical pixels. Names mirror styles.css variables
- * (raw palette + semantic aliases) to keep component migration a direct mapping.
- * NOTE: this is intentionally the old mist/slate/jade/coral palette, not the
- * CLAUDE.md paper/matcha/clay tokens — a palette refresh is a separate task.
+ * Color tokens — mirrors the locked CLAUDE.md palette in styles.css :root
+ * 1:1 so Tailwind utilities (e.g. border-line, bg-matcha) render identical
+ * pixels to the hand-written CSS. Legacy names (mist/slate/jade/coral/...)
+ * are kept as aliases pointing at the new hexes so existing utility classes
+ * (see AvailabilityPill.tsx) don't need touching; no new hex may be added
+ * here beyond the CLAUDE.md 色彩 token 表.
  */
 @theme {
-  /* Raw palette (sampled from the hero illustration) */
-  --color-mist: #e9edf4;
-  --color-paper: #fdfdfd;
-  --color-paper-deep: #3a4652;
-  --color-paper-light: #f0ebe2;
-  --color-periwinkle: #cdd8e8;
-  --color-slate: #728f9d;
-  --color-slate-deep: #52707e;
-  --color-jade: #48bbaa;
-  --color-jade-deep: #2e8577;
-  --color-coral: #cf4140;
-  --color-coral-deep: #b03432;
-  --color-peach: #ffd9ca;
-  --color-sand: #dcc5b3;
-  --color-ink: #292025;
+  /* Locked palette */
+  --color-paper: #ebedf3;
+  --color-paper-deep: #d8e7ea;
+  --color-cream: #f8fafc;
+  --color-ink: #2d2121;
+  --color-ink-soft: #5f686c;
+  --color-ink-muted: #9d9fa0;
+  --color-matcha: #65959c;
+  --color-matcha-deep: #3f6770;
+  --color-matcha-hover: #2f525a;
+  --color-clay: #cf4342;
+  --color-clay-deep: #b93635;
+  --color-line: #dde4ea;
+  --color-mint: #58c3b3;
+  --color-sky: #a7d0d1;
+  --color-warm: #ebc8b6;
+
+  /* Legacy aliases (match old styles.css var names for 1:1 migration) */
+  --color-mist: var(--color-paper);
+  --color-periwinkle: var(--color-line);
+  --color-slate: var(--color-matcha);
+  --color-slate-deep: var(--color-matcha-deep);
+  --color-jade: var(--color-matcha);
+  --color-jade-deep: var(--color-matcha-deep);
+  --color-coral: var(--color-clay);
+  --color-coral-deep: var(--color-clay-deep);
+  --color-peach: var(--color-warm);
+  --color-sand: var(--color-warm);
 
   /* Semantic aliases (match styles.css var names for 1:1 migration) */
-  --color-soft: #e9edf4;
-  --color-line: #cdd8e8;
-  --color-muted: #52707e;
-  --color-violet: #52707e;
-  --color-brand: #728f9d;
-  --color-brand-deep: #52707e;
-  --color-accent: #cf4140;
-  --color-accent-deep: #b03432;
-  --color-dark: #292025;
+  --color-soft: var(--color-paper);
+  --color-muted: var(--color-matcha-deep);
+  --color-violet: var(--color-matcha-deep);
+  --color-brand: var(--color-matcha);
+  --color-brand-deep: var(--color-matcha-deep);
+  --color-accent: var(--color-clay);
+  --color-accent-deep: var(--color-clay-deep);
+  --color-dark: var(--color-ink);
 
   /* Typography */
   --font-display: "Noto Sans TC", sans-serif;
@@ -56,6 +69,6 @@
 
   /* Radius + shadow (from styles.css :root) */
   --radius-card: 24px;
-  --shadow-card: 0 2px 8px rgb(41 32 37 / 0.06);
-  --shadow-hover: 0 8px 24px rgb(41 32 37 / 0.1);
+  --shadow-card: 0 16px 40px rgba(45, 33, 33, 0.08);
+  --shadow-hover: 0 24px 56px rgba(45, 33, 33, 0.14);
 }

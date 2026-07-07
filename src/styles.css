@@ -5,38 +5,58 @@
    <head> let the browser open the connection immediately. */
 
 :root {
-  /* Palette — sampled from the hero illustration (see design-system.md) */
-  --mist: #e9edf4; /* background */
-  --paper-2: #fdfdfd; /* floating paper → surfaces */
-  --color-paper-deep: #3a4652;
-  --color-paper-light: #f0ebe2;
-  --periwinkle: #cdd8e8; /* blue paper scraps → lines, hover */
-  --slate: #728f9d; /* shirt → brand (fills, large) */
-  --slate-deep: #52707e; /* text-safe brand (4.5:1) */
-  --jade: #48bbaa; /* plant leaves → secondary */
-  --jade-deep: #2e8577; /* text-safe jade / links */
-  --coral: #cf4140; /* flowerpot → accent / CTA */
-  --coral-deep: #b03432; /* text-safe coral */
-  --peach: #ffd9ca; /* skin → warm highlight */
-  --sand: #dcc5b3; /* hair highlight → beige */
-  --ink-raw: #292025; /* hair → primary text (warm near-black) */
+  /* Palette — locked CLAUDE.md token set (色彩 token 章節), the ONLY hex
+     values allowed in this file. Do not add new hex; use opacity/color-mix
+     on these instead. */
+  --paper: #ebedf3; /* 主背景 */
+  --paper-deep: #d8e7ea; /* 區塊交錯背景 */
+  --cream: #f8fafc; /* 卡片面/紙感白 */
+  --ink: #2d2121; /* 主文字/深色區底 */
+  --ink-soft: #5f686c; /* 次要文字/caption */
+  --ink-muted: #9d9fa0; /* 淡化資訊，不可當正文 */
+  --matcha: #65959c; /* 品牌裝飾/icon，不可當小字文字色 */
+  --matcha-deep: #3f6770; /* 連結/強調標題/主按鈕底 */
+  --matcha-hover: #2f525a; /* matcha 按鈕 hover/active */
+  --clay: #cf4342; /* CTA 底色，全站 ≤5%、每屏最多一次 */
+  --clay-deep: #b93635; /* clay 的文字/連結安全版 */
+  --line: #dde4ea; /* 邊線、次要分隔線 */
+  --mint: #58c3b3; /* 輕量 hover 背景、icon 背景 */
+  --sky: #a7d0d1; /* 柔和裝飾、tag 底色 */
+  --warm: #ebc8b6; /* 溫暖背景、個人化區塊 */
+
+  /* Legacy variable aliases — kept so the rest of this file (and
+     AvailabilityPill.tsx / index.css @theme) doesn't need touching. Every
+     alias resolves to one of the locked hexes above, never a new color. */
+  --mist: var(--paper);
+  --paper-2: var(--cream);
+  --color-paper-deep: var(--ink); /* dark-section bg: hero-card-journey, footer */
+  --color-paper-light: var(--cream); /* light text/foreground on dark section */
+  --periwinkle: var(--line);
+  --slate: var(--matcha);
+  --slate-deep: var(--matcha-deep);
+  --jade: var(--matcha);
+  --jade-deep: var(--matcha-deep);
+  --coral: var(--clay);
+  --coral-deep: var(--clay-deep);
+  --peach: var(--warm);
+  --sand: var(--warm);
+  --ink-raw: var(--ink);
 
   /* Semantic aliases (keep existing rules working) */
-  --ink: var(--ink-raw);
-  --muted: var(--slate-deep);
-  --line: var(--periwinkle);
-  --paper: var(--paper-2);
-  --soft: var(--mist);
-  --violet: var(--slate-deep); /* legacy accent → brand slate */
-  --brand: var(--slate);
-  --brand-deep: var(--slate-deep);
-  --accent: var(--coral);
-  --accent-deep: var(--coral-deep);
-  --dark: var(--ink-raw);
+  --muted: var(--matcha-deep);
+  --soft: var(--paper);
+  --violet: var(--matcha-deep); /* legacy accent → matcha-deep */
+  --brand: var(--matcha);
+  --brand-deep: var(--matcha-deep);
+  --accent: var(--clay);
+  --accent-deep: var(--clay-deep);
+  --dark: var(--ink);
   --radius: 24px;
 
-  --shadow-card: 0 2px 8px rgb(41 32 37 / 0.06);
-  --shadow-hover: 0 8px 24px rgb(41 32 37 / 0.1);
+  --shadow-soft: 0 16px 40px rgba(45, 33, 33, 0.08); /* 一般卡片 */
+  --shadow-soft-lg: 0 24px 56px rgba(45, 33, 33, 0.14); /* hover / 強調層級 */
+  --shadow-card: var(--shadow-soft);
+  --shadow-hover: var(--shadow-soft-lg);
   font-family: "Noto Sans TC", sans-serif;
   color: var(--ink);
   background: var(--soft);
@@ -175,7 +195,7 @@ img {
   height: 7px;
   border-radius: 50%;
   background: var(--jade);
-  box-shadow: 0 0 12px rgb(72 187 170 / 0.7);
+  box-shadow: 0 0 12px rgb(101 149 156 / 0.7);
 }
 
 .sticky-status {
@@ -256,7 +276,9 @@ img {
 
 .hero-card-journey .accordion,
 .hero-card-journey .accordion-item {
-  border-color: rgb(240 235 226 / 0.38);
+  /* cream (#f8fafc → 248 250 252) at low opacity, for hairlines over the
+     dark ink section background. */
+  border-color: rgb(248 250 252 / 0.38);
 }
 
 .hero-card-journey .accordion-item button:hover {
@@ -749,8 +771,8 @@ h2 {
   border: 2px solid var(--ink);
   border-radius: 12px;
   overflow: hidden;
-  background: #fff;
-  box-shadow: 0 16px 40px rgba(45, 33, 33, 0.08);
+  background: var(--cream);
+  box-shadow: var(--shadow-soft);
 }
 
 .project-list-card .project-loop-card {
@@ -784,8 +806,8 @@ h2 {
   overflow: hidden;
   border: 2px solid var(--ink);
   border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 16px 40px rgba(45, 33, 33, 0.08);
+  background: var(--cream);
+  box-shadow: var(--shadow-soft);
 }
 
 .project-loop-panels,
@@ -823,7 +845,7 @@ h2 {
   background:
     linear-gradient(90deg, rgba(95, 104, 108, 0.08) 1px, transparent 1px),
     linear-gradient(rgba(95, 104, 108, 0.08) 1px, transparent 1px),
-    #fff;
+    var(--cream);
   background-size: 24px 24px;
 }
 
@@ -964,8 +986,8 @@ h2 {
   padding: 32px;
   border: 2px solid var(--ink);
   border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 16px 40px rgba(45, 33, 33, 0.08);
+  background: var(--cream);
+  box-shadow: var(--shadow-soft);
 }
 
 .project-empty div {
@@ -1118,9 +1140,9 @@ h2 {
 .contact-form select,
 .contact-form textarea {
   width: 100%;
-  border: 1.5px solid var(--periwinkle);
+  border: 1.5px solid var(--line);
   border-radius: 999px;
-  background: var(--paper);
+  background: var(--cream);
   color: var(--ink);
   outline: none;
   font-size: 16px;
@@ -1131,8 +1153,8 @@ h2 {
 .contact-form input:focus,
 .contact-form select:focus,
 .contact-form textarea:focus {
-  border-color: var(--slate);
-  box-shadow: 0 0 0 3px var(--periwinkle);
+  border-color: var(--matcha);
+  box-shadow: 0 0 0 3px var(--sky);
 }
 
 .contact-form input::placeholder,
@@ -1157,7 +1179,7 @@ h2 {
   width: 144px;
   min-width: 144px;
   margin-top: 0;
-  background: #fff;
+  background: var(--cream);
   cursor: pointer;
 }
 
@@ -1589,7 +1611,7 @@ h2 {
 
   .submit-button {
     width: 144px;
-    background: #fff;
+    background: var(--cream);
     color: var(--accent-deep);
   }
 
