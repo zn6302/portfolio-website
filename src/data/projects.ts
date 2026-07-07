@@ -7,7 +7,7 @@ export const projects: Project[] = [
     title: "All Things Scored",
     description:
       "把影片中穿越觸發線的動作即時轉成音樂。Canvas 逐像素差分偵測動態，Tone.js 合成音階與效果鏈——位置決定音高、強度決定力度，節拍量化讓隨機動作變成旋律。",
-    image: "",
+    image: "/projects/all-things-scored.webp",
     tech: ["React", "TypeScript", "Tone.js", "Canvas"],
     links: {
       github: "https://github.com/zn6302/All-Things-Scored",
@@ -32,7 +32,7 @@ export const projects: Project[] = [
     title: "Click or Check?",
     description:
       "媒體識讀互動遊戲。把「流量 vs 公信力」的媒體倫理變成玩家必須權衡的雙軸數值系統——聳動標題換粉絲、犧牲信任。",
-    image: "",
+    image: "/projects/click-or-check.webp",
     tech: ["React 19", "Vite", "Tailwind"],
     links: {
       github: "https://github.com/JiaXiang114462003/media-literacy-game",
