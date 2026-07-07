@@ -74,7 +74,9 @@ export function Footer() {
       <div className="footer-top">
         <div>
           <span>Email :</span>
-          <span></span>
+          <span>
+            <a href="mailto:vivian20021213@gmail.com">vivian20021213@gmail.com</a>
+          </span>
         </div>
         <div>
           <span>Now :</span>

@@ -1399,6 +1399,18 @@ h2 {
   font-size: clamp(48px, 5vw, 64px);
 }
 
+.contact-direct-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 8px;
+}
+
+.contact-direct-link {
+  min-width: 220px;
+  font-size: 22px;
+}
+
 .form-split {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

@@ -46,7 +46,9 @@ export function About({ disableCardFlip = false }: AboutProps) {
           <div className="contact-row">
             <div>
               <b>Email :</b>
-              <span></span>
+              <span>
+                <a href="mailto:vivian20021213@gmail.com">vivian20021213@gmail.com</a>
+              </span>
             </div>
             <div>
               <b>Now :</b>

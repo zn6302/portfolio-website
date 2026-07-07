@@ -9,41 +9,29 @@ export function Contact() {
           <img src={assets.portrait} alt="Portrait of portfolio creator" />
           <HiBubble small />
         </div>
-        <form className="contact-form">
+        <div className="contact-form contact-direct">
           <AvailabilityPill className="inline-availability" />
           <h2>CONTACT</h2>
           <p className="lead">
-            如果你是實習審查者、研究/設計團隊，或想了解我的作品，歡迎留下訊息。
+            如果你是實習審查者、研究/設計團隊，或想了解我的作品，歡迎直接聯絡我。
           </p>
-          <div className="form-split">
-            <label>
-              <span>Name</span>
-              <input type="text" placeholder="" />
-            </label>
-            <label>
-              <span>Email</span>
-              <input type="email" placeholder="" />
-            </label>
+          <div className="contact-direct-links">
+            <a
+              className="outline-button contact-direct-link"
+              href="mailto:vivian20021213@gmail.com"
+            >
+              EMAIL ME ↗
+            </a>
+            <a
+              className="outline-button contact-direct-link"
+              href="https://github.com/zn6302"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GITHUB ↗
+            </a>
           </div>
-          <label>
-            <span>Topic</span>
-            <select defaultValue="">
-              <option value="" disabled>
-                Select...
-              </option>
-              <option>Internship</option>
-              <option>Portfolio feedback</option>
-              <option>Creative coding</option>
-            </select>
-          </label>
-          <label>
-            <span>Message</span>
-            <textarea placeholder="" />
-          </label>
-          <button className="outline-button submit-button" type="button">
-            SUBMIT
-          </button>
-        </form>
+        </div>
       </div>
     </section>
   );
