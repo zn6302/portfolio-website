@@ -4,10 +4,16 @@ export interface Service {
 }
 
 export interface Project {
+  id: string;
   category: string;
   title: string;
   description: string;
   image: string;
+  tech: string[];
+  links?: {
+    live?: string;
+    github?: string;
+  };
 }
 
 export interface QuoteTestimonial {
