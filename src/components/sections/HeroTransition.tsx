@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { assets } from "../../data";
 import { HeroIntro } from "./HeroIntro";
 import { HeroProfile } from "./HeroProfile";
 
@@ -19,6 +20,21 @@ export function HeroTransition() {
   return (
     <section className="hero-transition">
       <div className="hero-sticky">
+        {/* Mobile-only shrink video. The desktop journey card (.linked-card) is
+            hidden below 1080px, so this element plays the intro-phase effect —
+            fullscreen → hero card slot — driven by GSAP in HeroCardJourney.
+            Hidden on desktop and in the reduced-motion static fallback. */}
+        <video
+          className="hero-mobile-media"
+          src="/hero/hero-animation.mp4"
+          poster={assets.aboutKeyframe}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+        />
         <HeroIntro />
         <HeroProfile slotRef={slotRef} />
       </div>

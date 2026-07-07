@@ -1,4 +1,5 @@
 import { forwardRef, type RefObject } from "react";
+import { assets } from "../../data";
 import { AvailabilityPill } from "../ui";
 
 interface HeroProfileProps {
@@ -22,8 +23,22 @@ export const HeroProfile = forwardRef<HTMLDivElement, HeroProfileProps>(function
         <h1>HCI</h1>
       </div>
 
-      {/* Flip landing target. Kept empty — the video ends up sitting here. */}
-      <div className="profile-card-slot" ref={slotRef} aria-hidden="true" />
+      {/* Flip landing target. On desktop it stays empty — the floating journey
+          video flips into this exact footprint. On mobile that journey is
+          disabled and the floating card is hidden, so this slot renders its own
+          static hero video (revealed via CSS below 1080px). */}
+      <div className="profile-card-slot" ref={slotRef} aria-hidden="true">
+        <video
+          className="profile-card-slot-video"
+          src="/hero/hero-animation.mp4"
+          poster={assets.aboutKeyframe}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+        />
+      </div>
 
       <div className="hero-right">
         <h1>CODING</h1>
