@@ -10,6 +10,10 @@ export interface Project {
   description: string;
   image: string;
   tech: string[];
+  subtitle?: string;
+  role?: string;
+  overview?: string;
+  highlights?: string[];
   links?: {
     live?: string;
     github?: string;
