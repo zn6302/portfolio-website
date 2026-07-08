@@ -246,25 +246,10 @@ img {
 }
 
 .hero-card-journey .lead,
-.hero-card-journey .accordion-item ul,
-.hero-card-journey .accordion-item > p,
 .hero-card-journey .stats-row strong,
 .hero-card-journey .contact-row,
 .hero-card-journey .hero-right p {
   color: var(--color-paper-light);
-}
-
-.hero-card-journey .accordion,
-.hero-card-journey .accordion-item {
-  border-color: rgb(240 235 226 / 0.38);
-}
-
-.hero-card-journey .accordion-item button:hover {
-  color: var(--color-paper-light);
-}
-
-.hero-card-journey .accordion-item li::before {
-  background: var(--color-paper-light);
 }
 
 .linked-card-stage {
@@ -513,86 +498,6 @@ h2 {
   line-height: 1.55;
 }
 
-.accordion {
-  margin-top: 48px;
-  border-top: 1px solid var(--line);
-}
-
-.accordion-item {
-  border-bottom: 1px solid var(--line);
-}
-
-.accordion-item button {
-  display: flex;
-  width: 100%;
-  min-height: 84px;
-  align-items: center;
-  justify-content: space-between;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  text-align: left;
-  transition: color 160ms ease;
-}
-
-.accordion-item button:hover {
-  color: var(--slate-deep);
-}
-
-.accordion-item button span {
-  font-family: "Noto Sans TC", sans-serif;
-  font-size: 32px;
-  font-weight: 700;
-  line-height: 1.1;
-}
-
-.accordion-item svg {
-  flex: 0 0 auto;
-  transition: transform 180ms ease;
-}
-
-.accordion-item.open svg {
-  transform: rotate(180deg);
-}
-
-.accordion-item ul,
-.accordion-item > p {
-  display: grid;
-  gap: 10px;
-  max-height: 0;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  color: var(--muted);
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 1.45;
-  transition: max-height 240ms ease, padding 240ms ease;
-}
-
-.accordion-item.open ul,
-.accordion-item.open > p {
-  max-height: 220px;
-  padding: 0 0 28px;
-}
-
-.accordion-item li {
-  list-style: none;
-  position: relative;
-  padding-left: 28px;
-}
-
-.accordion-item li::before {
-  content: "";
-  position: absolute;
-  top: 0.62em;
-  left: 0;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--violet);
-}
-
 .tilt-frame {
   justify-self: end;
   border-radius: 26px;
@@ -614,6 +519,181 @@ h2 {
 
 .services h2 {
   font-size: 64px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Skills constellation (SkillsGraph) + phone tag-grid fallback        */
+/* ------------------------------------------------------------------ */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skills-graph {
+  position: relative;
+  width: 100%;
+  max-width: 512px;
+  margin: 44px auto 0;
+  aspect-ratio: 1 / 1;
+}
+
+.skills-graph-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.sg-line {
+  fill: none;
+  stroke: var(--periwinkle);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  opacity: 0.9;
+  transition: stroke 280ms ease, opacity 280ms ease, stroke-width 280ms ease;
+}
+
+.sg-line-trunk {
+  stroke-width: 1.8;
+}
+
+.sg-line.is-active {
+  stroke: var(--accent);
+  opacity: 1;
+  stroke-width: 2.2;
+}
+
+.sg-line.is-dim {
+  opacity: 0.26;
+}
+
+.sg-node {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  background: #fff;
+  border: 1.5px solid var(--line);
+  box-shadow: var(--shadow-card);
+  white-space: nowrap;
+  transition: transform 280ms ease, box-shadow 280ms ease, border-color 280ms ease, opacity 280ms ease;
+}
+
+.sg-node.is-dim {
+  opacity: 0.4;
+}
+
+.sg-node-center {
+  z-index: 3;
+  width: 90px;
+  height: 90px;
+  border-width: 2.5px;
+  border-color: var(--ink);
+}
+
+.sg-node-center span {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.sg-node-cat {
+  z-index: 2;
+  padding: 9px 16px;
+  border-width: 2px;
+  border-color: var(--accent);
+  cursor: default;
+}
+
+.sg-node-cat span {
+  font-family: "Noto Sans TC", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.sg-node-cat.is-active {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-hover);
+}
+
+.sg-node-skill {
+  z-index: 1;
+  padding: 6px 12px;
+}
+
+.sg-node-skill::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.sg-node-skill span {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+
+.sg-node-skill.is-active {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-hover);
+}
+
+.sg-node-skill.is-active::before {
+  width: 8px;
+  height: 8px;
+}
+
+/* Phone tag-grid fallback (shown <=760px in place of the graph). */
+.skills-taggrid {
+  display: none;
+}
+
+.skills-taggroup h3 {
+  margin: 0 0 12px;
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: none;
+}
+
+.skills-taggroup ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.skills-taggroup li {
+  padding: 6px 13px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+  font-weight: 500;
 }
 
 .about-section {
@@ -1741,16 +1821,14 @@ h2 {
     height: auto;
   }
 
-  .accordion {
-    margin-top: 46px;
+  .skills-graph {
+    display: none;
   }
 
-  .accordion-item button {
-    min-height: 73px;
-  }
-
-  .accordion-item button span {
-    font-size: 28px;
+  .skills-taggrid {
+    display: grid;
+    gap: 26px;
+    margin-top: 40px;
   }
 
   .stats-row {
