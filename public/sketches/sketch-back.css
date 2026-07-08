@@ -1,0 +1,19 @@
+.sketch-back {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 10;
+  padding: 6px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-family: "IBM Plex Mono", "Noto Sans TC", monospace;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+}
+
+.sketch-back:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
