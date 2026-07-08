@@ -748,88 +748,57 @@ h2 {
   margin-bottom: 42px;
 }
 
-.project-stack {
+/* Scroll-driven magazine showcase: projects stack top-to-bottom, each an
+   alternating large-image-beside-copy row. A reviewer sees every project by
+   simply scrolling — no pinned deck, no next/prev buttons. */
+.project-showcase {
   display: grid;
-  gap: 120px;
+  gap: 72px;
 }
 
-/* Static, non-pinned card used for the compact (<=1080px / reduced-motion)
-   layout: every project renders in normal document flow, stacked vertically,
-   with no GSAP deck or scroll pinning involved. */
-.project-list-card {
-  border: 2px solid var(--ink);
-  border-radius: 12px;
-  overflow: hidden;
-  background: #fff;
-  box-shadow: 0 16px 40px rgba(45, 33, 33, 0.08);
-}
-
-.project-list-card .project-loop-card {
-  height: auto;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto auto;
-}
-
-.project-list-card .project-loop-media {
-  height: auto;
-  min-height: 260px;
-  max-height: 420px;
-}
-
-.project-list-card .project-loop-copy {
-  padding: 0 8px 24px;
-}
-
-.project-list-card .project-loop-copy h3 {
-  min-height: 0;
-  font-size: clamp(30px, 6vw, 44px);
-}
-
-.project-list-card .project-loop-copy p {
-  min-height: 0;
-}
-
-.project-loop {
+.project-row {
   position: relative;
-  min-height: 680px;
-  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 40px;
+  align-items: center;
+  padding: 28px;
   border: 2px solid var(--ink);
   border-radius: 12px;
   background: #fff;
   box-shadow: 0 16px 40px rgba(45, 33, 33, 0.08);
 }
 
-.project-loop-panels,
-.project-loop-panel {
-  position: absolute;
-  inset: 0;
+/* Even rows mirror: image on the right, copy on the left. */
+.project-row.is-reverse .project-row-media {
+  order: 2;
 }
 
-.project-loop-panel {
-  visibility: hidden;
+.project-row.is-reverse .project-row-copy {
+  order: 1;
 }
 
-.project-loop-card {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
-  gap: 32px;
-  height: 100%;
-  padding: 32px;
-}
-
-.project-loop-media {
-  width: 100%;
-  height: 100%;
-  min-height: 0;
+.project-row-media {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
   border: 2px solid var(--ink);
   border-radius: 12px;
-  object-fit: cover;
   background: var(--soft);
 }
 
-.project-loop-media-empty {
+.project-row-media-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.project-row-media-empty {
   display: grid;
   place-items: center;
+  width: 100%;
+  height: 100%;
   padding: 24px;
   background:
     linear-gradient(90deg, rgba(95, 104, 108, 0.08) 1px, transparent 1px),
@@ -838,7 +807,7 @@ h2 {
   background-size: 24px 24px;
 }
 
-.project-loop-media-empty-title {
+.project-row-media-empty-title {
   max-width: 80%;
   color: var(--muted);
   font-size: clamp(22px, 3vw, 34px);
@@ -846,6 +815,43 @@ h2 {
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0.02em;
+}
+
+.project-row-copy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.project-row-eyebrow {
+  color: var(--muted);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.project-row-copy h3 {
+  margin: 16px 0 0;
+  font-size: clamp(30px, 3.4vw, 46px);
+  line-height: 1.08;
+}
+
+.project-row-subtitle {
+  margin: 12px 0 0;
+  color: var(--brand-deep);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.project-row-desc {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.75;
 }
 
 .project-tags {
@@ -888,115 +894,24 @@ h2 {
   color: var(--accent-deep);
 }
 
-.project-loop-copy {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  min-width: 0;
-  padding: 18px 8px 8px;
-}
-
-.project-loop-copy span {
-  min-height: 24px;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.project-loop-copy h3 {
-  min-height: 1.2em;
-  margin: 28px 0 16px;
-  font-size: clamp(42px, 6vw, 76px);
-  line-height: 0.98;
-}
-
-.project-loop-copy p {
-  min-height: 5.1em;
-  margin: 0;
-  color: var(--muted);
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 1.7;
-}
-
-.project-loop-controls {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 10;
-  display: flex;
-  gap: 8px;
-}
-
-.project-loop-controls button {
-  display: grid;
-  width: 44px;
-  height: 44px;
-  place-items: center;
-  border: 2px solid var(--ink);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.82);
-  color: var(--ink);
-  cursor: pointer;
-  backdrop-filter: blur(10px);
-}
-
-.project-loop-controls button.next svg {
-  transform: rotate(180deg);
-}
-
-.project-loop-count {
-  position: absolute;
-  left: 32px;
-  bottom: 28px;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: var(--ink);
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 20px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-}
-
-.project-loop-count i {
-  width: 48px;
-  height: 2px;
-  background: var(--ink);
-}
-
-.project-empty {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
-  padding: 32px;
-  border: 2px solid var(--ink);
-  border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 16px 40px rgba(45, 33, 33, 0.08);
-}
-
-.project-empty div {
-  min-height: 90px;
-  padding: 18px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-}
-
-/* Clickable project cards (both the compact stack and the pinned desktop
-   deck) open the ProjectOverlay detail view. */
+/* Clickable rows open the ProjectOverlay detail view. Hover deepens the
+   shadow, lifts the card and gently zooms the image — reusing the existing
+   soft-shadow language, no new animation vocabulary. */
 .project-card-clickable {
   cursor: pointer;
-  transition: box-shadow 200ms ease, transform 200ms ease;
+  transition: box-shadow 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.project-list-card.project-card-clickable:hover,
-.project-list-card.project-card-clickable:focus-visible {
-  box-shadow: var(--shadow-hover);
+.project-row.project-card-clickable:hover,
+.project-row.project-card-clickable:focus-visible {
   transform: translateY(-4px);
+  box-shadow: 0 24px 56px rgba(45, 33, 33, 0.14);
+}
+
+.project-row.project-card-clickable:hover .project-row-media-img,
+.project-row.project-card-clickable:focus-visible .project-row-media-img {
+  transform: scale(1.04);
 }
 
 .project-card-clickable:focus-visible {
@@ -1004,16 +919,13 @@ h2 {
   outline-offset: 4px;
 }
 
-/* Desktop pinned deck: reveal a "view details" affordance on hover/focus so
-   the whole-card click target is discoverable. */
-.project-loop-card {
-  position: relative;
-}
-
+/* "View details" affordance revealed on hover/focus so the whole-card click
+   target is discoverable. */
 .project-card-affordance {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
   padding: 8px 16px;
   border: 1.5px solid var(--brand);
   border-radius: 999px;
@@ -1030,8 +942,8 @@ h2 {
   pointer-events: none;
 }
 
-.project-loop-panel.project-card-clickable:hover .project-card-affordance,
-.project-loop-panel.project-card-clickable:focus-visible .project-card-affordance {
+.project-row.project-card-clickable:hover .project-card-affordance,
+.project-row.project-card-clickable:focus-visible .project-card-affordance {
   opacity: 1;
   transform: translateY(0);
 }
@@ -1302,19 +1214,6 @@ h2 {
     transform: none;
     transition: none;
   }
-}
-
-.project-empty span {
-  display: block;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-}
-
-.project-empty p {
-  min-height: 28px;
-  margin: 16px 0 0;
 }
 
 .project-card {
@@ -1599,6 +1498,26 @@ h2 {
   }
 }
 
+/* Below ~900px two magazine columns get cramped — collapse every project row
+   to a single column with the image on top (reverse rows included), so all
+   projects stay readable and scroll naturally into view. */
+@media (max-width: 900px) {
+  .project-row,
+  .project-row.is-reverse {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .project-row.is-reverse .project-row-media,
+  .project-row.is-reverse .project-row-copy {
+    order: 0;
+  }
+
+  .project-row-media {
+    aspect-ratio: 16 / 10;
+  }
+}
+
 @media (max-width: 760px) {
   .site-nav {
     display: none;
@@ -1796,62 +1715,17 @@ h2 {
     margin-bottom: 34px;
   }
 
-  .project-stack {
-    gap: 72px;
+  .project-showcase {
+    gap: 40px;
   }
 
-  .project-loop {
-    min-height: 620px;
-  }
-
-  .project-loop-card {
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr auto;
+  .project-row {
+    padding: 18px;
     gap: 18px;
-    padding: 20px;
   }
 
-  .project-loop-media {
-    min-height: 320px;
-  }
-
-  .project-loop-copy {
-    padding: 0 0 72px;
-  }
-
-  .project-loop-copy h3 {
-    margin: 18px 0 10px;
-    font-size: 40px;
-  }
-
-  .project-loop-copy p {
-    font-size: 16px;
-  }
-
-  .project-loop-controls {
-    top: 14px;
-    right: 14px;
-  }
-
-  .project-loop-controls button {
-    width: 40px;
-    height: 40px;
-  }
-
-  .project-loop-count {
-    left: 22px;
-    bottom: 20px;
-    font-size: 21px;
-  }
-
-  .project-empty {
-    grid-template-columns: 1fr;
-    gap: 16px;
-    padding: 20px;
-  }
-
-  .project-empty div {
-    min-height: 76px;
+  .project-row-copy h3 {
+    font-size: clamp(26px, 7vw, 34px);
   }
 
   .project-card {
