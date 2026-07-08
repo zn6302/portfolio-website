@@ -5,6 +5,7 @@ import {
   HeroCardJourney,
   Projects,
 } from "./components/sections";
+import { AmbientAudioToggle } from "./components/ui";
 import { useAnchorScroll } from "./hooks";
 
 export default function App() {
@@ -19,6 +20,7 @@ export default function App() {
         <Contact />
       </main>
       <Footer />
+      <AmbientAudioToggle />
     </div>
   );
 }
