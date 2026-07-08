@@ -2345,3 +2345,77 @@ h2 {
     height: 280px;
   }
 }
+
+/* ---------------------------------------------------------------------- */
+/* Ambient background audio toggle                                        */
+/* ---------------------------------------------------------------------- */
+
+/* Bottom-right corner is free on every breakpoint: .sticky-status/.site-nav
+   sit top-center, .mobile-drawer sits top-left/right, and the only other
+   fixed layer (.project-overlay-backdrop, z-index 100) is a full-screen
+   modal rather than a corner widget — so z-index 40 (matching the nav
+   layer) can't collide with anything. */
+.ambient-audio-toggle {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 40;
+  display: grid;
+  grid-template-areas: "icon";
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(14px);
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.ambient-audio-toggle:hover,
+.ambient-audio-toggle:focus-visible {
+  background: #fff;
+  color: var(--brand-deep);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.ambient-audio-toggle.is-on {
+  border-color: var(--brand);
+  color: var(--brand-deep);
+}
+
+.ambient-audio-toggle-icon {
+  display: grid;
+  place-items: center;
+  grid-area: 1 / 1;
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.ambient-audio-toggle-icon-on {
+  opacity: 0;
+  transform: scale(0.6);
+}
+
+.ambient-audio-toggle.is-on .ambient-audio-toggle-icon-off {
+  opacity: 0;
+  transform: scale(0.6);
+}
+
+.ambient-audio-toggle.is-on .ambient-audio-toggle-icon-on {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@media (max-width: 760px) {
+  .ambient-audio-toggle {
+    right: 16px;
+    bottom: 16px;
+  }
+}
