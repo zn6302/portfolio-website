@@ -3,6 +3,13 @@ export interface Service {
   items: string[];
 }
 
+export interface Sketch {
+  slug: string;
+  title: string;
+  description: string;
+  preview: string;
+}
+
 export interface Project {
   id: string;
   category: string;
