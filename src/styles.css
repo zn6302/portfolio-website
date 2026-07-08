@@ -722,7 +722,7 @@ h2 {
 }
 
 .sg-node-cat.is-active {
-  transform: translate(-50%, calc(-50% - 2px));
+  border-color: var(--accent);
   box-shadow: var(--shadow-hover);
 }
 
@@ -751,7 +751,12 @@ h2 {
 
 .sg-node-skill.is-active {
   border-color: var(--accent);
-  transform: translate(-50%, -50%) scale(1.05);
+  box-shadow: var(--shadow-hover);
+}
+
+.sg-node-skill.is-active::before {
+  width: 8px;
+  height: 8px;
 }
 
 /* Phone tag-grid fallback (shown <=760px in place of the graph). */

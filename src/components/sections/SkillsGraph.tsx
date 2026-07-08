@@ -1,5 +1,9 @@
-import { useMemo, useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { services } from "../../data";
+
+gsap.registerPlugin(ScrollTrigger);
 
 /**
  * Skills constellation. A hand-laid radial graph: a central trunk node
@@ -15,9 +19,10 @@ import { services } from "../../data";
 
 const VIEW = 560;
 const CENTER = VIEW / 2;
-const R_CAT = 118; // center → category radius
-const R_SUB = 212; // center → skill radius
-const FAN = 38; // half-spread (deg) of a category's skills around its axis
+const R_CAT = 116; // center → category radius
+const R_SUB = 210; // center → skill radius (base; alternated ±ZIGZAG per node)
+const ZIGZAG = 27; // in/out radius offset so neighbouring skills don't collide
+const FAN = 30; // half-spread (deg) of a category's skills around its axis
 
 // Per-branch axis angle (deg, 0 = right, 90 = down) + accent colour. Diagonal
 // placement reads as a constellation; colours are palette-safe (no coral, which
@@ -33,6 +38,7 @@ const BRANCHES = [
 // sr-only list and the mobile tag grid.
 const SHORT: Record<string, string> = {
   IntersectionObserver: "Observer",
+  "Next.js 15": "Next.js",
   "Vercel Serverless": "Vercel",
   "GraphRAG / VideoRAG": "GraphRAG",
   "Claude Code 工作流": "Claude Code",
@@ -86,7 +92,10 @@ function useLayout(): BranchLayout[] {
           // Even fan across [-FAN, +FAN] around the branch axis.
           const t = n === 1 ? 0.5 : j / (n - 1);
           const a = angle - FAN + t * FAN * 2;
-          const p = pt(a, R_SUB);
+          // Alternate inner/outer radius so adjacent skills (and the extreme
+          // nodes of neighbouring branches) don't crowd onto the same arc.
+          const r = R_SUB + (j % 2 === 0 ? -ZIGZAG : ZIGZAG);
+          const p = pt(a, r);
           return {
             label: short(item),
             full: item,
@@ -113,12 +122,46 @@ const pct = (v: number) => `${(v / VIEW) * 100}%`;
 export function SkillsGraph() {
   const branches = useLayout();
   const [active, setActive] = useState<number | null>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  // Entrance: lines grow via stroke-dashoffset, nodes fade + drift up in a
+  // trunk → categories → skills stagger. GSAP ScrollTrigger, plays once.
+  // Reduced-motion users skip this and see the final state (CSS defaults).
+  useLayoutEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia("(max-width: 760px)").matches) return; // phones show the tag grid
+
+    const ctx = gsap.context(() => {
+      const trunks = root.querySelectorAll(".sg-line-trunk");
+      const branchLines = root.querySelectorAll(".sg-line:not(.sg-line-trunk)");
+      const center = root.querySelector(".sg-node-center");
+      const cats = root.querySelectorAll(".sg-node-cat");
+      const skills = root.querySelectorAll(".sg-node-skill");
+
+      gsap.set(root.querySelectorAll(".sg-line"), { strokeDasharray: 1, strokeDashoffset: 1 });
+      gsap.set([center, ...cats, ...skills], { opacity: 0, y: 12, xPercent: -50, yPercent: -50 });
+
+      const tl = gsap.timeline({
+        scrollTrigger: { trigger: root, start: "top 78%", once: true },
+        defaults: { ease: "power3.out" },
+      });
+      tl.to(center, { opacity: 1, y: 0, duration: 0.5 }, 0)
+        .to(trunks, { strokeDashoffset: 0, duration: 0.7, stagger: 0.06 }, 0.15)
+        .to(cats, { opacity: 1, y: 0, duration: 0.5, stagger: 0.07 }, 0.4)
+        .to(branchLines, { strokeDashoffset: 0, duration: 0.6, stagger: 0.02 }, 0.6)
+        .to(skills, { opacity: 1, y: 0, duration: 0.5, stagger: 0.03 }, 0.78);
+    }, root);
+
+    return () => ctx.revert();
+  }, []);
 
   const dim = (i: number) => (active !== null && active !== i ? " is-dim" : "");
   const on = (i: number) => (active === i ? " is-active" : "");
 
   return (
-    <div className="skills-graph" aria-hidden="true">
+    <div className="skills-graph" aria-hidden="true" ref={rootRef}>
       <svg className="skills-graph-svg" viewBox={`0 0 ${VIEW} ${VIEW}`} preserveAspectRatio="xMidYMid meet">
         {branches.map((b, i) => (
           <g key={b.title}>
