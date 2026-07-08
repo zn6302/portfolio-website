@@ -4,6 +4,7 @@ import {
   Header,
   HeroCardJourney,
   Projects,
+  Sketches,
 } from "./components/sections";
 import { useAnchorScroll } from "./hooks";
 
@@ -16,6 +17,7 @@ export default function App() {
       <main>
         <HeroCardJourney />
         <Projects />
+        <Sketches />
         <Contact />
       </main>
       <Footer />

@@ -1651,6 +1651,149 @@ h2 {
   border-radius: 50%;
 }
 
+/* ---------------------------------------------------------------------- */
+/* Playground / creative coding sketch wall                                */
+/* ---------------------------------------------------------------------- */
+
+.sketches-eyebrow {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--brand-deep);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sketches-wall {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 64px 48px;
+}
+
+/* Loose, non-grid rhythm: stagger alternating cards up/down so the wall
+   doesn't read as a mechanical grid. Collapses to 0 in the 2-col/1-col
+   breakpoints below so narrow layouts stay tidy. */
+.sketches-wall .sketch-card:nth-child(2),
+.sketches-wall .sketch-card:nth-child(5) {
+  margin-top: 40px;
+}
+
+.sketches-wall .sketch-card:nth-child(3) {
+  margin-top: -24px;
+}
+
+/* Two-layer transform split so hover (outer, static rotate) and the float
+   loop (inner, translateY + tiny wobble) never fight over the same
+   `transform` property on the same element. */
+.sketch-card {
+  position: relative;
+  display: block;
+  border-radius: 12px;
+  text-decoration: none;
+  transform: rotate(var(--card-rot, 0deg));
+  transition: transform 220ms ease;
+}
+
+.sketch-card:hover,
+.sketch-card:focus-visible {
+  transform: rotate(var(--card-rot, 0deg)) scale(1.04);
+}
+
+.sketch-card-float {
+  display: block;
+  animation: sketch-float var(--card-duration, 8s) ease-in-out infinite;
+  animation-delay: var(--card-delay, 0s);
+}
+
+.sketch-card:hover .sketch-card-float,
+.sketch-card:focus-visible .sketch-card-float {
+  animation-play-state: paused;
+}
+
+.sketch-card-media {
+  display: block;
+  overflow: hidden;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  background: var(--soft);
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 220ms ease;
+}
+
+.sketch-card:hover .sketch-card-media,
+.sketch-card:focus-visible .sketch-card-media {
+  box-shadow: var(--shadow-hover);
+}
+
+.sketch-card-media img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.sketch-card-caption {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 4px;
+  padding: 16px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, transparent 55%, rgba(41, 32, 37, 0.78) 100%);
+  color: #fff;
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.sketch-card:hover .sketch-card-caption,
+.sketch-card:focus-visible .sketch-card-caption {
+  opacity: 1;
+}
+
+.sketch-card-name {
+  font-family: "Noto Sans TC", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.sketch-card-cta {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--periwinkle);
+}
+
+/* Touch devices have no hover: keep the caption legible without a tap. */
+@media (hover: none) {
+  .sketch-card-caption {
+    opacity: 1;
+    background: linear-gradient(180deg, transparent 40%, rgba(41, 32, 37, 0.78) 100%);
+  }
+}
+
+@keyframes sketch-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(1.4deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sketch-card-float {
+    animation: none;
+  }
+}
+
 @media (max-width: 1080px) {
   .linked-card-stage {
     display: none;
@@ -1676,6 +1819,18 @@ h2 {
      hi-bubble's left overhang stays inside the viewport. */
   .contact-portrait {
     justify-self: center;
+  }
+
+  /* Compact band: drop to an ordered 2-column wall, no stagger. */
+  .sketches-wall {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px 32px;
+  }
+
+  .sketches-wall .sketch-card:nth-child(2),
+  .sketches-wall .sketch-card:nth-child(3),
+  .sketches-wall .sketch-card:nth-child(5) {
+    margin-top: 0;
   }
 }
 
@@ -2025,6 +2180,15 @@ h2 {
     gap: 20px;
   }
 
+}
+
+/* Narrow phones (390/320): the ordered 2-col wall gets too cramped —
+   collapse to a single column, still no stagger. */
+@media (max-width: 620px) {
+  .sketches-wall {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
 }
 
 @media (max-width: 380px) {
