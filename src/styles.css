@@ -246,25 +246,10 @@ img {
 }
 
 .hero-card-journey .lead,
-.hero-card-journey .accordion-item ul,
-.hero-card-journey .accordion-item > p,
 .hero-card-journey .stats-row strong,
 .hero-card-journey .contact-row,
 .hero-card-journey .hero-right p {
   color: var(--color-paper-light);
-}
-
-.hero-card-journey .accordion,
-.hero-card-journey .accordion-item {
-  border-color: rgb(240 235 226 / 0.38);
-}
-
-.hero-card-journey .accordion-item button:hover {
-  color: var(--color-paper-light);
-}
-
-.hero-card-journey .accordion-item li::before {
-  background: var(--color-paper-light);
 }
 
 .linked-card-stage {
@@ -511,86 +496,6 @@ h2 {
   font-size: 18px;
   font-weight: 400;
   line-height: 1.55;
-}
-
-.accordion {
-  margin-top: 48px;
-  border-top: 1px solid var(--line);
-}
-
-.accordion-item {
-  border-bottom: 1px solid var(--line);
-}
-
-.accordion-item button {
-  display: flex;
-  width: 100%;
-  min-height: 84px;
-  align-items: center;
-  justify-content: space-between;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  text-align: left;
-  transition: color 160ms ease;
-}
-
-.accordion-item button:hover {
-  color: var(--slate-deep);
-}
-
-.accordion-item button span {
-  font-family: "Noto Sans TC", sans-serif;
-  font-size: 32px;
-  font-weight: 700;
-  line-height: 1.1;
-}
-
-.accordion-item svg {
-  flex: 0 0 auto;
-  transition: transform 180ms ease;
-}
-
-.accordion-item.open svg {
-  transform: rotate(180deg);
-}
-
-.accordion-item ul,
-.accordion-item > p {
-  display: grid;
-  gap: 10px;
-  max-height: 0;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  color: var(--muted);
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 1.45;
-  transition: max-height 240ms ease, padding 240ms ease;
-}
-
-.accordion-item.open ul,
-.accordion-item.open > p {
-  max-height: 220px;
-  padding: 0 0 28px;
-}
-
-.accordion-item li {
-  list-style: none;
-  position: relative;
-  padding-left: 28px;
-}
-
-.accordion-item li::before {
-  content: "";
-  position: absolute;
-  top: 0.62em;
-  left: 0;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--violet);
 }
 
 .tilt-frame {
