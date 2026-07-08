@@ -6,3 +6,4 @@ export { useHeroVideoSources } from "./useHeroVideoSources";
 export { useAnchorScroll } from "./useAnchorScroll";
 export { useMagnetic } from "./useMagnetic";
 export { useHeroParallax } from "./useHeroParallax";
+export { useBackToTop } from "./useBackToTop";
