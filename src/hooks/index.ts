@@ -1,4 +1,5 @@
 export { useScrolled } from "./useScrolled";
+export { useNearBottom } from "./useNearBottom";
 export { useCountUp } from "./useCountUp";
 export { useScrollFlip } from "./useScrollFlip";
 export { useHeroVideoSources } from "./useHeroVideoSources";

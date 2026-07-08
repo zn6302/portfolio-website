@@ -1613,6 +1613,18 @@ h2 {
     transform: translateX(-50%);
   }
 
+  /* .site-nav is display:none on mobile, so .sticky-status is the only nav
+     surface and stays fixed for the whole page (see rule above). Right at the
+     document's max scroll position, though, that fixed pill has nothing left
+     to scroll away from and permanently overlaps the Contact section's intro
+     text (there's no more page below to reveal it). Fade the pill out once
+     the user is within useNearBottom's threshold of the true bottom so the
+     last section is fully readable. */
+  .sticky-status.near-bottom {
+    opacity: 0;
+    pointer-events: none;
+  }
+
   .availability {
     width: 278px;
     height: 56px;
