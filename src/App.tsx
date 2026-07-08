@@ -7,7 +7,7 @@ import {
   Services,
   Sketches,
 } from "./components/sections";
-import { AmbientAudioToggle } from "./components/ui";
+import { AmbientAudioToggle, BackToTop } from "./components/ui";
 import { useAnchorScroll } from "./hooks";
 
 export default function App() {
@@ -24,6 +24,7 @@ export default function App() {
         <Contact />
       </main>
       <Footer />
+      <BackToTop />
       <AmbientAudioToggle />
     </div>
   );
