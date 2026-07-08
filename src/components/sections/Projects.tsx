@@ -1,10 +1,12 @@
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { ChevronUp } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { projects } from "../../data";
+import type { Project } from "../../types";
 import { AvailabilityPill } from "../ui";
+import { ProjectOverlay } from "./ProjectOverlay";
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
@@ -13,76 +15,127 @@ const EMPTY_PROJECT_COUNT = 4;
 // Full section is pinned for (panelCount - 1) * this many viewport heights, so
 // the user must scroll through every panel before the page continues past it.
 const SCROLL_PER_PANEL = 0.75;
+const COMPACT_QUERY = "(max-width: 1080px)";
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
+const EMPTY_PROJECT: Project = {
+  id: "",
+  category: "",
+  title: "",
+  description: "",
+  image: "",
+  tech: [],
+};
+
+function readIsCompact() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia(COMPACT_QUERY).matches || window.matchMedia(REDUCED_MOTION_QUERY).matches;
+}
+
+function ProjectMedia({ project }: { project: Project }) {
+  if (project.image) {
+    return <img className="project-loop-media" src={project.image} alt={`${project.title} cover`} />;
+  }
+  return (
+    <div className="project-loop-media project-loop-media-empty" aria-hidden="true">
+      <span className="project-loop-media-empty-title">{project.title}</span>
+    </div>
+  );
+}
+
+function ProjectBody({ project }: { project: Project }) {
+  return (
+    <div className="project-loop-copy">
+      <span>{project.category}</span>
+      <h3>{project.title}</h3>
+      <p>{project.description}</p>
+      {project.tech.length > 0 && (
+        <ul className="project-tags">
+          {project.tech.map((tech) => (
+            <li className="project-tag" key={tech}>
+              {tech}
+            </li>
+          ))}
+        </ul>
+      )}
+      {(project.links?.live || project.links?.github) && (
+        <div className="project-links">
+          {project.links?.live && (
+            <a
+              href={project.links.live}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(event) => event.stopPropagation()}
+            >
+              LIVE SITE ↗
+            </a>
+          )}
+          {project.links?.github && (
+            <a
+              href={project.links.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(event) => event.stopPropagation()}
+            >
+              GITHUB ↗
+            </a>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export function Projects() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isCompact, setIsCompact] = useState(readIsCompact);
+  const [activeProject, setActiveProject] = useState<Project | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const panelRefs = useRef<HTMLElement[]>([]);
   const triggerRef = useRef<ScrollTrigger | null>(null);
-  // Click-driven panel switcher for the no-pin mode (≤1080px / reduced motion),
-  // where the scroll-scrubbed deck is disabled and the arrows must still work.
-  const clickNavRef = useRef<((direction: 1 | -1) => void) | null>(null);
+  const activeCardRef = useRef<HTMLElement | null>(null);
+
+  const openProject = (project: Project, event: { currentTarget: HTMLElement }) => {
+    if (!project.id) return; // placeholder card, nothing to open
+    activeCardRef.current = event.currentTarget;
+    setActiveProject(project);
+  };
+
+  const closeProject = () => setActiveProject(null);
   const panelData = useMemo(
     () =>
       projects.length > 0
         ? projects
-        : Array.from({ length: EMPTY_PROJECT_COUNT }, () => ({
-            category: "",
-            title: "",
-            description: "",
-            image: "",
-          })),
+        : Array.from({ length: EMPTY_PROJECT_COUNT }, () => EMPTY_PROJECT),
     [],
   );
 
+  // Track the mobile/narrow-viewport + reduced-motion breakpoint so the deck
+  // can switch between the pinned scroll-scrubbed desktop experience and a
+  // plain stacked list of full cards (no pin, no GSAP deck) on phones.
+  useEffect(() => {
+    const compactMq = window.matchMedia(COMPACT_QUERY);
+    const reducedMq = window.matchMedia(REDUCED_MOTION_QUERY);
+    const update = () => setIsCompact(compactMq.matches || reducedMq.matches);
+    update();
+    compactMq.addEventListener("change", update);
+    reducedMq.addEventListener("change", update);
+    return () => {
+      compactMq.removeEventListener("change", update);
+      reducedMq.removeEventListener("change", update);
+    };
+  }, []);
+
   useLayoutEffect(() => {
+    // Compact mode renders a plain stacked list further down — no pinning,
+    // no GSAP deck, so there is nothing to wire up here.
+    if (isCompact) return;
+
     const section = sectionRef.current;
     const stage = stageRef.current;
     const panels = panelRefs.current.filter(Boolean);
     if (!section || !stage || panels.length === 0) return;
-
-    // Below desktop (or reduced motion) pinning the whole section for several
-    // viewport-heights of scroll feels heavy-handed, and short/variable mobile
-    // viewports make pin math unreliable — switch the deck to arrow-driven
-    // navigation using the same slide transition the scrubbed desktop deck has.
-    if (window.matchMedia("(max-width: 1080px), (prefers-reduced-motion: reduce)").matches) {
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      gsap.set(panels, { autoAlpha: 0, yPercent: 0, scale: 1 });
-      gsap.set(panels[0], { autoAlpha: 1 });
-
-      let index = 0;
-      let animating = false;
-      clickNavRef.current = (direction) => {
-        const target = gsap.utils.clamp(0, panels.length - 1, index + direction);
-        if (target === index || animating) return;
-        const current = panels[index];
-        const next = panels[target];
-        index = target;
-        setActiveIndex(target);
-
-        if (reduceMotion) {
-          gsap.set(current, { autoAlpha: 0 });
-          gsap.set(next, { autoAlpha: 1, yPercent: 0, scale: 1 });
-          return;
-        }
-
-        animating = true;
-        gsap
-          .timeline({ onComplete: () => (animating = false) })
-          .to(current, { yPercent: -100 * direction, autoAlpha: 0, scale: 0.96, duration: 0.55, ease: "power2.inOut" }, 0)
-          .fromTo(
-            next,
-            { yPercent: 100 * direction, autoAlpha: 0, scale: 0.96 },
-            { yPercent: 0, autoAlpha: 1, scale: 1, duration: 0.55, ease: "power2.inOut" },
-            0,
-          );
-      };
-
-      return () => {
-        clickNavRef.current = null;
-      };
-    }
 
     const ctx = gsap.context(() => {
       let cancelled = false;
@@ -148,14 +201,9 @@ export function Projects() {
       triggerRef.current = null;
       ctx.revert();
     };
-  }, [panelData.length]);
+  }, [panelData.length, isCompact]);
 
   const goTo = (direction: 1 | -1) => {
-    if (clickNavRef.current) {
-      clickNavRef.current(direction);
-      return;
-    }
-
     const trigger = triggerRef.current;
     if (!trigger) return;
 
@@ -167,15 +215,52 @@ export function Projects() {
     gsap.to(window, { duration: 0.8, ease: "power2.inOut", scrollTo: { y: targetScroll } });
   };
 
+  const sectionHead = (
+    <div className="section-head">
+      <AvailabilityPill className="inline-availability" />
+      <h2>SELECTED WORKS</h2>
+      <p className="lead">
+        這裡會放真實作品：HCI 研究、互動原型、creative coding sketch，或前端實作案例。
+      </p>
+    </div>
+  );
+
+  if (isCompact) {
+    return (
+      <section className="section project-section" id="projects" ref={sectionRef}>
+        {sectionHead}
+        <div className="project-stack">
+          {panelData.map((project, index) => (
+            <article
+              className={`project-list-card${project.id ? " project-card-clickable" : ""}`}
+              key={`${project.id || "empty-project"}-${index}`}
+              role={project.id ? "button" : undefined}
+              tabIndex={project.id ? 0 : undefined}
+              aria-haspopup={project.id ? "dialog" : undefined}
+              onClick={(event) => openProject(project, event)}
+              onKeyDown={(event) => {
+                if (!project.id) return;
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  openProject(project, event);
+                }
+              }}
+            >
+              <div className="project-loop-card">
+                <ProjectMedia project={project} />
+                <ProjectBody project={project} />
+              </div>
+            </article>
+          ))}
+        </div>
+        <ProjectOverlay project={activeProject} originEl={activeCardRef.current} onClose={closeProject} returnFocusRef={activeCardRef.current} />
+      </section>
+    );
+  }
+
   return (
     <section className="section project-section" id="projects" ref={sectionRef}>
-      <div className="section-head">
-        <AvailabilityPill className="inline-availability" />
-        <h2>SELECTED WORKS</h2>
-        <p className="lead">
-          這裡會放真實作品：HCI 研究、互動原型、creative coding sketch，或前端實作案例。
-        </p>
-      </div>
+      {sectionHead}
 
       <div className="project-loop" ref={stageRef}>
         <div className="project-loop-controls">
@@ -190,23 +275,31 @@ export function Projects() {
         <div className="project-loop-panels">
           {panelData.map((project, index) => (
             <article
-              className="project-loop-panel"
-              key={`${project.title || "empty-project"}-${index}`}
+              className={`project-loop-panel${project.id ? " project-card-clickable" : ""}`}
+              key={`${project.id || "empty-project"}-${index}`}
               ref={(node) => {
                 if (node) panelRefs.current[index] = node;
               }}
+              role={project.id ? "button" : undefined}
+              tabIndex={project.id ? 0 : undefined}
+              aria-haspopup={project.id ? "dialog" : undefined}
+              onClick={(event) => openProject(project, event)}
+              onKeyDown={(event) => {
+                if (!project.id) return;
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  openProject(project, event);
+                }
+              }}
             >
               <div className="project-loop-card">
-                {project.image ? (
-                  <img className="project-loop-media" src={project.image} alt={`${project.title} cover`} />
-                ) : (
-                  <div className="project-loop-media project-loop-media-empty" aria-hidden="true" />
+                <ProjectMedia project={project} />
+                <ProjectBody project={project} />
+                {project.id && (
+                  <span className="project-card-affordance" aria-hidden="true">
+                    查看詳情 ↗
+                  </span>
                 )}
-                <div className="project-loop-copy">
-                  <span>{project.category}</span>
-                  <h3>{project.title}</h3>
-                  <p>{project.description}</p>
-                </div>
               </div>
             </article>
           ))}
@@ -218,6 +311,7 @@ export function Projects() {
           <span>{String(panelData.length).padStart(2, "0")}</span>
         </div>
       </div>
+      <ProjectOverlay project={activeProject} originEl={activeCardRef.current} onClose={closeProject} returnFocusRef={activeCardRef.current} />
     </section>
   );
 }

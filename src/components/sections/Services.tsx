@@ -22,13 +22,13 @@ export function Services({ disableCardFlip = false }: ServicesProps) {
   useScrollFlip(cardRef, { ...SERVICES_FLIP, triggerRef: sectionRef, disabled: disableCardFlip });
 
   return (
-    <section className="section services" id="about" ref={sectionRef}>
+    <section className="section services" id="skills" ref={sectionRef}>
       <div className="section-grid">
         <div>
           <AvailabilityPill className="inline-availability" />
-          <h2>SKILLS & TOOLKIT</h2>
+          <h2>SKILLS / 技能棧</h2>
           <p className="lead">
-            我關注 HCI、互動原型與 creative coding，將研究觀察轉成可操作、可測試的介面體驗。
+            前端工程、互動動畫、後端資料到 AI 應用，這是我實際用來做出上線作品的技術棧。
           </p>
           <div className="accordion services-list">
             {services.map((service, index) => (

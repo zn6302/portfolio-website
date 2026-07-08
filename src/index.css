@@ -50,8 +50,9 @@
   --color-dark: #292025;
 
   /* Typography */
-  --font-display: "Antonio", "Antonio Placeholder", sans-serif;
-  --font-body: "Inter", "Inter Placeholder", sans-serif;
+  --font-display: "Noto Sans TC", sans-serif;
+  --font-body: "Noto Sans TC", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
 
   /* Radius + shadow (from styles.css :root) */
   --radius-card: 24px;

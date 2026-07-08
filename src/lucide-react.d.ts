@@ -11,4 +11,5 @@ declare module "lucide-react" {
   export const Hand: FC<LucideProps>;
   export const Menu: FC<LucideProps>;
   export const Star: FC<LucideProps>;
+  export const X: FC<LucideProps>;
 }

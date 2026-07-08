@@ -46,9 +46,9 @@ export function Footer() {
           });
           gsap.to(curve, {
             attr: { d: makeFooterCurve(restingCurve) },
-            duration: 1.45,
+            duration: 0.7,
             delay: 0.04,
-            ease: "elastic.out(1.25, 0.34)",
+            ease: "power3.out",
             overwrite: "auto",
           });
         },
@@ -74,11 +74,13 @@ export function Footer() {
       <div className="footer-top">
         <div>
           <span>Email :</span>
-          <span></span>
+          <span>
+            <a href="mailto:vivian20021213@gmail.com">vivian20021213@gmail.com</a>
+          </span>
         </div>
         <div>
           <span>Now :</span>
-          <span>Open to internship</span>
+          <span>OPEN TO 2026 INTERNSHIP</span>
         </div>
         <div>
           <span>Social :</span>

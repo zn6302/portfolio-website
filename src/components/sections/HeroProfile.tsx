@@ -1,5 +1,6 @@
 import { forwardRef, type RefObject } from "react";
 import { assets } from "../../data";
+import { useMagnetic } from "../../hooks";
 import { AvailabilityPill } from "../ui";
 
 interface HeroProfileProps {
@@ -16,6 +17,8 @@ export const HeroProfile = forwardRef<HTMLDivElement, HeroProfileProps>(function
   { slotRef },
   ref,
 ) {
+  const magnetic = useMagnetic();
+
   return (
     <div className="hero-profile" ref={ref}>
       <div className="hero-left">
@@ -24,15 +27,15 @@ export const HeroProfile = forwardRef<HTMLDivElement, HeroProfileProps>(function
       </div>
 
       {/* Flip landing target. On desktop it stays empty — the floating journey
-          video flips into this exact footprint. On mobile that journey is
-          disabled and the floating card is hidden, so this slot renders its own
-          static hero video (revealed via CSS below 1080px). */}
+          video flips into this exact footprint. This element is only ever
+          revealed by CSS in the reduced-motion static fallback (`.hero-static`),
+          and reduced motion means "no autoplaying video" — so it never gets a
+          `<source>` at all, just the poster/first-frame image, matching the
+          prefers-reduced-motion contract everywhere else on the site. */}
       <div className="profile-card-slot" ref={slotRef} aria-hidden="true">
         <video
           className="profile-card-slot-video"
-          src="/hero/hero-animation.mp4"
           poster={assets.aboutKeyframe}
-          autoPlay
           muted
           loop
           playsInline
@@ -42,10 +45,12 @@ export const HeroProfile = forwardRef<HTMLDivElement, HeroProfileProps>(function
 
       <div className="hero-right">
         <h1>CODING</h1>
-        <p>以互動設計、前端實作與 creative coding 探索人與介面之間的體驗。</p>
+        <p>
+          我做讓人想動手玩的互動網站——已上線的活動官網、把動作變成音樂的樂器、可玩的媒體識讀遊戲。
+        </p>
         <div className="hero-profile-actions">
           <AvailabilityPill className="hero-profile-badge" />
-          <a className="outline-button hero-profile-cta" href="#contact">
+          <a ref={magnetic} className="outline-button hero-profile-cta" href="#contact">
             CONTACT
           </a>
         </div>

@@ -5,7 +5,15 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
-    "strict": true
+    "strict": true,
+    /* `tsc -b` (run from package.json's build script) type-checks this
+       project as part of the build; without an outDir it emits vite.config.js
+       + vite.config.d.ts straight into the repo root, which then shadows
+       vite.config.ts in Vite's config file resolution (Vite prefers .js over
+       .ts) — silently making edits to vite.config.ts a no-op. Route all
+       build output into a gitignored scratch dir instead. */
+    "outDir": "./node_modules/.tsc-out/vite-config",
+    "tsBuildInfoFile": "./node_modules/.tsc-out/tsconfig.node.tsbuildinfo"
   },
   "include": ["vite.config.ts"]
 }
