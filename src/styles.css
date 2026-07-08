@@ -1604,19 +1604,32 @@ h2 {
   margin-top: -24px;
 }
 
-/* Static tilt only for now — hover scale and the floating loop are layered
-   on top in a follow-up pass (kept as separate selectors so that diff is
-   easy to review on its own). */
+/* Two-layer transform split so hover (outer, static rotate) and the float
+   loop (inner, translateY + tiny wobble) never fight over the same
+   `transform` property on the same element. */
 .sketch-card {
   position: relative;
   display: block;
   border-radius: 12px;
   text-decoration: none;
   transform: rotate(var(--card-rot, 0deg));
+  transition: transform 220ms ease;
+}
+
+.sketch-card:hover,
+.sketch-card:focus-visible {
+  transform: rotate(var(--card-rot, 0deg)) scale(1.04);
 }
 
 .sketch-card-float {
   display: block;
+  animation: sketch-float var(--card-duration, 8s) ease-in-out infinite;
+  animation-delay: var(--card-delay, 0s);
+}
+
+.sketch-card:hover .sketch-card-float,
+.sketch-card:focus-visible .sketch-card-float {
+  animation-play-state: paused;
 }
 
 .sketch-card-media {
@@ -1626,6 +1639,12 @@ h2 {
   border-radius: 12px;
   background: var(--soft);
   box-shadow: var(--shadow-card);
+  transition: box-shadow 220ms ease;
+}
+
+.sketch-card:hover .sketch-card-media,
+.sketch-card:focus-visible .sketch-card-media {
+  box-shadow: var(--shadow-hover);
 }
 
 .sketch-card-media img {
@@ -1647,6 +1666,13 @@ h2 {
   border-radius: 12px;
   background: linear-gradient(180deg, transparent 55%, rgba(41, 32, 37, 0.78) 100%);
   color: #fff;
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.sketch-card:hover .sketch-card-caption,
+.sketch-card:focus-visible .sketch-card-caption {
+  opacity: 1;
 }
 
 .sketch-card-name {
@@ -1662,6 +1688,30 @@ h2 {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--periwinkle);
+}
+
+/* Touch devices have no hover: keep the caption legible without a tap. */
+@media (hover: none) {
+  .sketch-card-caption {
+    opacity: 1;
+    background: linear-gradient(180deg, transparent 40%, rgba(41, 32, 37, 0.78) 100%);
+  }
+}
+
+@keyframes sketch-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(1.4deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sketch-card-float {
+    animation: none;
+  }
 }
 
 @media (max-width: 1080px) {
