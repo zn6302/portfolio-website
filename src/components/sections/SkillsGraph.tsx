@@ -8,9 +8,14 @@ gsap.registerPlugin(ScrollTrigger);
 /**
  * Skills constellation. A hand-laid radial graph: a central trunk node
  * ("Frontend") radiates to the four skill categories from `services.ts`, and
- * each category fans out to its individual skills. Layout is deterministic
- * (fixed polar coordinates computed once — no force simulation) so the picture
- * is balanced and readable in ~3 seconds.
+ * each category fans out to its individual skills. Fixed polar coordinates give
+ * every node a deterministic *seed* position; a measure-and-relax pass then
+ * reads each pill's real rendered size and nudges overlapping pills apart so any
+ * two keep a guaranteed clearance (`MIN_GAP`), including across branches — the
+ * seed radii alone can't know a pill is 134px wide. The relax is a tiny
+ * AABB separation solver (no ongoing force sim); it re-runs on resize and once
+ * web fonts settle (which changes pill widths), and the connector paths are
+ * recomputed from the relaxed positions so lines still meet the nodes.
  *
  * The SVG + HTML node layer is decorative (`aria-hidden`); a structured
  * `sr-only` list (rendered by the parent Services section) is the accessible
@@ -23,6 +28,16 @@ const R_CAT = 116; // center → category radius
 const R_SUB = 210; // center → skill radius (base; alternated ±ZIGZAG per node)
 const ZIGZAG = 27; // in/out radius offset so neighbouring skills don't collide
 const FAN = 30; // half-spread (deg) of a category's skills around its axis
+
+// Measure-and-relax tuning (px, in the rendered graph's own coordinate space).
+// MIN_GAP is the target clearance held between every pair of pills; the extra
+// headroom over the reviewer's 8px hard floor absorbs sub-pixel/font rounding.
+// SPRING gently pulls each node back toward its seed so the constellation shape
+// survives; PUSH/ITERS make the AABB solver converge without overshoot.
+const MIN_GAP = 11;
+const SPRING = 0.003;
+const PUSH = 0.5;
+const RELAX_ITERS = 600;
 
 // Per-branch axis angle (deg, 0 = right, 90 = down) + accent colour. Diagonal
 // placement reads as a constellation; colours are palette-safe (no coral, which
@@ -124,15 +139,125 @@ export function SkillsGraph() {
   const [active, setActive] = useState<number | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
 
-  // Entrance: lines grow via stroke-dashoffset, nodes fade + drift up in a
-  // trunk → categories → skills stagger. GSAP ScrollTrigger, plays once.
-  // Reduced-motion users skip this and see the final state (CSS defaults).
+  // Measure-and-relax layout: read every pill's real box, push overlapping
+  // pairs apart to >= MIN_GAP, then rewrite node positions + connector paths.
+  // Runs regardless of reduced-motion (it's layout, not animation); re-runs on
+  // resize and once web fonts load (both change pill widths).
   useLayoutEffect(() => {
     const root = rootRef.current;
     if (!root) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (window.matchMedia("(max-width: 760px)").matches) return; // phones show the tag grid
 
+    const svg = root.querySelector<SVGSVGElement>(".skills-graph-svg");
+    const centerEl = root.querySelector<HTMLElement>(".sg-node-center");
+    const branchEls = [...root.querySelectorAll<HTMLElement>(".sg-branch")].map((be) => ({
+      cat: be.querySelector<HTMLElement>(".sg-node-cat")!,
+      skills: [...be.querySelectorAll<HTMLElement>(".sg-node-skill")],
+    }));
+    const gEls = svg
+      ? [...svg.querySelectorAll<SVGGElement>(":scope > g")].map((g) => ({
+          trunk: g.querySelector<SVGPathElement>(".sg-line-trunk")!,
+          lines: [...g.querySelectorAll<SVGPathElement>(".sg-line:not(.sg-line-trunk)")],
+        }))
+      : [];
+    if (!centerEl) return;
+
+    // One AABB relaxation pass from seed polar coords → non-overlapping px
+    // positions, then commit to the DOM. Seeds always come from the layout
+    // data (never from the current DOM) so repeated runs don't compound drift.
+    const relayout = () => {
+      const size = root.clientWidth;
+      if (!size) return;
+      const k = size / VIEW; // px per view-unit
+
+      type P = { el: HTMLElement; sx: number; sy: number; hw: number; hh: number; fixed: boolean };
+      const parts: P[] = [
+        { el: centerEl, sx: CENTER, sy: CENTER, hw: centerEl.offsetWidth / 2, hh: centerEl.offsetHeight / 2, fixed: true },
+      ];
+      branches.forEach((b, i) => {
+        const cat = branchEls[i].cat;
+        parts.push({ el: cat, sx: b.x, sy: b.y, hw: cat.offsetWidth / 2, hh: cat.offsetHeight / 2, fixed: false });
+        b.subs.forEach((s, j) => {
+          const el = branchEls[i].skills[j];
+          parts.push({ el, sx: s.x, sy: s.y, hw: el.offsetWidth / 2, hh: el.offsetHeight / 2, fixed: false });
+        });
+      });
+
+      const n = parts.length;
+      const cx = parts.map((p) => p.sx * k);
+      const cy = parts.map((p) => p.sy * k);
+      const sx = cx.slice();
+      const sy = cy.slice();
+      const hw = parts.map((p) => p.hw);
+      const hh = parts.map((p) => p.hh);
+
+      for (let it = 0; it < RELAX_ITERS; it++) {
+        const dxA = new Array(n).fill(0);
+        const dyA = new Array(n).fill(0);
+        for (let i = 0; i < n; i++) {
+          for (let j = i + 1; j < n; j++) {
+            const dx = cx[i] - cx[j];
+            const dy = cy[i] - cy[j];
+            const ox = hw[i] + hw[j] + MIN_GAP - Math.abs(dx);
+            const oy = hh[i] + hh[j] + MIN_GAP - Math.abs(dy);
+            if (ox > 0 && oy > 0) {
+              // Separate along the axis of least penetration (min translation).
+              if (ox < oy) {
+                const s = (dx >= 0 ? 1 : -1) * ox * PUSH;
+                dxA[i] += s;
+                dxA[j] -= s;
+              } else {
+                const s = (dy >= 0 ? 1 : -1) * oy * PUSH;
+                dyA[i] += s;
+                dyA[j] -= s;
+              }
+            }
+          }
+        }
+        for (let i = 0; i < n; i++) {
+          if (parts[i].fixed) continue;
+          cx[i] += dxA[i] + (sx[i] - cx[i]) * SPRING;
+          cy[i] += dyA[i] + (sy[i] - cy[i]) * SPRING;
+        }
+      }
+
+      // Commit node centres (left/top are the visual centre; CSS/GSAP translate -50%).
+      for (let i = 0; i < n; i++) {
+        parts[i].el.style.left = `${(cx[i] / size) * 100}%`;
+        parts[i].el.style.top = `${(cy[i] / size) * 100}%`;
+      }
+
+      // Redraw connectors from the relaxed positions (px → view space).
+      const vx = cx.map((v) => v / k);
+      const vy = cy.map((v) => v / k);
+      let ptr = 1;
+      branches.forEach((b, i) => {
+        const catX = vx[ptr];
+        const catY = vy[ptr];
+        ptr++;
+        gEls[i]?.trunk?.setAttribute("d", curve(CENTER, CENTER, catX, catY, 12));
+        b.subs.forEach((_, j) => {
+          gEls[i]?.lines[j]?.setAttribute("d", curve(catX, catY, vx[ptr], vy[ptr], 6));
+          ptr++;
+        });
+      });
+    };
+
+    relayout();
+    let ro: ResizeObserver | undefined;
+    if ("ResizeObserver" in window) {
+      ro = new ResizeObserver(() => relayout());
+      ro.observe(root);
+    }
+    // Web fonts change pill widths after first paint — re-relax when they land.
+    document.fonts?.ready.then(relayout).catch(() => {});
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return () => ro?.disconnect();
+    }
+
+    // Entrance: lines grow via stroke-dashoffset, nodes fade + drift up in a
+    // trunk → categories → skills stagger. GSAP ScrollTrigger, plays once.
     const ctx = gsap.context(() => {
       const trunks = root.querySelectorAll(".sg-line-trunk");
       const branchLines = root.querySelectorAll(".sg-line:not(.sg-line-trunk)");
@@ -154,8 +279,11 @@ export function SkillsGraph() {
         .to(skills, { opacity: 1, y: 0, duration: 0.5, stagger: 0.03 }, 0.78);
     }, root);
 
-    return () => ctx.revert();
-  }, []);
+    return () => {
+      ro?.disconnect();
+      ctx.revert();
+    };
+  }, [branches]);
 
   const dim = (i: number) => (active !== null && active !== i ? " is-dim" : "");
   const on = (i: number) => (active === i ? " is-active" : "");
