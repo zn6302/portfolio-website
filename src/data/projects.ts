@@ -74,10 +74,11 @@ export const projects: Project[] = [
     title: "myBot 體態管理 LINE Bot",
     description:
       "拍食物照 → Gemini Vision 辨識熱量與營養素 → 依當日剩餘額度主動建議下一餐。規則路由先擋、LLM 只管語意理解，後端一人完成。",
-    // Backend-only project — no shipped UI screenshot; renders a title block.
+    // Backend-only project — no shipped UI screenshot; renders a system-flow block.
     tech: ["TypeScript", "Vercel Serverless", "Gemini", "Supabase"],
     subtitle: "隨傳隨到的科學實證體態管理師",
     role: "獨立開發（後端一人完成）",
+    flow: ["拍食物照", "Gemini Vision 辨識", "熱量／營養素", "依剩餘額度建議下一餐"],
     overview:
       "LINE 體態管理 Bot：拍食物照或打字即可估算熱量與營養素、追蹤每日進度。核心設計哲學——該用規則就用規則、該用公式就用公式、只在語意理解上用 LLM。",
     highlights: [

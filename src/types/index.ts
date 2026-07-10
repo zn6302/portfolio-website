@@ -23,6 +23,9 @@ export interface Project {
   role?: string;
   overview?: string;
   highlights?: string[];
+  /** Optional system-flow steps rendered instead of a screenshot when a
+   *  project has no shipped visual (e.g. myBot's backend-only flow). */
+  flow?: string[];
   links?: {
     live?: string;
     github?: string;

@@ -1151,6 +1151,16 @@ h2 {
   transform: translateY(-2px);
 }
 
+.project-overlay-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.project-overlay-header {
+  display: flex;
+  flex-direction: column;
+}
+
 .project-overlay-eyebrow {
   display: block;
   color: var(--brand-deep);
@@ -1163,50 +1173,127 @@ h2 {
 
 .project-overlay-title {
   margin: 16px 60px 8px 0;
-  font-size: clamp(32px, 4.5vw, 48px);
-  line-height: 1.15;
+  font-size: clamp(34px, 5vw, 56px);
+  font-weight: 900;
+  line-height: 1.1;
 }
 
 .project-overlay-subtitle {
-  margin: 0 60px 24px 0;
+  margin: 0 60px 0 0;
   color: var(--muted);
   font-size: 18px;
   line-height: 1.6;
 }
 
-.project-overlay-media {
-  width: 100%;
-  max-height: 420px;
-  margin-bottom: 24px;
-  border: 2px solid var(--ink);
-  border-radius: 12px;
-  object-fit: cover;
-}
-
-.project-overlay-role {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 12px;
-  margin: 0 0 16px;
+.project-overlay-lede {
+  margin: 24px 0 0;
   color: var(--ink);
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 17px;
+  line-height: 1.7;
 }
 
-.project-overlay-role span {
+/* Meta strip: ROLE / STACK / LINKS — replaces the old scattered role
+   paragraph + trailing tag list + bottom CTA row. */
+.project-overlay-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 24px 32px;
+  margin: 28px 0 0;
+  padding: 20px 0;
+  border-top: 1.5px solid var(--line);
+  border-bottom: 1.5px solid var(--line);
+}
+
+.project-overlay-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.project-overlay-meta-label {
+  display: block;
   color: var(--brand-deep);
   font-family: "IBM Plex Mono", monospace;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.project-overlay-overview {
-  margin: 0 0 32px;
+.project-overlay-meta-value {
+  margin: 0;
   color: var(--ink);
-  font-size: 16px;
-  line-height: 1.7;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.project-overlay-meta-tags {
+  margin: 0;
+}
+
+.project-overlay-meta-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.project-overlay-media-wrap {
+  overflow: hidden;
+  margin: 32px 0 0;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+}
+
+.project-overlay-media {
+  display: block;
+  width: 100%;
+  max-height: 480px;
+  object-fit: cover;
+}
+
+/* myBot-style fallback when a project has no shipped screenshot — a mono
+   "system flow" strip instead of a broken image or empty space. */
+.project-overlay-flow {
+  margin: 32px 0 0;
+  padding: 28px 24px;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  background: var(--paper-2);
+}
+
+.project-overlay-flow-steps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-overlay-flow-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px 14px;
+  color: var(--ink);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.project-overlay-flow-step span:first-child {
+  padding: 8px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+}
+
+.project-overlay-flow-arrow {
+  color: var(--brand-deep);
+  font-weight: 700;
 }
 
 .project-overlay-label {
@@ -1221,55 +1308,57 @@ h2 {
 }
 
 .project-overlay-highlights {
-  margin-bottom: 32px;
+  margin: 32px 0 0;
 }
 
-.project-overlay-highlights ul {
+.project-overlay-highlight-list {
   display: grid;
-  gap: 14px;
+  gap: 20px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.project-overlay-highlights li {
-  position: relative;
-  padding-left: 22px;
+.project-overlay-highlight {
+  display: flex;
+  gap: 16px;
+  align-items: baseline;
+}
+
+.project-overlay-highlight-num {
+  flex: none;
+  color: var(--accent);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.project-overlay-highlight-copy {
+  margin: 0;
   color: var(--ink);
   font-size: 15px;
   line-height: 1.7;
 }
 
-.project-overlay-highlights li::before {
-  content: "";
-  position: absolute;
-  top: 8px;
-  left: 0;
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: var(--brand);
+.project-overlay-highlight-label {
+  color: var(--ink);
+  font-weight: 700;
 }
 
-.project-overlay-tags {
-  margin: 0 0 32px;
-}
-
-.project-overlay-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
+.project-overlay-highlight-label::after {
+  content: " — ";
 }
 
 .project-overlay-cta {
   display: inline-grid;
-  min-width: 160px;
-  min-height: 48px;
-  padding: 0 24px;
+  min-width: 140px;
+  min-height: 44px;
+  padding: 0 20px;
   place-items: center;
   border-radius: 999px;
   font-family: "IBM Plex Mono", monospace;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-align: center;
@@ -1301,6 +1390,56 @@ h2 {
   transform: translateY(-2px);
 }
 
+/* Prev / next case-study navigation — switches the overlay's content in
+   place (see ProjectOverlay's navigateTo), never closes the dialog. */
+.project-overlay-navrow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 40px 0 0;
+  padding-top: 24px;
+  border-top: 1.5px solid var(--line);
+}
+
+.project-overlay-navbtn {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 16px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.project-overlay-navbtn:hover {
+  border-color: var(--brand);
+  background: var(--soft);
+  transform: translateY(-2px);
+}
+
+.project-overlay-navbtn-next {
+  text-align: right;
+  align-items: flex-end;
+}
+
+.project-overlay-navbtn-label {
+  color: var(--brand-deep);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.project-overlay-navbtn-title {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
 @media (max-width: 640px) {
   .project-overlay-backdrop {
     padding: 12px;
@@ -1315,6 +1454,19 @@ h2 {
 
   .project-overlay-title {
     margin-right: 0;
+  }
+
+  .project-overlay-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .project-overlay-navrow {
+    grid-template-columns: 1fr;
+  }
+
+  .project-overlay-navbtn-next {
+    text-align: left;
+    align-items: flex-start;
   }
 
   .project-overlay-subtitle {
