@@ -20,6 +20,9 @@ export interface Project {
   image?: string;
   tech: string[];
   subtitle?: string;
+  /** One-line hard-fact summary（戰績列）— mono `·`-separated strip on the
+   *  deck card front, distilled from existing description/highlight facts. */
+  outcome?: string;
   role?: string;
   overview?: string;
   highlights?: string[];

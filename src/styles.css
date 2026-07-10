@@ -967,6 +967,32 @@ h2 {
   line-height: 1.6;
 }
 
+/* One-line hard-fact "戰績列" — mono strip between subtitle and body copy.
+   Deliberately styled as data, not prose: mono, tight, with a small square
+   marker so it reads as a signal line at a skim. */
+.deck-panel-outcome {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 14px 0 0;
+  color: var(--ink);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+}
+
+.deck-panel-outcome::before {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--brand);
+  transform: translateY(-1px);
+}
+
 .deck-panel-desc {
   margin: 16px 0 0;
   max-width: 54ch;

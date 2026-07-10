@@ -47,6 +47,7 @@ function PanelCopy({
       <span className="deck-panel-eyebrow">{project.category}</span>
       <h3 className="deck-panel-title">{project.title}</h3>
       {project.subtitle && <p className="deck-panel-subtitle">{project.subtitle}</p>}
+      {project.outcome && <p className="deck-panel-outcome">{project.outcome}</p>}
       <p className="deck-panel-desc">{project.description}</p>
       {project.tech.length > 0 && (
         <ul className="project-tags">
