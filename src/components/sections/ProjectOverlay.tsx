@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import gsap from "gsap";
 import type { Project } from "../../types";
-import { useMagnetic } from "../../hooks";
+import { getLenis, useMagnetic } from "../../hooks";
 import { projects as allProjects } from "../../data";
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
@@ -197,6 +197,16 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef }: P
     if (!rendered) return;
     scrollPositionRef.current = window.scrollY;
 
+    // Lenis has its own window wheel listener that would keep smoothing the
+    // background while the overlay is up — halt it for the overlay's
+    // lifetime. While stopped, Lenis preventDefaults wheel input everywhere
+    // EXCEPT inside subtrees marked `data-lenis-prevent` (the backdrop below),
+    // so the panel's own overflow-y scrolling keeps working natively.
+    // stop()/start() never touch window.scrollY, so ScrollTrigger's cached
+    // measurements stay valid (same reasoning as the paragraph above).
+    const lenis = getLenis();
+    lenis?.stop();
+
     const SCROLL_KEYS = new Set(["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", " "]);
 
     const isInsidePanel = (target: EventTarget | null) =>
@@ -220,6 +230,7 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef }: P
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("keydown", onKeyDown);
+      lenis?.start();
     };
   }, [rendered]);
 
@@ -332,6 +343,7 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef }: P
     <div
       className={`project-overlay-backdrop${openClass}${flipClass}`}
       ref={backdropRef}
+      data-lenis-prevent=""
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}

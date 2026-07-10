@@ -1,6 +1,6 @@
 import gsap from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
-import { useBackToTop } from "../../hooks";
+import { getLenis, useBackToTop } from "../../hooks";
 
 gsap.registerPlugin(ScrollToPlugin);
 
@@ -25,6 +25,13 @@ export function BackToTop() {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduceMotion) {
       window.scrollTo(0, 0);
+      return;
+    }
+    // Route through Lenis when it owns window scroll (same double-drive
+    // avoidance as useAnchorScroll); ScrollToPlugin path otherwise.
+    const lenis = getLenis();
+    if (lenis) {
+      lenis.scrollTo(0, { duration: 1, easing: (t) => 1 - Math.pow(1 - t, 3) });
       return;
     }
     gsap.to(window, {
