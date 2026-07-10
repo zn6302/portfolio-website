@@ -979,7 +979,19 @@ h2 {
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  cursor: pointer;
   transition: background 200ms ease, color 200ms ease;
+}
+
+.deck-panel-cue:hover,
+.deck-panel-cue:focus-visible {
+  background: var(--periwinkle);
+  color: var(--brand-deep);
+}
+
+.deck-panel-cue:focus-visible {
+  outline: 2px solid var(--brand-deep);
+  outline-offset: 2px;
 }
 
 .deck-panel-link {
@@ -995,28 +1007,13 @@ h2 {
   color: var(--accent-deep);
 }
 
-/* Whole panel opens the ProjectOverlay. Hover only touches box-shadow / the cue
-   colour — never a transform — because the scrub animations already own the
-   transforms on .deck-panel-inner and .deck-panel-media-img (CLAUDE: scroll
-   transform and hover transform must not stack on the same element). */
-.deck-panel.is-clickable {
-  cursor: pointer;
-}
-
-.deck-panel.is-clickable:hover .deck-panel-media,
-.deck-panel.is-clickable:focus-visible .deck-panel-media {
+/* The "查看詳情" button opens the ProjectOverlay. Hovering the panel only lifts
+   the screenshot's box-shadow as an affordance — never a transform — because the
+   scrub animations already own the transforms on .deck-panel-inner and
+   .deck-panel-media-img (CLAUDE: scroll transform and hover transform must not
+   stack on the same element). */
+.deck-panel.is-openable:hover .deck-panel-media {
   box-shadow: 0 24px 56px rgba(45, 33, 33, 0.16);
-}
-
-.deck-panel.is-clickable:hover .deck-panel-cue,
-.deck-panel.is-clickable:focus-visible .deck-panel-cue {
-  background: var(--periwinkle);
-  color: var(--brand-deep);
-}
-
-.deck-panel.is-clickable:focus-visible {
-  outline: 2px solid var(--brand-deep);
-  outline-offset: -6px;
 }
 
 /* Reduced motion: no pin, no scrub (Projects.tsx bails early). Collapse the
@@ -1060,6 +1057,7 @@ h2 {
   align-items: flex-start;
   justify-content: center;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 64px 24px;
   background: rgba(45, 33, 33, 0.6);
   backdrop-filter: blur(6px);
@@ -1076,6 +1074,7 @@ h2 {
   width: min(960px, 92vw);
   max-height: 90vh;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 48px;
   border: 2px solid var(--ink);
   border-radius: 12px;

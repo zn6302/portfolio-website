@@ -15,7 +15,9 @@ export interface Project {
   category: string;
   title: string;
   description: string;
-  image: string;
+  /** Cover screenshot path. Omit when a project has no shipped visual (e.g.
+   *  backend-only work) — consumers render a token-coloured title block. */
+  image?: string;
   tech: string[];
   subtitle?: string;
   role?: string;

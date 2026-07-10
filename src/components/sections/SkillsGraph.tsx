@@ -146,7 +146,25 @@ export function SkillsGraph() {
   useLayoutEffect(() => {
     const root = rootRef.current;
     if (!root) return;
-    if (window.matchMedia("(max-width: 760px)").matches) return; // phones show the tag grid
+
+    // gsap.matchMedia drives the breakpoint lifecycle: the graph only exists
+    // above 760px (phones show the tag grid), and reduced-motion drops just the
+    // entrance animation while keeping the relax layout. Crossing either query
+    // (resize, tablet rotation, OS setting change) tears down and rebuilds the
+    // correct state instead of freezing whatever matched at mount — previously a
+    // phone→desktop resize left the graph uninitialised.
+    const mm = gsap.matchMedia();
+    mm.add(
+      {
+        isDesktop: "(min-width: 761px)",
+        reduce: "(prefers-reduced-motion: reduce)",
+      },
+      (mmContext) => {
+        const { isDesktop, reduce } = mmContext.conditions as {
+          isDesktop: boolean;
+          reduce: boolean;
+        };
+        if (!isDesktop) return; // phones show the tag grid
 
     const svg = root.querySelector<SVGSVGElement>(".skills-graph-svg");
     const centerEl = root.querySelector<HTMLElement>(".sg-node-center");
@@ -252,7 +270,7 @@ export function SkillsGraph() {
     // Web fonts change pill widths after first paint — re-relax when they land.
     document.fonts?.ready.then(relayout).catch(() => {});
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (reduce) {
       return () => ro?.disconnect();
     }
 
@@ -279,10 +297,14 @@ export function SkillsGraph() {
         .to(skills, { opacity: 1, y: 0, duration: 0.5, stagger: 0.03 }, 0.78);
     }, root);
 
-    return () => {
-      ro?.disconnect();
-      ctx.revert();
-    };
+        return () => {
+          ro?.disconnect();
+          ctx.revert();
+        };
+      },
+    );
+
+    return () => mm.revert();
   }, [branches]);
 
   const dim = (i: number) => (active !== null && active !== i ? " is-dim" : "");

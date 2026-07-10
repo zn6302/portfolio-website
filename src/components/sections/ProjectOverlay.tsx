@@ -175,11 +175,53 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef }: P
     };
   }, [rendered]);
 
-  // Focus the panel on open, return focus to the triggering card on close.
+  // Focus management: move focus into the dialog on open, keep Tab cycling
+  // inside it (focus trap), mark the rest of the document inert so the
+  // background can't be reached by keyboard or assistive tech, and restore
+  // focus to the triggering control on close. aria-modal alone doesn't stop
+  // Tab from leaving into the page behind the overlay.
   useEffect(() => {
     if (!rendered) return;
     closeButtonRef.current?.focus({ preventScroll: true });
+
+    // Everything under <body> except this overlay's backdrop becomes inert.
+    const backdrop = backdropRef.current;
+    const inertedSiblings: HTMLElement[] = [];
+    for (const child of Array.from(document.body.children)) {
+      if (child !== backdrop && child instanceof HTMLElement && !child.inert) {
+        child.inert = true;
+        inertedSiblings.push(child);
+      }
+    }
+
+    const FOCUSABLE =
+      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
+      const panel = panelRef.current;
+      if (!panel) return;
+      const focusables = [...panel.querySelectorAll<HTMLElement>(FOCUSABLE)].filter(
+        (el) => el.offsetParent !== null || el === document.activeElement,
+      );
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const activeEl = document.activeElement;
+      if (event.shiftKey) {
+        if (activeEl === first || !panel.contains(activeEl)) {
+          event.preventDefault();
+          last.focus();
+        }
+      } else if (activeEl === last || !panel.contains(activeEl)) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown, true);
+
     return () => {
+      document.removeEventListener("keydown", onKeyDown, true);
+      for (const el of inertedSiblings) el.inert = false;
       returnFocusRef?.focus({ preventScroll: true });
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

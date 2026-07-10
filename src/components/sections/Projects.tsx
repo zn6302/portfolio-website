@@ -35,7 +35,13 @@ function PanelMedia({ project }: { project: Project }) {
   );
 }
 
-function PanelCopy({ project }: { project: Project }) {
+function PanelCopy({
+  project,
+  onOpen,
+}: {
+  project: Project;
+  onOpen?: (buttonEl: HTMLElement) => void;
+}) {
   return (
     <div className="deck-panel-copy">
       <span className="deck-panel-eyebrow">{project.category}</span>
@@ -53,9 +59,15 @@ function PanelCopy({ project }: { project: Project }) {
       )}
       <div className="deck-panel-actions">
         {project.id && (
-          <span className="deck-panel-cue" aria-hidden="true">
+          <button
+            type="button"
+            className="deck-panel-cue"
+            aria-haspopup="dialog"
+            aria-label={`查看 ${project.title} 詳情`}
+            onClick={(event) => onOpen?.(event.currentTarget)}
+          >
             查看詳情 ↗
-          </span>
+          </button>
         )}
         {project.links?.live && (
           <a
@@ -63,7 +75,6 @@ function PanelCopy({ project }: { project: Project }) {
             href={project.links.live}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={(event) => event.stopPropagation()}
           >
             LIVE SITE ↗
           </a>
@@ -74,7 +85,6 @@ function PanelCopy({ project }: { project: Project }) {
             href={project.links.github}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={(event) => event.stopPropagation()}
           >
             GITHUB ↗
           </a>
@@ -210,13 +220,12 @@ export function Projects() {
     };
   }, []);
 
-  const openProject = (project: Project, event: { currentTarget: HTMLElement }) => {
+  const openProject = (project: Project, buttonEl: HTMLElement, articleEl: HTMLElement | undefined) => {
     if (!project.id) return; // placeholder card, nothing to open
-    focusRef.current = event.currentTarget;
-    // Anchor the FLIP morph on the artwork the reviewer clicked.
-    originRef.current =
-      event.currentTarget.querySelector<HTMLElement>(".deck-panel-media") ??
-      event.currentTarget;
+    // Return focus to the button that opened the dialog; anchor the FLIP morph
+    // on the panel artwork.
+    focusRef.current = buttonEl;
+    originRef.current = articleEl?.querySelector<HTMLElement>(".deck-panel-media") ?? articleEl ?? buttonEl;
     setActiveProject(project);
   };
 
@@ -236,28 +245,20 @@ export function Projects() {
         {projects.map((project, index) => (
           <article
             className={`deck-panel${index % 2 === 1 ? " deck-panel--alt" : ""}${
-              project.id ? " is-clickable" : ""
+              project.id ? " is-openable" : ""
             }`}
             key={project.id || `empty-project-${index}`}
             ref={(node) => {
               if (node) panelRefs.current[index] = node;
             }}
             style={{ zIndex: index + 1 }}
-            role={project.id ? "button" : undefined}
-            tabIndex={project.id ? 0 : undefined}
-            aria-haspopup={project.id ? "dialog" : undefined}
-            onClick={(event) => openProject(project, event)}
-            onKeyDown={(event) => {
-              if (!project.id) return;
-              if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                openProject(project, event);
-              }
-            }}
           >
             <div className="deck-panel-inner">
               <PanelMedia project={project} />
-              <PanelCopy project={project} />
+              <PanelCopy
+                project={project}
+                onOpen={(buttonEl) => openProject(project, buttonEl, panelRefs.current[index])}
+              />
             </div>
           </article>
         ))}
