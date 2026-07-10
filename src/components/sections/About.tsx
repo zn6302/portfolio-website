@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { assets } from "../../data";
 import { useScrollFlip, useMagnetic } from "../../hooks";
-import { AvailabilityPill, Socials } from "../ui";
+import { AvailabilityPill, MaskHeading, Socials } from "../ui";
 
 const ABOUT_FLIP = {
   from: { rotation: 6, rotateY: -180, rotateX: 14, scale: 0.86, x: -390, y: 80 },
@@ -25,7 +25,7 @@ export function About({ disableCardFlip = false }: AboutProps) {
       <div className="section-grid about-grid">
         <div>
           <AvailabilityPill className="inline-availability" />
-          <h2>ABOUT</h2>
+          <MaskHeading text="ABOUT" />
           <p className="lead">
             我是葉子倪，政大數位內容碩一，核心興趣是 HCI 與互動藝術，目標是成為 Creative Coder。
             碩論進行中：用 Meta Ray-Ban Display 智慧眼鏡打造智慧博物館導覽（GraphRAG · VideoRAG · LLM）。

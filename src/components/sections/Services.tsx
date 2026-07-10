@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { assets, services } from "../../data";
 import { useScrollFlip } from "../../hooks";
-import { AvailabilityPill } from "../ui";
+import { AvailabilityPill, MaskHeading } from "../ui";
 import { SkillsGraph } from "./SkillsGraph";
 
 const SERVICES_FLIP = {
@@ -27,7 +27,7 @@ export function Services({ disableCardFlip = false }: ServicesProps) {
       <div className="section-grid">
         <div>
           <AvailabilityPill className="inline-availability" />
-          <h2>SKILLS / 技能棧</h2>
+          <MaskHeading text="SKILLS / 技能棧" />
           <p className="lead">
             前端工程、互動動畫、後端資料到 AI 應用，這是我實際用來做出上線作品的技術棧。
           </p>

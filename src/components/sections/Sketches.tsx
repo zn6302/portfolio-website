@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import { sketches } from "../../data";
+import { MaskHeading } from "../ui";
 
 // Per-card float/rotation variety. Index-matched to `sketches`; if more
 // sketches are added later this simply repeats via modulo (see render below).
@@ -16,7 +17,7 @@ export function Sketches() {
     <section className="section sketches-section" id="sketches">
       <div className="section-head">
         <span className="sketches-eyebrow">PLAYGROUND / CREATIVE CODING</span>
-        <h2>PLAYGROUND</h2>
+        <MaskHeading text="PLAYGROUND" />
         <p className="lead">
           手邊的 creative coding 練習——用 p5.js 隨手畫的生成紋理與互動小品。點卡片就能在新分頁打開玩。
         </p>

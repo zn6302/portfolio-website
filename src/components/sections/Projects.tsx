@@ -3,7 +3,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { projects } from "../../data";
 import type { Project } from "../../types";
-import { AvailabilityPill } from "../ui";
+import { AvailabilityPill, MaskHeading } from "../ui";
 import { ProjectOverlay } from "./ProjectOverlay";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -235,7 +235,7 @@ export function Projects() {
     <section className="projects-deck" id="projects" ref={sectionRef}>
       <div className="section deck-head">
         <AvailabilityPill className="inline-availability" />
-        <h2>SELECTED WORKS</h2>
+        <MaskHeading text="SELECTED WORKS" />
         <p className="lead">
           這裡會放真實作品：HCI 研究、互動原型、creative coding sketch，或前端實作案例。
         </p>

@@ -489,6 +489,22 @@ h2 {
   letter-spacing: 0;
 }
 
+/* Line-mask reveal (MaskHeading). Each line clips its inner span, which rises
+   from below. The 0.18em bottom padding + matching negative margin extend the
+   clip box below the baseline so CJK descenders (e.g. 技能棧) are never cut,
+   while keeping the heading's occupied height unchanged. */
+.mask-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.18em;
+  margin-bottom: -0.18em;
+}
+
+.mask-line-inner {
+  display: block;
+  will-change: transform;
+}
+
 .lead {
   margin: 22px 0 0;
   max-width: 560px;

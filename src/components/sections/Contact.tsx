@@ -1,6 +1,6 @@
 import { assets } from "../../data";
 import { useMagnetic } from "../../hooks";
-import { AvailabilityPill, HiBubble } from "../ui";
+import { AvailabilityPill, HiBubble, MaskHeading } from "../ui";
 
 export function Contact() {
   const magneticEmail = useMagnetic();
@@ -15,7 +15,7 @@ export function Contact() {
         </div>
         <div className="contact-form contact-direct">
           <AvailabilityPill className="inline-availability" />
-          <h2>CONTACT</h2>
+          <MaskHeading text="CONTACT" />
           <p className="lead">
             想看更多或聊聊互動專案，歡迎透過以下方式找我。
           </p>
