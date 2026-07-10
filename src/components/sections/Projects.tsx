@@ -9,27 +9,39 @@ import { ProjectOverlay } from "./ProjectOverlay";
 gsap.registerPlugin(ScrollTrigger);
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+// Full-bleed pinned deck only above this width. Below it we fall back to a
+// vertical stack of full-width cards with a simple one-shot reveal (the pinned
+// stacking + scrub reads poorly on short mobile viewports / URL-bar resizes).
+const DECK_QUERY = "(min-width: 901px)";
 
-function ProjectMedia({ project }: { project: Project }) {
+function PanelMedia({ project }: { project: Project }) {
   if (project.image) {
     return (
-      <img className="project-row-media-img" src={project.image} alt={`${project.title} cover`} />
+      <div className="deck-panel-media">
+        <img
+          className="deck-panel-media-img"
+          src={project.image}
+          alt={`${project.title} cover`}
+        />
+      </div>
     );
   }
+  // mybot has no screenshot on purpose — render a token-coloured title block
+  // instead of a broken image.
   return (
-    <div className="project-row-media-empty" aria-hidden="true">
-      <span className="project-row-media-empty-title">{project.title}</span>
+    <div className="deck-panel-media deck-panel-media-empty" aria-hidden="true">
+      <span className="deck-panel-media-empty-title">{project.title}</span>
     </div>
   );
 }
 
-function ProjectBody({ project }: { project: Project }) {
+function PanelCopy({ project }: { project: Project }) {
   return (
-    <div className="project-row-copy">
-      <span className="project-row-eyebrow">{project.category}</span>
-      <h3>{project.title}</h3>
-      {project.subtitle && <p className="project-row-subtitle">{project.subtitle}</p>}
-      <p className="project-row-desc">{project.description}</p>
+    <div className="deck-panel-copy">
+      <span className="deck-panel-eyebrow">{project.category}</span>
+      <h3 className="deck-panel-title">{project.title}</h3>
+      {project.subtitle && <p className="deck-panel-subtitle">{project.subtitle}</p>}
+      <p className="deck-panel-desc">{project.description}</p>
       {project.tech.length > 0 && (
         <ul className="project-tags">
           {project.tech.map((tech) => (
@@ -39,30 +51,35 @@ function ProjectBody({ project }: { project: Project }) {
           ))}
         </ul>
       )}
-      {(project.links?.live || project.links?.github) && (
-        <div className="project-links">
-          {project.links?.live && (
-            <a
-              href={project.links.live}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(event) => event.stopPropagation()}
-            >
-              LIVE SITE ↗
-            </a>
-          )}
-          {project.links?.github && (
-            <a
-              href={project.links.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(event) => event.stopPropagation()}
-            >
-              GITHUB ↗
-            </a>
-          )}
-        </div>
-      )}
+      <div className="deck-panel-actions">
+        {project.id && (
+          <span className="deck-panel-cue" aria-hidden="true">
+            查看詳情 ↗
+          </span>
+        )}
+        {project.links?.live && (
+          <a
+            className="deck-panel-link"
+            href={project.links.live}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(event) => event.stopPropagation()}
+          >
+            LIVE SITE ↗
+          </a>
+        )}
+        {project.links?.github && (
+          <a
+            className="deck-panel-link"
+            href={project.links.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(event) => event.stopPropagation()}
+          >
+            GITHUB ↗
+          </a>
+        )}
+      </div>
     </div>
   );
 }
@@ -70,61 +87,144 @@ function ProjectBody({ project }: { project: Project }) {
 export function Projects() {
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
-  const activeCardRef = useRef<HTMLElement | null>(null);
-  const rowRefs = useRef<HTMLElement[]>([]);
+  // FLIP expand origin (the clicked panel's media) and the element focus returns
+  // to on close (the panel itself) — kept separate so the shared-element morph
+  // is anchored on the artwork the reviewer clicked.
+  const originRef = useRef<HTMLElement | null>(null);
+  const focusRef = useRef<HTMLElement | null>(null);
+  const panelRefs = useRef<HTMLElement[]>([]);
 
-  // Scroll-driven, one-shot reveal per row: image and copy fade + rise with a
-  // small stagger as each row scrolls into view. No pinning, no scrub — a plain
-  // ScrollTrigger per row that fires once. Skipped under reduced motion (the
-  // content is simply shown in place).
+  // Full-bleed scroll deck. Above DECK_QUERY each project is a 100vw × 100vh
+  // panel that pins (pinSpacing:false) so the next panel scrolls up over it —
+  // the classic GSAP stacked-panel effect. While a panel is being covered its
+  // inner scales down + dims (depth); as a panel rises in, its screenshot
+  // scrubs from a slight zoom to 1 and the copy fades up. Below DECK_QUERY, and
+  // under reduced motion, there is no pin — panels stack vertically and (on
+  // mobile) reveal once. Rebuilds on resize / font load like HeroCardJourney so
+  // pin geometry stays pixel-accurate and breakpoint crossings re-wire cleanly.
   useLayoutEffect(() => {
-    const rows = rowRefs.current.filter(Boolean);
-    if (rows.length === 0) return;
+    let ctx: gsap.Context | undefined;
 
-    if (window.matchMedia(REDUCED_MOTION_QUERY).matches) return;
+    const build = () => {
+      ctx?.revert();
 
-    const ctx = gsap.context(() => {
-      rows.forEach((row) => {
-        const media = row.querySelector(".project-row-media");
-        const copy = row.querySelector(".project-row-copy");
-        const targets = [media, copy].filter(Boolean) as Element[];
-        if (targets.length === 0) return;
+      const panels = panelRefs.current.filter(Boolean);
+      if (panels.length === 0) return;
 
-        gsap.set(targets, { autoAlpha: 0, y: 24 });
-        ScrollTrigger.create({
-          trigger: row,
-          start: "top 85%",
-          once: true,
-          onEnter: () => {
-            gsap.to(targets, {
-              autoAlpha: 1,
-              y: 0,
-              duration: 0.7,
-              ease: "power3.out",
-              stagger: 0.12,
-              overwrite: true,
+      // Reduced motion: leave everything in its static CSS state.
+      if (window.matchMedia(REDUCED_MOTION_QUERY).matches) return;
+
+      const deck = window.matchMedia(DECK_QUERY).matches;
+
+      ctx = gsap.context(() => {
+        if (!deck) {
+          // Mobile / narrow: simple one-shot rise + fade per card.
+          panels.forEach((panel) => {
+            const inner = panel.querySelector<HTMLElement>(".deck-panel-inner");
+            if (!inner) return;
+            gsap.set(inner, { autoAlpha: 0, y: 24 });
+            ScrollTrigger.create({
+              trigger: panel,
+              start: "top 82%",
+              once: true,
+              onEnter: () =>
+                gsap.to(inner, { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }),
             });
-          },
+          });
+          document.fonts?.ready.then(() => ScrollTrigger.refresh());
+          return;
+        }
+
+        panels.forEach((panel, index) => {
+          const media = panel.querySelector<HTMLElement>(".deck-panel-media-img");
+          const copy = panel.querySelector<HTMLElement>(".deck-panel-copy");
+          const inner = panel.querySelector<HTMLElement>(".deck-panel-inner");
+          const isLast = index === panels.length - 1;
+
+          // Entrance: screenshot un-zooms and copy fades up as the panel rises
+          // from the bottom of the viewport to the top (where it will pin).
+          const entrance = gsap.timeline({
+            scrollTrigger: { trigger: panel, start: "top bottom", end: "top top", scrub: true },
+          });
+          if (media) entrance.fromTo(media, { scale: 1.08 }, { scale: 1, ease: "none" }, 0);
+          if (copy)
+            entrance.fromTo(
+              copy,
+              { autoAlpha: 0, y: 32 },
+              { autoAlpha: 1, y: 0, ease: "none" },
+              0,
+            );
+
+          if (isLast) return;
+
+          // Pin this panel; the next one scrolls up over it (higher z-index +
+          // opaque background). pinSpacing:false = no extra scroll space, so
+          // panels genuinely stack instead of laying out end to end.
+          ScrollTrigger.create({
+            trigger: panel,
+            start: "top top",
+            end: "bottom top",
+            pin: true,
+            pinSpacing: false,
+            anticipatePin: 1,
+          });
+
+          // Depth: while the *next* panel covers this one, recede it.
+          if (inner) {
+            gsap.fromTo(
+              inner,
+              { scale: 1, autoAlpha: 1 },
+              {
+                scale: 0.94,
+                autoAlpha: 0.5,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: panels[index + 1],
+                  start: "top bottom",
+                  end: "top top",
+                  scrub: true,
+                },
+              },
+            );
+          }
         });
-      });
 
-      document.fonts?.ready.then(() => ScrollTrigger.refresh());
-    }, sectionRef);
+        // Fonts settle → heading widths change → re-measure every pin.
+        document.fonts?.ready.then(() => ScrollTrigger.refresh());
+      }, sectionRef);
+    };
 
-    return () => ctx.revert();
+    build();
+
+    let resizeId = 0;
+    const onResize = () => {
+      window.clearTimeout(resizeId);
+      resizeId = window.setTimeout(build, 200);
+    };
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.clearTimeout(resizeId);
+      window.removeEventListener("resize", onResize);
+      ctx?.revert();
+    };
   }, []);
 
   const openProject = (project: Project, event: { currentTarget: HTMLElement }) => {
     if (!project.id) return; // placeholder card, nothing to open
-    activeCardRef.current = event.currentTarget;
+    focusRef.current = event.currentTarget;
+    // Anchor the FLIP morph on the artwork the reviewer clicked.
+    originRef.current =
+      event.currentTarget.querySelector<HTMLElement>(".deck-panel-media") ??
+      event.currentTarget;
     setActiveProject(project);
   };
 
   const closeProject = () => setActiveProject(null);
 
   return (
-    <section className="section project-section" id="projects" ref={sectionRef}>
-      <div className="section-head">
+    <section className="projects-deck" id="projects" ref={sectionRef}>
+      <div className="section deck-head">
         <AvailabilityPill className="inline-availability" />
         <h2>SELECTED WORKS</h2>
         <p className="lead">
@@ -132,16 +232,17 @@ export function Projects() {
         </p>
       </div>
 
-      <div className="project-showcase">
+      <div className="deck-track">
         {projects.map((project, index) => (
           <article
-            className={`project-row${index % 2 === 1 ? " is-reverse" : ""}${
-              project.id ? " project-card-clickable" : ""
+            className={`deck-panel${index % 2 === 1 ? " deck-panel--alt" : ""}${
+              project.id ? " is-clickable" : ""
             }`}
             key={project.id || `empty-project-${index}`}
             ref={(node) => {
-              if (node) rowRefs.current[index] = node;
+              if (node) panelRefs.current[index] = node;
             }}
+            style={{ zIndex: index + 1 }}
             role={project.id ? "button" : undefined}
             tabIndex={project.id ? 0 : undefined}
             aria-haspopup={project.id ? "dialog" : undefined}
@@ -154,24 +255,19 @@ export function Projects() {
               }
             }}
           >
-            <div className="project-row-media">
-              <ProjectMedia project={project} />
-              {project.id && (
-                <span className="project-card-affordance" aria-hidden="true">
-                  查看詳情 ↗
-                </span>
-              )}
+            <div className="deck-panel-inner">
+              <PanelMedia project={project} />
+              <PanelCopy project={project} />
             </div>
-            <ProjectBody project={project} />
           </article>
         ))}
       </div>
 
       <ProjectOverlay
         project={activeProject}
-        originEl={activeCardRef.current}
+        originEl={originRef.current}
         onClose={closeProject}
-        returnFocusRef={activeCardRef.current}
+        returnFocusRef={focusRef.current}
       />
     </section>
   );
