@@ -467,7 +467,7 @@ h1 {
 }
 
 .section {
-  padding: 80px 0;
+  padding: 96px 0;
 }
 
 .section-grid,
@@ -506,12 +506,12 @@ h2 {
 }
 
 .lead {
-  margin: 22px 0 0;
+  margin: 24px 0 0;
   max-width: 560px;
   color: var(--ink);
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 400;
-  line-height: 1.55;
+  line-height: 1.6;
 }
 
 .tilt-frame {
@@ -557,7 +557,7 @@ h2 {
   position: relative;
   width: 100%;
   max-width: 512px;
-  margin: 44px auto 0;
+  margin: 48px auto 0;
   aspect-ratio: 1 / 1;
 }
 
@@ -748,7 +748,7 @@ h2 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
-  margin-top: 42px;
+  margin-top: 48px;
 }
 
 .stats-row strong {
@@ -770,7 +770,7 @@ h2 {
 .contact-row {
   display: flex;
   gap: 48px;
-  margin-top: 42px;
+  margin-top: 48px;
 }
 
 .contact-row div {
@@ -785,8 +785,8 @@ h2 {
 
 .socials {
   display: flex;
-  gap: 22px;
-  margin-top: 40px;
+  gap: 24px;
+  margin-top: 48px;
   align-items: center;
 }
 
@@ -810,7 +810,7 @@ h2 {
   display: inline-grid;
   min-width: 166px;
   min-height: 48px;
-  margin-top: 40px;
+  margin-top: 48px;
   place-items: center;
   border: 1.5px solid var(--accent);
   border-radius: 999px;
@@ -841,7 +841,7 @@ h2 {
 .section-head {
   position: relative;
   max-width: 620px;
-  margin-bottom: 42px;
+  margin-bottom: 48px;
 }
 
 /* Full-bleed scroll deck: each project is a 100vw × 100vh panel. Above 900px
@@ -954,13 +954,13 @@ h2 {
 }
 
 .deck-panel-title {
-  margin: 14px 0 0;
+  margin: 16px 0 0;
   font-size: clamp(32px, 3.6vw, 54px);
   line-height: 1.06;
 }
 
 .deck-panel-subtitle {
-  margin: 14px 0 0;
+  margin: 16px 0 0;
   color: var(--brand-deep);
   font-size: 18px;
   font-weight: 600;
@@ -974,7 +974,7 @@ h2 {
   display: flex;
   align-items: baseline;
   gap: 10px;
-  margin: 14px 0 0;
+  margin: 16px 0 0;
   color: var(--ink);
   font-family: "IBM Plex Mono", monospace;
   font-size: 13px;
@@ -999,14 +999,14 @@ h2 {
   color: var(--muted);
   font-size: 16px;
   font-weight: 400;
-  line-height: 1.75;
+  line-height: 1.7;
 }
 
 .deck-panel-actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 20px;
+  gap: 24px;
   margin-top: 24px;
 }
 
@@ -1214,7 +1214,7 @@ h2 {
 .project-overlay-lede {
   margin: 24px 0 0;
   color: var(--ink);
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1.7;
 }
 
@@ -1422,7 +1422,7 @@ h2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
-  margin: 40px 0 0;
+  margin: 48px 0 0;
   padding-top: 24px;
   border-top: 1.5px solid var(--line);
 }
@@ -1602,7 +1602,7 @@ h2 {
 
 .contact-form {
   display: grid;
-  gap: 22px;
+  gap: 24px;
 }
 
 .contact-form h2 {
@@ -1612,7 +1612,7 @@ h2 {
 .contact-direct-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 24px;
   margin-top: 8px;
 }
 
@@ -1624,7 +1624,7 @@ h2 {
 .form-split {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  gap: 24px;
 }
 
 .contact-form label {
@@ -1664,12 +1664,12 @@ h2 {
 .contact-form input,
 .contact-form select {
   height: 48px;
-  padding: 0 22px;
+  padding: 0 24px;
 }
 
 .contact-form textarea {
   min-height: 140px;
-  padding: 22px;
+  padding: 24px;
   border-radius: 22px;
   resize: vertical;
 }
@@ -1686,7 +1686,7 @@ h2 {
   position: relative;
   isolation: isolate;
   overflow: visible;
-  padding: 42px 80px 34px;
+  padding: 48px 80px 32px;
   background: var(--color-paper-deep);
   color: var(--color-paper-light);
 }
@@ -1712,7 +1712,7 @@ h2 {
   grid-template-columns: repeat(3, 1fr);
   width: min(1120px, 100%);
   margin: 0 auto;
-  gap: 40px;
+  gap: 48px;
 }
 
 .footer-top > div {
@@ -1739,7 +1739,7 @@ h2 {
   align-items: center;
   justify-content: space-between;
   margin: 24px auto 0;
-  padding-top: 30px;
+  padding-top: 32px;
   border-top: 1px solid rgba(255, 255, 255, 0.8);
 }
 
@@ -1792,7 +1792,7 @@ h2 {
 /* Loose, non-grid rhythm: nudge the second card down so the pair doesn't
    read as a mechanical grid. Collapses to 0 in the 1-col breakpoint below. */
 .sketches-wall .sketch-card:nth-child(2) {
-  margin-top: 40px;
+  margin-top: 48px;
 }
 
 /* Two-layer transform split so hover (outer, static rotate) and the float
@@ -1918,7 +1918,7 @@ h2 {
   .about-grid,
   .contact-grid {
     grid-template-columns: 1fr;
-    gap: 44px;
+    gap: 48px;
   }
 
   .tilt-frame,
@@ -2062,7 +2062,7 @@ h2 {
   }
 
   .section {
-    padding: 74px 0;
+    padding: 64px 0;
   }
 
   .inline-availability {
@@ -2079,7 +2079,7 @@ h2 {
 
   .lead {
     font-size: 18px;
-    line-height: 1.55;
+    line-height: 1.6;
   }
 
   /* Show the Services portrait card on phones too (was display:none).
@@ -2091,7 +2091,7 @@ h2 {
   .services-image {
     justify-self: center;
     width: min(260px, 100%);
-    margin: 36px auto 0;
+    margin: 32px auto 0;
     transform: none;
     border-radius: 16px;
   }
@@ -2117,14 +2117,14 @@ h2 {
 
   .skills-taggrid {
     display: grid;
-    gap: 26px;
-    margin-top: 40px;
+    gap: 24px;
+    margin-top: 32px;
   }
 
   .stats-row {
     grid-template-columns: 1fr;
-    gap: 30px;
-    margin-top: 42px;
+    gap: 32px;
+    margin-top: 32px;
   }
 
   .stats-row div {
@@ -2154,14 +2154,14 @@ h2 {
   .outline-button {
     width: 100%;
     min-height: 42px;
-    margin-top: 38px;
+    margin-top: 32px;
     background: var(--accent);
     color: #fff;
     font-size: 25px;
   }
 
   .section-head {
-    margin-bottom: 34px;
+    margin-bottom: 32px;
   }
 
   .deck-panel {
@@ -2217,11 +2217,11 @@ h2 {
   }
 
   .contact-section {
-    padding-top: 66px;
+    padding-top: 64px;
   }
 
   .contact-grid {
-    gap: 58px;
+    gap: 48px;
   }
 
   .contact-portrait {
@@ -2257,7 +2257,7 @@ h2 {
   }
 
   .footer {
-    padding: 42px 20px 98px;
+    padding: 48px 20px 96px;
   }
 
   .footer-top {
@@ -2266,7 +2266,7 @@ h2 {
 
   .footer-bottom {
     display: grid;
-    gap: 20px;
+    gap: 24px;
   }
 
 }
@@ -2426,7 +2426,7 @@ h2 {
 }
 
 .hero-profile .hero-right p {
-  margin: 18px 0 0;
+  margin: 16px 0 0;
 }
 
 /* The empty landing target the video flips into. Same footprint as the card. */
@@ -2472,7 +2472,7 @@ h2 {
   flex-wrap: wrap;
   align-items: center;
   gap: 16px;
-  margin-top: 26px;
+  margin-top: 24px;
 }
 
 .hero-profile-badge {
