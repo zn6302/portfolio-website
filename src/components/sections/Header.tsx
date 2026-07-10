@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Menu } from "lucide-react";
 import { assets, navItems } from "../../data";
-import { useScrolled } from "../../hooks";
+import { useScrolled, useNearBottom } from "../../hooks";
 import { AvailabilityPill } from "../ui";
 
 export function Header() {
   const scrolled = useScrolled();
+  const nearBottom = useNearBottom();
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -24,7 +25,7 @@ export function Header() {
         </a>
       </header>
 
-      <div className={`sticky-status ${scrolled ? "visible" : ""}`}>
+      <div className={`sticky-status ${scrolled ? "visible" : ""} ${nearBottom ? "near-bottom" : ""}`}>
         <AvailabilityPill />
         <button
           className="menu-button"

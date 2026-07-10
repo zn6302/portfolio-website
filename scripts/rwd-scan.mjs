@@ -1,5 +1,5 @@
 /**
- * RWD 水平溢出掃描器 — 用法見 RWD指南.md。
+ * RWD 水平溢出掃描器 — 用法見 docs/RWD指南.md。
  *
  *   1. npm run build && npm run preview   （另開終端）
  *   2. npm i -D puppeteer-core            （首次；用系統 Chrome，不下載瀏覽器）

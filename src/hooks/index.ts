@@ -1,7 +1,10 @@
 export { useScrolled } from "./useScrolled";
+export { useNearBottom } from "./useNearBottom";
 export { useCountUp } from "./useCountUp";
 export { useScrollFlip } from "./useScrollFlip";
 export { useHeroVideoSources } from "./useHeroVideoSources";
 export { useAnchorScroll } from "./useAnchorScroll";
 export { useMagnetic } from "./useMagnetic";
 export { useHeroParallax } from "./useHeroParallax";
+export { useAmbientAudio } from "./useAmbientAudio";
+export { useBackToTop } from "./useBackToTop";

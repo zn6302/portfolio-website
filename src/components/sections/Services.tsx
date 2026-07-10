@@ -1,8 +1,8 @@
-import { useRef, useState } from "react";
-import { ChevronUp } from "lucide-react";
+import { useRef } from "react";
 import { assets, services } from "../../data";
 import { useScrollFlip } from "../../hooks";
 import { AvailabilityPill } from "../ui";
+import { SkillsGraph } from "./SkillsGraph";
 
 const SERVICES_FLIP = {
   from: { rotation: 8, rotateY: -180, rotateX: 14, scale: 0.86, x: -390, y: 80 },
@@ -11,12 +11,13 @@ const SERVICES_FLIP = {
   end: "center center",
 };
 
+const stripIndex = (title: string) => title.replace(/^\d+\.\s*/, "");
+
 interface ServicesProps {
   disableCardFlip?: boolean;
 }
 
 export function Services({ disableCardFlip = false }: ServicesProps) {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   useScrollFlip(cardRef, { ...SERVICES_FLIP, triggerRef: sectionRef, disabled: disableCardFlip });
@@ -30,13 +31,26 @@ export function Services({ disableCardFlip = false }: ServicesProps) {
           <p className="lead">
             前端工程、互動動畫、後端資料到 AI 應用，這是我實際用來做出上線作品的技術棧。
           </p>
-          <div className="accordion services-list">
-            {services.map((service, index) => (
-              <div className={`accordion-item ${openIndex === index ? "open" : ""}`} key={service.title}>
-                <button type="button" onClick={() => setOpenIndex(openIndex === index ? null : index)}>
-                  <span>{service.title}</span>
-                  <ChevronUp size={22} />
-                </button>
+
+          {/* Accessible, structured source of truth (read by screen readers on
+              every viewport). The visual graph and phone tag grid below are
+              aria-hidden alternatives of this same list. */}
+          <ul className="sr-only skills-sr-list">
+            {services.map((service) => (
+              <li key={service.title}>
+                {stripIndex(service.title)}：{service.items.join("、")}
+              </li>
+            ))}
+          </ul>
+
+          {/* Desktop / tablet (>760px): constellation graph. */}
+          <SkillsGraph />
+
+          {/* Phones (<=760px): plain category tag grid — no shrunk graph. */}
+          <div className="skills-taggrid" aria-hidden="true">
+            {services.map((service) => (
+              <div className="skills-taggroup" key={service.title}>
+                <h3>{stripIndex(service.title)}</h3>
                 <ul>
                   {service.items.map((item) => (
                     <li key={item}>{item}</li>
