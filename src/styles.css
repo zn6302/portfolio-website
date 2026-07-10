@@ -1565,22 +1565,21 @@ h2 {
   text-transform: uppercase;
 }
 
+/* Only 2 sketches ship on the wall (pixel-blocks + interactive-garden):
+   a fixed 2-col grid, capped width, centered in the section so the cards
+   read as an intentional duo instead of two cards adrift in a 3-col grid. */
 .sketches-wall {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 64px 48px;
+  max-width: 760px;
+  margin-inline: auto;
 }
 
-/* Loose, non-grid rhythm: stagger alternating cards up/down so the wall
-   doesn't read as a mechanical grid. Collapses to 0 in the 2-col/1-col
-   breakpoints below so narrow layouts stay tidy. */
-.sketches-wall .sketch-card:nth-child(2),
-.sketches-wall .sketch-card:nth-child(5) {
+/* Loose, non-grid rhythm: nudge the second card down so the pair doesn't
+   read as a mechanical grid. Collapses to 0 in the 1-col breakpoint below. */
+.sketches-wall .sketch-card:nth-child(2) {
   margin-top: 40px;
-}
-
-.sketches-wall .sketch-card:nth-child(3) {
-  margin-top: -24px;
 }
 
 /* Two-layer transform split so hover (outer, static rotate) and the float
@@ -1720,15 +1719,14 @@ h2 {
     justify-self: center;
   }
 
-  /* Compact band: drop to an ordered 2-column wall, no stagger. */
+  /* Compact band: ordered 2-column wall, no stagger. */
   .sketches-wall {
     grid-template-columns: repeat(2, 1fr);
     gap: 40px 32px;
+    max-width: none;
   }
 
-  .sketches-wall .sketch-card:nth-child(2),
-  .sketches-wall .sketch-card:nth-child(3),
-  .sketches-wall .sketch-card:nth-child(5) {
+  .sketches-wall .sketch-card:nth-child(2) {
     margin-top: 0;
   }
 }
