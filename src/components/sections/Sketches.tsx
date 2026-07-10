@@ -18,7 +18,7 @@ export function Sketches() {
         <span className="sketches-eyebrow">PLAYGROUND / CREATIVE CODING</span>
         <h2>PLAYGROUND</h2>
         <p className="lead">
-          手邊的 creative coding 練習——用 p5.js 隨手畫的向量場、生成紋理與互動小玩具。點卡片就能在新分頁打開玩。
+          手邊的 creative coding 練習——用 p5.js 隨手畫的生成紋理與互動小品。點卡片就能在新分頁打開玩。
         </p>
       </div>
 
