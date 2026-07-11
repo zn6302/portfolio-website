@@ -10,6 +10,7 @@ export const projects: Project[] = [
     image: "/projects/all-things-scored.webp",
     tech: ["React", "TypeScript", "Tone.js", "Canvas"],
     subtitle: "motion becomes music — 把動作變成樂器",
+    outcome: "即時影像 → 音樂 · 穩定 60fps · 獨立開發",
     role: "獨立開發",
     overview:
       "把 Computer Vision（背景差分）、Web Audio DSP（Tone.js 效果鏈與節拍量化）、音樂理論（音階映射）接在一起的即時「動作樂器」——影片中的物體穿越觸發線，就變成不會走音的旋律。",
@@ -32,6 +33,7 @@ export const projects: Project[] = [
     image: "/projects/openhci-2026.webp",
     tech: ["Next.js 15", "React 19", "Tailwind v4", "Framer Motion"],
     subtitle: "(AI)dentity — 已上線的高互動活動官網",
+    outcome: "已上線 · 2026.openhci.com · 多人 PR 協作",
     role: "前端工程：UI 元件開發、設計系統維護、主導互動動畫",
     overview:
       "OpenHCI 2026 工作坊官方網站，依 Figma 從零開發、GitHub Organization 多人 PR 協作，已上線於 2026.openhci.com。年度主題「(AI)dentity」＝故障、解碼、像素——設計跟程式講同一個故事。",
@@ -55,6 +57,7 @@ export const projects: Project[] = [
     image: "/projects/click-or-check.webp",
     tech: ["React 19", "Vite", "Tailwind"],
     subtitle: "流量 vs 公信力——可玩的媒體倫理",
+    outcome: "雙軸數值系統 · 零圖表庫資料視覺化",
     role: "獨立開發",
     overview:
       "媒體識讀互動遊戲。玩家經營新聞平台，在「查證加信任」與「聳動標題換粉絲」之間權衡——把抽象的媒體倫理變成親手操作的雙軸數值系統。",
@@ -74,10 +77,12 @@ export const projects: Project[] = [
     title: "myBot 體態管理 LINE Bot",
     description:
       "拍食物照 → Gemini Vision 辨識熱量與營養素 → 依當日剩餘額度主動建議下一餐。規則路由先擋、LLM 只管語意理解，後端一人完成。",
-    image: "",
+    // Backend-only project — no shipped UI screenshot; renders a system-flow block.
     tech: ["TypeScript", "Vercel Serverless", "Gemini", "Supabase"],
     subtitle: "隨傳隨到的科學實證體態管理師",
+    outcome: "LINE Bot · 八層意圖路由 · 後端一人完成",
     role: "獨立開發（後端一人完成）",
+    flow: ["拍食物照", "Gemini Vision 辨識", "熱量／營養素", "依剩餘額度建議下一餐"],
     overview:
       "LINE 體態管理 Bot：拍食物照或打字即可估算熱量與營養素、追蹤每日進度。核心設計哲學——該用規則就用規則、該用公式就用公式、只在語意理解上用 LLM。",
     highlights: [
@@ -97,6 +102,7 @@ export const projects: Project[] = [
     image: "/projects/smiley.webp",
     tech: ["Flutter", "BERT", "Firebase", "MySQL"],
     subtitle: "療癒，從感受情緒開始",
+    outcome: "畢業專題組長 · BERT 六分類 85–93%",
     role: "組長：統籌架構、UI Flow 到商業模式",
     overview:
       "畢業專題。情緒分析日記 App：寫日記 → BERT 判讀主情緒 → 數據化分析、聊天機器人回饋、精油／音樂推薦 → 社群分享。從痛點到商業模式端到端。",

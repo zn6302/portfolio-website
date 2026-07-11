@@ -7,9 +7,13 @@ import {
   Sketches,
 } from "./components/sections";
 import { AmbientAudioToggle, BackToTop } from "./components/ui";
-import { useAnchorScroll } from "./hooks";
+import { useAnchorScroll, useLenis } from "./hooks";
 
 export default function App() {
+  // Lenis owns window scroll on desktop (skipped under reduced-motion and on
+  // touch devices); anchor scrolls route through it when it exists and fall
+  // back to ScrollToPlugin otherwise.
+  useLenis();
   useAnchorScroll();
 
   return (

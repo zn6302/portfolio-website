@@ -93,108 +93,122 @@ export function HeroCardJourney() {
       return;
     }
 
-    // Reduced motion: no pin, no scrubbed shrink. `.hero-static` (added here)
+    // gsap.matchMedia owns the whole breakpoint lifecycle: each branch below is
+    // (re)built when its query starts matching and fully reverted when it stops,
+    // so crossing 1080px or toggling reduced-motion (resize, tablet rotation,
+    // OS setting change) tears down the old regime and builds the right one —
+    // instead of freezing whatever was chosen at mount.
+    const mm = gsap.matchMedia();
+
+    // Reduced motion (any width): no pin, no scrubbed shrink. `.hero-static`
     // collapses the hero into an ordinary block; just hide the floating card and
     // the intro overlay and reveal the profile with its parked slot video.
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    mm.add("(prefers-reduced-motion: reduce)", () => {
       root.classList.add("hero-static");
       gsap.set(card, { autoAlpha: 0 });
       gsap.set(intro, { autoAlpha: 0 });
       gsap.set(profile, { autoAlpha: 1 });
-      return;
-    }
+      return () => {
+        root.classList.remove("hero-static");
+      };
+    });
 
     // Mobile (motion): the desktop journey card is hidden below 1080px. Run only
     // the intro "shrink into card" phase on `.hero-mobile-media`, scrubbed while
     // .hero-sticky is pinned. The video lives inside .hero-sticky, so once the
     // pin releases it scrolls away with the hero — no second sticky to sync, and
     // Services/About keep their own static cards below.
-    const heroMobileMedia = root.querySelector<HTMLVideoElement>(".hero-mobile-media");
-    const heroSticky = root.querySelector<HTMLElement>(".hero-sticky");
-    if (window.matchMedia("(max-width: 1080px)").matches && heroMobileMedia && heroSticky) {
+    mm.add("(max-width: 1080px) and (prefers-reduced-motion: no-preference)", () => {
+      const heroMobileMedia = root.querySelector<HTMLVideoElement>(".hero-mobile-media");
+      const heroSticky = root.querySelector<HTMLElement>(".hero-sticky");
+      if (!heroMobileMedia || !heroSticky) return;
+
       gsap.set(card, { autoAlpha: 0 });
 
-      const mobileCtx = gsap.context(() => {
-        let timeline: gsap.core.Timeline | undefined;
-        let trigger: ScrollTrigger | undefined;
+      let timeline: gsap.core.Timeline | undefined;
+      let trigger: ScrollTrigger | undefined;
+      let cancelled = false;
 
-        // Slot geometry measured relative to .hero-sticky (the media's offset
-        // parent), so it's correct regardless of scroll/pin state.
-        const target = { width: 0, height: 0, x: 0, y: 0, radius: "18px" };
-        const measure = () => {
-          const slot = profileSlot.getBoundingClientRect();
-          const sticky = heroSticky.getBoundingClientRect();
-          target.width = slot.width;
-          target.height = slot.height;
-          target.x = slot.left - sticky.left;
-          target.y = slot.top - sticky.top;
-          target.radius = getComputedStyle(profileSlot).borderRadius;
-        };
+      // Slot geometry measured relative to .hero-sticky (the media's offset
+      // parent), so it's correct regardless of scroll/pin state.
+      const target = { width: 0, height: 0, x: 0, y: 0, radius: "18px" };
+      const measure = () => {
+        const slot = profileSlot.getBoundingClientRect();
+        const sticky = heroSticky.getBoundingClientRect();
+        target.width = slot.width;
+        target.height = slot.height;
+        target.x = slot.left - sticky.left;
+        target.y = slot.top - sticky.top;
+        target.radius = getComputedStyle(profileSlot).borderRadius;
+      };
 
-        const build = () => {
-          measure();
-          timeline?.kill();
-          trigger?.kill();
+      const build = () => {
+        if (cancelled) return;
+        measure();
+        timeline?.kill();
+        trigger?.kill();
 
-          gsap.set(heroMobileMedia, {
-            width: "100%",
-            height: "100%",
-            x: 0,
-            y: 0,
-            borderRadius: 0,
-            autoAlpha: 1,
-          });
-          gsap.set(intro, { autoAlpha: 1 });
-          gsap.set(profile, { autoAlpha: 0 });
+        gsap.set(heroMobileMedia, {
+          width: "100%",
+          height: "100%",
+          x: 0,
+          y: 0,
+          borderRadius: 0,
+          autoAlpha: 1,
+        });
+        gsap.set(intro, { autoAlpha: 1 });
+        gsap.set(profile, { autoAlpha: 0 });
 
-          timeline = gsap.timeline({ paused: true });
-          timeline
-            .to(
-              heroMobileMedia,
-              {
-                width: () => target.width,
-                height: () => target.height,
-                x: () => target.x,
-                y: () => target.y,
-                borderRadius: () => target.radius,
-                ease: "none",
-              },
-              0,
-            )
-            .to(intro, { autoAlpha: 0, ease: "none" }, 0)
-            .to(profile, { autoAlpha: 1, ease: "none" }, 0);
+        timeline = gsap.timeline({ paused: true });
+        timeline
+          .to(
+            heroMobileMedia,
+            {
+              width: () => target.width,
+              height: () => target.height,
+              x: () => target.x,
+              y: () => target.y,
+              borderRadius: () => target.radius,
+              ease: "none",
+            },
+            0,
+          )
+          .to(intro, { autoAlpha: 0, ease: "none" }, 0)
+          .to(profile, { autoAlpha: 1, ease: "none" }, 0);
 
-          // Finish the shrink at ~72% of the pin so the formed card rests a beat
-          // before .hero-sticky releases and the whole hero scrolls away.
-          const pin = Math.max(1, heroTransition.offsetHeight - window.innerHeight);
-          trigger = ScrollTrigger.create({
-            trigger: heroTransition,
-            start: "top top",
-            end: () => "+=" + Math.round(pin * 0.72),
-            scrub: 1,
-            invalidateOnRefresh: true,
-            onRefreshInit: measure,
-            animation: timeline,
-          });
-        };
+        // Finish the shrink at ~72% of the pin so the formed card rests a beat
+        // before .hero-sticky releases and the whole hero scrolls away.
+        const pin = Math.max(1, heroTransition.offsetHeight - window.innerHeight);
+        trigger = ScrollTrigger.create({
+          trigger: heroTransition,
+          start: "top top",
+          end: () => "+=" + Math.round(pin * 0.72),
+          scrub: 1,
+          invalidateOnRefresh: true,
+          onRefreshInit: measure,
+          animation: timeline,
+        });
+      };
 
-        build();
-        document.fonts?.ready.then(build);
-        let resizeId = 0;
-        const onResize = () => {
-          window.clearTimeout(resizeId);
-          resizeId = window.setTimeout(build, 200);
-        };
-        window.addEventListener("resize", onResize);
-        return () => {
-          window.clearTimeout(resizeId);
-          window.removeEventListener("resize", onResize);
-        };
-      }, root);
+      build();
+      document.fonts?.ready.then(build);
+      let resizeId = 0;
+      const onResize = () => {
+        window.clearTimeout(resizeId);
+        resizeId = window.setTimeout(build, 200);
+      };
+      window.addEventListener("resize", onResize);
+      return () => {
+        cancelled = true;
+        window.clearTimeout(resizeId);
+        window.removeEventListener("resize", onResize);
+        timeline?.kill();
+        trigger?.kill();
+      };
+    });
 
-      return () => mobileCtx.revert();
-    }
-
+    // Desktop (motion): the full journey card timeline.
+    mm.add("(min-width: 1081px) and (prefers-reduced-motion: no-preference)", () => {
     const state = {
       fullscreen: { width: 0, height: 0, x: 0, y: 0, radius: "0px" } as CardRect,
       profile: { width: 0, height: 0, x: 0, y: 0, radius: "0px" } as CardRect,
@@ -334,10 +348,15 @@ export function HeroCardJourney() {
         cancelled = true;
         window.clearTimeout(resizeId);
         window.removeEventListener("resize", onResize);
+        timeline?.kill();
+        trigger?.kill();
       };
     }, root);
 
-    return () => ctx.revert();
+      return () => ctx.revert();
+    });
+
+    return () => mm.revert();
   }, []);
 
   return (
@@ -367,10 +386,12 @@ export function HeroCardJourney() {
               className="linked-card-media linked-card-portrait"
               src={assets.aboutKeyframe}
               alt=""
+              width={2730}
+              height={1536}
             />
           </div>
           <div className="linked-card-face linked-card-back">
-            <img className="linked-card-media" src={assets.servicesPortrait} alt="" />
+            <img className="linked-card-media" src={assets.servicesPortrait} alt="" width={680} height={952} />
           </div>
         </div>
       </div>

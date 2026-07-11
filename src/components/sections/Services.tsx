@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { assets, services } from "../../data";
 import { useScrollFlip } from "../../hooks";
-import { AvailabilityPill } from "../ui";
+import { AvailabilityPill, MaskHeading } from "../ui";
 import { SkillsGraph } from "./SkillsGraph";
 
 const SERVICES_FLIP = {
@@ -27,7 +27,7 @@ export function Services({ disableCardFlip = false }: ServicesProps) {
       <div className="section-grid">
         <div>
           <AvailabilityPill className="inline-availability" />
-          <h2>SKILLS / 技能棧</h2>
+          <MaskHeading text="SKILLS / 技能棧" />
           <p className="lead">
             前端工程、互動動畫、後端資料到 AI 應用，這是我實際用來做出上線作品的技術棧。
           </p>
@@ -61,8 +61,8 @@ export function Services({ disableCardFlip = false }: ServicesProps) {
           </div>
         </div>
         <div className="tilt-frame services-image scroll-flip-card" ref={cardRef}>
-          <img className="scroll-flip-back" src={assets.portraitBack} alt="" aria-hidden="true" />
-          <img className="scroll-flip-front" src={assets.servicesPortrait} alt="Portrait of the designer" />
+          <img className="scroll-flip-back" src={assets.portraitBack} alt="" aria-hidden="true" width={2730} height={1536} loading="lazy" />
+          <img className="scroll-flip-front" src={assets.servicesPortrait} alt="Portrait of the designer" width={680} height={952} loading="lazy" />
         </div>
       </div>
     </section>

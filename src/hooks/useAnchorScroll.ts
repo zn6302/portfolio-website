@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import gsap from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+import { getLenis } from "./useLenis";
 
 gsap.registerPlugin(ScrollToPlugin);
 
@@ -43,6 +44,15 @@ export function useAnchorScroll() {
       if (reduceMotion) {
         const y = typeof target === "number" ? target : target.getBoundingClientRect().top + window.scrollY;
         window.scrollTo(0, y);
+        return;
+      }
+      // When Lenis owns window scroll, drive the anchor jump through it —
+      // ScrollToPlugin writing scrollY while Lenis smooths it double-drives
+      // the scroll and lands imprecisely. Lenis is absent under
+      // reduced-motion / touch, where the ScrollToPlugin path still applies.
+      const lenis = getLenis();
+      if (lenis) {
+        lenis.scrollTo(target, { duration: 0.9, easing: (t) => 1 - Math.pow(1 - t, 3) });
         return;
       }
       gsap.to(window, {
