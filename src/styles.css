@@ -350,6 +350,17 @@ img {
     visibility: hidden;
     transform: none;
   }
+
+  /* Reduced motion (`.hero-static`, set by HeroCardJourney): there is no
+     journey card to land in the slots, so the static placeholder images must
+     stay visible or the Services/About cards are permanently empty (QA rule 5:
+     the page must remain fully usable under prefers-reduced-motion). Only
+     visibility is restored — transform stays `none` from the rule above so the
+     rotated bounding box can't recreate the 1081–1240px horizontal overflow. */
+  .hero-card-journey.hero-static .services-image,
+  .hero-card-journey.hero-static .about-image {
+    visibility: visible;
+  }
 }
 
 .hero-left {
