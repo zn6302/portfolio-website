@@ -50,6 +50,14 @@
   box-sizing: border-box;
 }
 
+/* Text selection: text-safe brand fill + paper text (≈5.4:1). The same pair
+   reads correctly on light sections and the dark footer/about band, so one
+   global rule is enough — no per-zone override. */
+::selection {
+  background: var(--brand-deep);
+  color: var(--paper);
+}
+
 /* No `scroll-behavior: smooth` here: anchor jumps are driven by GSAP
    ScrollToPlugin (see useAnchorScroll) so they don't double-drive and land
    imprecisely against the Projects up/down scroll animation. */
@@ -391,8 +399,7 @@ h3 {
   text-transform: uppercase;
 }
 
-.outline-button,
-.submit-button {
+.outline-button {
   font-family: "Noto Sans TC", sans-serif;
   font-weight: 700;
   text-transform: uppercase;
@@ -1693,69 +1700,6 @@ h2 {
   font-size: 22px;
 }
 
-.form-split {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
-}
-
-.contact-form label {
-  display: grid;
-  gap: 12px;
-  color: var(--muted);
-  font-size: 14px;
-  font-weight: 400;
-}
-
-.contact-form input,
-.contact-form select,
-.contact-form textarea {
-  width: 100%;
-  border: 1.5px solid var(--periwinkle);
-  border-radius: 999px;
-  background: var(--paper);
-  color: var(--ink);
-  outline: none;
-  font-size: 16px;
-  font-weight: 400;
-  transition:
-    border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.contact-form input:focus,
-.contact-form select:focus,
-.contact-form textarea:focus {
-  border-color: var(--slate);
-  box-shadow: 0 0 0 3px var(--periwinkle);
-}
-
-.contact-form input::placeholder,
-.contact-form textarea::placeholder {
-  color: var(--muted);
-}
-
-.contact-form input,
-.contact-form select {
-  height: 48px;
-  padding: 0 24px;
-}
-
-.contact-form textarea {
-  min-height: 140px;
-  padding: 24px;
-  border-radius: 8px;
-  resize: vertical;
-}
-
-.submit-button {
-  width: 144px;
-  min-width: 144px;
-  margin-top: 0;
-  background: #fff;
-  cursor: pointer;
-}
-
 .footer {
   position: relative;
   isolation: isolate;
@@ -2313,16 +2257,6 @@ h2 {
 
   .contact-form h2 {
     font-size: 51px;
-  }
-
-  .form-split {
-    grid-template-columns: 1fr;
-  }
-
-  .submit-button {
-    width: 144px;
-    background: #fff;
-    color: var(--accent-deep);
   }
 
   .footer {
