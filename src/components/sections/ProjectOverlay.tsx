@@ -3,7 +3,8 @@ import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import gsap from "gsap";
 import type { Project } from "../../types";
-import { useMagnetic } from "../../hooks";
+import { getLenis, useMagnetic } from "../../hooks";
+import { projects as allProjects } from "../../data";
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 const FLIP_QUERY = "(min-width: 1081px)";
@@ -26,6 +27,25 @@ function canFlip() {
   );
 }
 
+// Every highlight is naturally "short headline + separator + explanation"
+// (either full-width "：" or an em-dash "——"). Split on whichever comes
+// first so the headline can render bold — the data itself is untouched.
+function splitHighlight(text: string): { label: string | null; rest: string } {
+  const colonIdx = text.indexOf("：");
+  const dashIdx = text.indexOf("——");
+  let idx = -1;
+  let sepLen = 0;
+  if (colonIdx !== -1 && (dashIdx === -1 || colonIdx < dashIdx)) {
+    idx = colonIdx;
+    sepLen = 1;
+  } else if (dashIdx !== -1) {
+    idx = dashIdx;
+    sepLen = 2;
+  }
+  if (idx === -1) return { label: null, rest: text };
+  return { label: text.slice(0, idx), rest: text.slice(idx + sepLen) };
+}
+
 // Full-screen project detail overlay. Rendered whenever `project` is set;
 // handles its own enter/exit animation, focus management, ESC/backdrop
 // dismissal, and background scroll locking (see the effect below for why it
@@ -34,10 +54,16 @@ function canFlip() {
 // `rendered` lags the `project` prop so an exit animation can play before the
 // portal unmounts: when the parent clears `project`, we collapse the panel back
 // into the originating card (FLIP) and only then drop `rendered` to null.
+//
+// `overrideProject` lets the bottom prev/next strip swap the displayed case
+// study in place — without touching `rendered`/`flip`, so it never replays the
+// FLIP open animation, only a simple content cross-fade.
 export function ProjectOverlay({ project, originEl, onClose, returnFocusRef }: ProjectOverlayProps) {
   const backdropRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const mediaRef = useRef<HTMLImageElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const scrollPositionRef = useRef(0);
   const originRectRef = useRef<DOMRect | null>(null);
@@ -48,6 +74,7 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef }: P
   const [flip, setFlip] = useState(false);
   // Non-flip (CSS) enter: add `is-open` a frame after mount so it transitions.
   const [entered, setEntered] = useState(false);
+  const [overrideProject, setOverrideProject] = useState<Project | null>(null);
 
   // Open / close orchestration — keyed on the incoming prop only.
   useLayoutEffect(() => {
@@ -91,8 +118,15 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef }: P
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project]);
 
+  // A fresh open (new `rendered` identity) always resets any in-place
+  // prev/next override back to the project that was actually opened.
+  useLayoutEffect(() => {
+    setOverrideProject(null);
+  }, [rendered]);
+
   // FLIP enter — runs once the panel is mounted. Measures the panel's final
-  // rect, snaps it onto the origin card, then expands to identity.
+  // rect, snaps it onto the origin card, then expands to identity. Content
+  // (header/lede/meta/media/highlights) staggers in after the box lands.
   useLayoutEffect(() => {
     if (!rendered || !flip) return;
     const panel = panelRef.current;
@@ -113,6 +147,12 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef }: P
       gsap.set(inner, { opacity: 0 });
       gsap.set(backdrop, { opacity: 0 });
 
+      const revealTargets = contentRef.current
+        ? contentRef.current.querySelectorAll<HTMLElement>(":scope > .ov-reveal")
+        : [];
+      gsap.set(revealTargets, { opacity: 0, y: 16 });
+      if (mediaRef.current) gsap.set(mediaRef.current, { scale: 1.04 });
+
       const tl = gsap.timeline();
       tl.to(backdrop, { opacity: 1, duration: 0.3, ease: "power2.out" }, 0);
       tl.to(
@@ -120,7 +160,15 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef }: P
         { x: 0, y: 0, scaleX: 1, scaleY: 1, duration: 0.5, ease: "power4.out" },
         0,
       );
-      tl.to(inner, { opacity: 1, duration: 0.35, ease: "power2.out" }, 0.2);
+      tl.to(inner, { opacity: 1, duration: 0.2, ease: "power2.out" }, 0.15);
+      tl.to(
+        revealTargets,
+        { opacity: 1, y: 0, duration: 0.4, ease: "power3.out", stagger: 0.08 },
+        0.2,
+      );
+      if (mediaRef.current) {
+        tl.to(mediaRef.current, { scale: 1, duration: 0.6, ease: "power3.out" }, 0.2);
+      }
     });
     return () => ctx.revert();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -149,6 +197,16 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef }: P
     if (!rendered) return;
     scrollPositionRef.current = window.scrollY;
 
+    // Lenis has its own window wheel listener that would keep smoothing the
+    // background while the overlay is up — halt it for the overlay's
+    // lifetime. While stopped, Lenis preventDefaults wheel input everywhere
+    // EXCEPT inside subtrees marked `data-lenis-prevent` (the backdrop below),
+    // so the panel's own overflow-y scrolling keeps working natively.
+    // stop()/start() never touch window.scrollY, so ScrollTrigger's cached
+    // measurements stay valid (same reasoning as the paragraph above).
+    const lenis = getLenis();
+    lenis?.stop();
+
     const SCROLL_KEYS = new Set(["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", " "]);
 
     const isInsidePanel = (target: EventTarget | null) =>
@@ -172,6 +230,7 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef }: P
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("keydown", onKeyDown);
+      lenis?.start();
     };
   }, [rendered]);
 
@@ -239,10 +298,41 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef }: P
 
   if (!rendered) return null;
 
-  const activeProject = rendered;
+  const activeProject = overrideProject ?? rendered;
   const titleId = `project-overlay-title-${activeProject.id}`;
   const openClass = entered ? " is-open" : "";
   const flipClass = flip ? " flip-active" : "";
+
+  const activeIndex = allProjects.findIndex((candidate) => candidate.id === activeProject.id);
+  const prevProject =
+    activeIndex === -1 ? null : allProjects[(activeIndex - 1 + allProjects.length) % allProjects.length];
+  const nextProject = activeIndex === -1 ? null : allProjects[(activeIndex + 1) % allProjects.length];
+
+  // In-place prev/next swap: simple cross-fade of the content block only —
+  // the FLIP open/close mechanics (`rendered`/`flip`) are untouched, so this
+  // never replays the shared-element morph. Reduced motion swaps instantly.
+  const navigateTo = (target: Project) => {
+    if (target.id === activeProject.id) return;
+    const reduce = window.matchMedia(REDUCED_MOTION_QUERY).matches;
+    panelRef.current?.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+    const el = contentRef.current;
+    if (!el || reduce) {
+      setOverrideProject(target);
+      return;
+    }
+    gsap.to(el, {
+      opacity: 0,
+      y: 8,
+      duration: 0.18,
+      ease: "power2.in",
+      onComplete: () => {
+        setOverrideProject(target);
+        requestAnimationFrame(() => {
+          gsap.fromTo(el, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" });
+        });
+      },
+    });
+  };
 
   // Rendered via a portal to document.body: the Projects deck's pinned
   // <section> gets a GSAP-applied CSS transform while scrubbing, and any
@@ -253,6 +343,7 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef }: P
     <div
       className={`project-overlay-backdrop${openClass}${flipClass}`}
       ref={backdropRef}
+      data-lenis-prevent=""
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
@@ -275,79 +366,145 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef }: P
             <X size={20} />
           </button>
 
-          <span className="project-overlay-eyebrow">{activeProject.category}</span>
-          <h2 id={titleId} className="project-overlay-title">
-            {activeProject.title}
-          </h2>
-          {activeProject.subtitle && (
-            <p className="project-overlay-subtitle">{activeProject.subtitle}</p>
-          )}
-
-          {activeProject.image && (
-            <img
-              className="project-overlay-media"
-              src={activeProject.image}
-              alt={`${activeProject.title} cover`}
-            />
-          )}
-
-          {activeProject.role && (
-            <p className="project-overlay-role">
-              <span>MY ROLE</span>
-              {activeProject.role}
-            </p>
-          )}
-
-          {activeProject.overview && (
-            <p className="project-overlay-overview">{activeProject.overview}</p>
-          )}
-
-          {activeProject.highlights && activeProject.highlights.length > 0 && (
-            <div className="project-overlay-highlights">
-              <span className="project-overlay-label">HIGHLIGHTS</span>
-              <ul>
-                {activeProject.highlights.map((highlight) => (
-                  <li key={highlight}>{highlight}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {activeProject.tech.length > 0 && (
-            <ul className="project-tags project-overlay-tags">
-              {activeProject.tech.map((tech) => (
-                <li className="project-tag" key={tech}>
-                  {tech}
-                </li>
-              ))}
-            </ul>
-          )}
-
-          {(activeProject.links?.live || activeProject.links?.github) && (
-            <div className="project-overlay-actions">
-              {activeProject.links?.live && (
-                <a
-                  ref={magneticLive}
-                  className="project-overlay-cta project-overlay-cta-primary"
-                  href={activeProject.links.live}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  LIVE SITE ↗
-                </a>
-              )}
-              {activeProject.links?.github && (
-                <a
-                  ref={magneticGithub}
-                  className="project-overlay-cta project-overlay-cta-secondary"
-                  href={activeProject.links.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  GITHUB ↗
-                </a>
+          <div className="project-overlay-content" ref={contentRef}>
+            <div className="project-overlay-header ov-reveal">
+              <span className="project-overlay-eyebrow">{activeProject.category}</span>
+              <h2 id={titleId} className="project-overlay-title">
+                {activeProject.title}
+              </h2>
+              {activeProject.subtitle && (
+                <p className="project-overlay-subtitle">{activeProject.subtitle}</p>
               )}
             </div>
+
+            {activeProject.overview && (
+              <p className="project-overlay-lede ov-reveal">{activeProject.overview}</p>
+            )}
+
+            <div className="project-overlay-meta ov-reveal">
+              {activeProject.role && (
+                <div className="project-overlay-meta-item">
+                  <span className="project-overlay-meta-label">ROLE</span>
+                  <p className="project-overlay-meta-value">{activeProject.role}</p>
+                </div>
+              )}
+
+              {activeProject.tech.length > 0 && (
+                <div className="project-overlay-meta-item">
+                  <span className="project-overlay-meta-label">STACK</span>
+                  <ul className="project-tags project-overlay-meta-tags">
+                    {activeProject.tech.map((tech) => (
+                      <li className="project-tag" key={tech}>
+                        {tech}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {(activeProject.links?.live || activeProject.links?.github) && (
+                <div className="project-overlay-meta-item">
+                  <span className="project-overlay-meta-label">LINKS</span>
+                  <div className="project-overlay-meta-links">
+                    {activeProject.links?.live && (
+                      <a
+                        ref={magneticLive}
+                        className="project-overlay-cta project-overlay-cta-primary"
+                        href={activeProject.links.live}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        LIVE SITE ↗
+                      </a>
+                    )}
+                    {activeProject.links?.github && (
+                      <a
+                        ref={magneticGithub}
+                        className="project-overlay-cta project-overlay-cta-secondary"
+                        href={activeProject.links.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        GITHUB ↗
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {activeProject.image ? (
+              <div className="project-overlay-media-wrap ov-reveal">
+                <img
+                  ref={mediaRef}
+                  className="project-overlay-media"
+                  src={activeProject.image}
+                  alt={`${activeProject.title} cover`}
+                />
+              </div>
+            ) : (
+              activeProject.flow &&
+              activeProject.flow.length > 0 && (
+                <div className="project-overlay-flow ov-reveal">
+                  <span className="project-overlay-label">SYSTEM FLOW</span>
+                  <ol className="project-overlay-flow-steps">
+                    {activeProject.flow.map((step, index) => (
+                      <li className="project-overlay-flow-step" key={step}>
+                        <span>{step}</span>
+                        {index < activeProject.flow!.length - 1 && (
+                          <span className="project-overlay-flow-arrow" aria-hidden="true">
+                            →
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )
+            )}
+
+            {activeProject.highlights && activeProject.highlights.length > 0 && (
+              <div className="project-overlay-highlights ov-reveal">
+                <span className="project-overlay-label">HIGHLIGHTS</span>
+                <ol className="project-overlay-highlight-list">
+                  {activeProject.highlights.map((highlight, index) => {
+                    const { label, rest } = splitHighlight(highlight);
+                    return (
+                      <li className="project-overlay-highlight" key={highlight}>
+                        <span className="project-overlay-highlight-num">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <p className="project-overlay-highlight-copy">
+                          {label && <strong className="project-overlay-highlight-label">{label}</strong>}
+                          {rest}
+                        </p>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </div>
+            )}
+          </div>
+
+          {prevProject && nextProject && (
+            <nav className="project-overlay-navrow" aria-label="其他作品">
+              <button
+                type="button"
+                className="project-overlay-navbtn project-overlay-navbtn-prev"
+                onClick={() => navigateTo(prevProject)}
+              >
+                <span className="project-overlay-navbtn-label">← PREV</span>
+                <span className="project-overlay-navbtn-title">{prevProject.title}</span>
+              </button>
+              <button
+                type="button"
+                className="project-overlay-navbtn project-overlay-navbtn-next"
+                onClick={() => navigateTo(nextProject)}
+              >
+                <span className="project-overlay-navbtn-label">NEXT →</span>
+                <span className="project-overlay-navbtn-title">{nextProject.title}</span>
+              </button>
+            </nav>
           )}
         </div>
       </div>

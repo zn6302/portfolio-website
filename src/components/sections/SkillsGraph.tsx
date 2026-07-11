@@ -284,17 +284,22 @@ export function SkillsGraph() {
       const skills = root.querySelectorAll(".sg-node-skill");
 
       gsap.set(root.querySelectorAll(".sg-line"), { strokeDasharray: 1, strokeDashoffset: 1 });
-      gsap.set([center, ...cats, ...skills], { opacity: 0, y: 12, xPercent: -50, yPercent: -50 });
+      gsap.set([center, ...cats, ...skills], { opacity: 0, y: 16, xPercent: -50, yPercent: -50 });
 
+      // Stagger beat aligned with the sitewide 0.08–0.12s entrance band
+      // (MaskHeading is the reference at 0.7s / 0.08). The 20 skill nodes and
+      // their 20 connector lines use a 0.05/0.04 compromise so the stagger
+      // sweep stays under ~1.2s (19 × 0.05 = 0.95s) instead of dragging the
+      // constellation out past 2.5s at a full 0.08.
       const tl = gsap.timeline({
         scrollTrigger: { trigger: root, start: "top 78%", once: true },
         defaults: { ease: "power3.out" },
       });
       tl.to(center, { opacity: 1, y: 0, duration: 0.5 }, 0)
-        .to(trunks, { strokeDashoffset: 0, duration: 0.7, stagger: 0.06 }, 0.15)
-        .to(cats, { opacity: 1, y: 0, duration: 0.5, stagger: 0.07 }, 0.4)
-        .to(branchLines, { strokeDashoffset: 0, duration: 0.6, stagger: 0.02 }, 0.6)
-        .to(skills, { opacity: 1, y: 0, duration: 0.5, stagger: 0.03 }, 0.78);
+        .to(trunks, { strokeDashoffset: 0, duration: 0.7, stagger: 0.08 }, 0.15)
+        .to(cats, { opacity: 1, y: 0, duration: 0.5, stagger: 0.08 }, 0.4)
+        .to(branchLines, { strokeDashoffset: 0, duration: 0.6, stagger: 0.04 }, 0.6)
+        .to(skills, { opacity: 1, y: 0, duration: 0.5, stagger: 0.05 }, 0.78);
     }, root);
 
         return () => {

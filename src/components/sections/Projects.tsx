@@ -3,7 +3,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { projects } from "../../data";
 import type { Project } from "../../types";
-import { AvailabilityPill } from "../ui";
+import { AvailabilityPill, MaskHeading } from "../ui";
 import { ProjectOverlay } from "./ProjectOverlay";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -47,6 +47,7 @@ function PanelCopy({
       <span className="deck-panel-eyebrow">{project.category}</span>
       <h3 className="deck-panel-title">{project.title}</h3>
       {project.subtitle && <p className="deck-panel-subtitle">{project.subtitle}</p>}
+      {project.outcome && <p className="deck-panel-outcome">{project.outcome}</p>}
       <p className="deck-panel-desc">{project.description}</p>
       {project.tech.length > 0 && (
         <ul className="project-tags">
@@ -235,7 +236,7 @@ export function Projects() {
     <section className="projects-deck" id="projects" ref={sectionRef}>
       <div className="section deck-head">
         <AvailabilityPill className="inline-availability" />
-        <h2>SELECTED WORKS</h2>
+        <MaskHeading text="SELECTED WORKS" />
         <p className="lead">
           這裡會放真實作品：HCI 研究、互動原型、creative coding sketch，或前端實作案例。
         </p>

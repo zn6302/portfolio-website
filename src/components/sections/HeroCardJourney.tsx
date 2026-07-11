@@ -386,10 +386,12 @@ export function HeroCardJourney() {
               className="linked-card-media linked-card-portrait"
               src={assets.aboutKeyframe}
               alt=""
+              width={2730}
+              height={1536}
             />
           </div>
           <div className="linked-card-face linked-card-back">
-            <img className="linked-card-media" src={assets.servicesPortrait} alt="" />
+            <img className="linked-card-media" src={assets.servicesPortrait} alt="" width={680} height={952} />
           </div>
         </div>
       </div>
