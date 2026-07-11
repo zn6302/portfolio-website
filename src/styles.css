@@ -63,6 +63,8 @@
    imprecisely against the Projects up/down scroll animation. */
 
 body {
+  position: relative; /* containing block for the grain ::before below — see
+    the grain section's comment for why this can't be position:fixed */
   margin: 0;
   min-width: 320px;
   overflow-x: hidden;
@@ -2666,4 +2668,53 @@ h2 {
     right: 16px;
     bottom: 16px;
   }
+}
+
+/* ---------------------------------------------------------------------- */
+/* Paper grain — static CSS-only noise, no JS / no network request         */
+/* ---------------------------------------------------------------------- */
+
+/* Full-document noise overlay so the "floating paper" surfaces read as
+   textured rather than flat-digital. A single 200x200 feTurbulence tile
+   (data-URI, ~380 bytes, stitched so it repeats seamlessly) is stretched
+   over the whole page via body::before.
+   - position: absolute (inset:0 on a position:relative <body>), NOT fixed.
+     Verified with a minimal repro: a position:fixed + mix-blend-mode
+     pseudo-element on <body> only blends correctly at scrollY 0 in Chromium
+     — once the page scrolls, the fixed layer keeps its very first painted
+     blend result and stops updating against the new backdrop (reproduced
+     with plain HTML/CSS, no React/GSAP/Lenis involved, so this is a browser
+     compositing limitation, not an app bug). Sizing the pseudo-element to
+     the full (very tall, sticky-pinned-deck) document box instead makes it
+     scroll together with the content, which keeps mix-blend-mode correct at
+     every scroll depth and still visually reads as "always there" since the
+     tile repeats the full page height.
+   - mix-blend-mode: overlay (not multiply) so it works on BOTH the light
+     paper sections and the dark --color-paper-deep bands (About/Footer):
+     overlay lightens above 50% gray and darkens below it, so a ~50%-gray
+     noise texture adds texture without uniformly muddying dark backgrounds
+     the way multiply would.
+   - z-index sits above ordinary section content (which is unpositioned /
+     z-index:auto or low single digits inside local stacking contexts) but
+     below .site-nav/.sticky-status/.ambient-audio-toggle (40) and the
+     .project-overlay-backdrop modal (100), so it never sits on top of the
+     overlay's blurred backdrop or the nav pill.
+   - pointer-events: none, no animation (static tile only — this is not a
+     5th animation language, just a background texture).
+   - html.no-grain is an escape hatch to disable it outright if needed. */
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'200'%20height%3D'200'%3E%3Cfilter%20id%3D'n'%3E%3CfeTurbulence%20type%3D'fractalNoise'%20baseFrequency%3D'0.9'%20numOctaves%3D'2'%20stitchTiles%3D'stitch'%2F%3E%3CfeColorMatrix%20type%3D'saturate'%20values%3D'0'%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D'200'%20height%3D'200'%20filter%3D'url(%23n)'%2F%3E%3C%2Fsvg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+}
+
+html.no-grain body::before {
+  content: none;
 }
