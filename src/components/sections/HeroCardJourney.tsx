@@ -300,11 +300,11 @@ export function HeroCardJourney() {
           .to(intro, { autoAlpha: 0, duration: a, ease: "none" }, 0)
           .to(profile, { autoAlpha: 1, duration: a, ease: "none" }, 0)
           // Phase 2/3 mirrors ScrollFlipCard: keep the card box stable and
-          // rotate/tilt/scale it as one object. The thin edge comes naturally
+          // rotate/scale it as one object. The thin edge comes naturally
           // from rotateY + perspective instead of squeezing width/height.
           .to(
             card,
-            { ...motionVars("services"), rotateY: 180, rotateX: 14, duration: b, ease: "power2.inOut" },
+            { ...motionVars("services"), rotateY: 180, rotateX: 0, duration: b, ease: "power2.inOut" },
             a,
           )
           // Swap the front face content while the card is showing its back face.
