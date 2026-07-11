@@ -23,7 +23,7 @@ export function Contact() {
             <a
               ref={magneticEmail}
               className="outline-button contact-direct-link"
-              href="mailto:vivian20021213@gmail.com"
+              href="mailto:znye.6302@gmail.com"
             >
               EMAIL ME ↗
             </a>

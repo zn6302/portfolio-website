@@ -25,7 +25,7 @@ export const HeroIntro = forwardRef<HTMLDivElement>(function HeroIntro(_props, r
   return (
     <div className="hero-intro" ref={setRefs}>
       <p className="hero-intro-eyebrow" data-parallax="6">
-        YEH TZU-NI
+        YE ZI-NI
       </p>
       <h2 className="hero-intro-title" data-parallax="10">
         FRONTEND / CREATIVE CODER
