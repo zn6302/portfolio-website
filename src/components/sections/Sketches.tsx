@@ -15,7 +15,7 @@ const CARD_META = [
 export function Sketches() {
   return (
     <section className="section sketches-section" id="sketches">
-      <div className="section-head">
+      <div className="section-head" data-scroll-reveal>
         <span className="sketches-eyebrow">PLAYGROUND / CREATIVE CODING</span>
         <MaskHeading text="PLAYGROUND" />
         <p className="lead">
@@ -23,7 +23,7 @@ export function Sketches() {
         </p>
       </div>
 
-      <div className="sketches-wall">
+      <div className="sketches-wall" data-scroll-reveal data-scroll-reveal-delay="0.16">
         {sketches.map((sketch, index) => {
           const meta = CARD_META[index % CARD_META.length];
           return (

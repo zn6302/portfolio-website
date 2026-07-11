@@ -7,7 +7,7 @@ import {
   Sketches,
 } from "./components/sections";
 import { AmbientAudioToggle, BackToTop } from "./components/ui";
-import { useAnchorScroll, useLenis } from "./hooks";
+import { useAnchorScroll, useLenis, useScrollReveal } from "./hooks";
 
 export default function App() {
   // Lenis owns window scroll on desktop (skipped under reduced-motion and on
@@ -15,6 +15,7 @@ export default function App() {
   // back to ScrollToPlugin otherwise.
   useLenis();
   useAnchorScroll();
+  useScrollReveal();
 
   return (
     <div className="app">

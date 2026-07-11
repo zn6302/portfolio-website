@@ -2424,6 +2424,8 @@ h2 {
 
 /* Profile hero — starts hidden, fades in behind/around the shrunk video. */
 .hero-profile {
+  --profile-card-half: 170px;
+  --profile-side-gap: 64px;
   position: absolute;
   inset: 0;
   z-index: 1;
@@ -2438,17 +2440,23 @@ h2 {
 }
 
 .hero-profile .hero-left {
-  justify-self: end;
+  position: absolute;
+  top: 50%;
+  right: calc(50% + var(--profile-card-half) + var(--profile-side-gap));
+  width: min(370px, calc(50% - var(--profile-card-half) - var(--profile-side-gap)));
   text-align: right;
   padding: 0;
-  transform: none;
+  transform: translateY(-50%);
 }
 
 .hero-profile .hero-right {
-  justify-self: start;
+  position: absolute;
+  top: 50%;
+  left: calc(50% + var(--profile-card-half) + var(--profile-side-gap));
+  width: min(370px, calc(50% - var(--profile-card-half) - var(--profile-side-gap)));
   text-align: left;
   padding: 0;
-  transform: none;
+  transform: translateY(-50%);
 }
 
 .hero-profile .hero-right p {
@@ -2457,6 +2465,7 @@ h2 {
 
 /* The empty landing target the video flips into. Same footprint as the card. */
 .profile-card-slot {
+  grid-column: 2;
   justify-self: center;
   width: 340px;
   height: 476px;
@@ -2526,11 +2535,15 @@ h2 {
 
   .hero-profile .hero-left,
   .hero-profile .hero-right {
+    position: static;
+    width: auto;
     justify-self: center;
     text-align: center;
+    transform: none;
   }
 
   .profile-card-slot {
+    grid-column: auto;
     width: 260px;
     height: 364px;
   }

@@ -23,7 +23,7 @@ export function About({ disableCardFlip = false }: AboutProps) {
   return (
     <section className="section about-section" id="about" ref={sectionRef}>
       <div className="section-grid about-grid">
-        <div>
+        <div data-scroll-reveal>
           <AvailabilityPill className="inline-availability" />
           <MaskHeading text="ABOUT" />
           <p className="lead">

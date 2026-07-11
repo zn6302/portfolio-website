@@ -25,7 +25,7 @@ export function Services({ disableCardFlip = false }: ServicesProps) {
   return (
     <section className="section services" id="skills" ref={sectionRef}>
       <div className="section-grid">
-        <div>
+        <div data-scroll-reveal>
           <AvailabilityPill className="inline-availability" />
           <MaskHeading text="SKILLS / 技能棧" />
           <p className="lead">

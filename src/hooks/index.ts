@@ -9,3 +9,4 @@ export { useHeroParallax } from "./useHeroParallax";
 export { useAmbientAudio } from "./useAmbientAudio";
 export { useBackToTop } from "./useBackToTop";
 export { useLenis, getLenis } from "./useLenis";
+export { useScrollReveal } from "./useScrollReveal";

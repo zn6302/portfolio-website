@@ -275,7 +275,8 @@ export function SkillsGraph() {
     }
 
     // Entrance: lines grow via stroke-dashoffset, nodes fade + drift up in a
-    // trunk → categories → skills stagger. GSAP ScrollTrigger, plays once.
+    // trunk → categories → skills stagger. It resets after leaving the viewport
+    // so scrolling back to Skills replays the full constellation sequence.
     const ctx = gsap.context(() => {
       const trunks = root.querySelectorAll(".sg-line-trunk");
       const branchLines = root.querySelectorAll(".sg-line:not(.sg-line-trunk)");
@@ -292,7 +293,12 @@ export function SkillsGraph() {
       // sweep stays under ~1.2s (19 × 0.05 = 0.95s) instead of dragging the
       // constellation out past 2.5s at a full 0.08.
       const tl = gsap.timeline({
-        scrollTrigger: { trigger: root, start: "top 78%", once: true },
+        scrollTrigger: {
+          trigger: root,
+          start: "top 78%",
+          end: "bottom 22%",
+          toggleActions: "restart reset restart reset",
+        },
         defaults: { ease: "power3.out" },
       });
       tl.to(center, { opacity: 1, y: 0, duration: 0.5 }, 0)
