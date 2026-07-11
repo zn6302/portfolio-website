@@ -2437,7 +2437,28 @@ h2 {
      clamp ceiling (96px → 84px) so "FRONTEND / CREATIVE CODER" doesn't
      overflow its 14ch cap on desktop. */
   font-size: clamp(36px, 6.2vw, 84px);
+  font-weight: 900;
   line-height: 0.95;
+}
+
+/* Positioning sub-line under the hero title: mono, wide-tracked, quieter than
+   the title but firmer than the scroll hint — completes "who / what / wants
+   what" inside the first 3 seconds. */
+.hero-intro-sub {
+  margin: 0;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: clamp(13px, 1.3vw, 16px);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Below 760px the sticky AvailabilityPill ("OPEN TO 2026 INTERNSHIP") is
+   already on the same screen — drop the duplicate half, keep HCI × CC. */
+@media (max-width: 760px) {
+  .hero-intro-sub-extra {
+    display: none;
+  }
 }
 
 .hero-intro-hint {
