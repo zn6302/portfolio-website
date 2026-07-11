@@ -61,8 +61,8 @@ export function Services({ disableCardFlip = false }: ServicesProps) {
           </div>
         </div>
         <div className="tilt-frame services-image scroll-flip-card" ref={cardRef}>
-          <img className="scroll-flip-back" src={assets.portraitBack} alt="" aria-hidden="true" />
-          <img className="scroll-flip-front" src={assets.servicesPortrait} alt="Portrait of the designer" />
+          <img className="scroll-flip-back" src={assets.portraitBack} alt="" aria-hidden="true" width={2730} height={1536} loading="lazy" />
+          <img className="scroll-flip-front" src={assets.servicesPortrait} alt="Portrait of the designer" width={680} height={952} loading="lazy" />
         </div>
       </div>
     </section>

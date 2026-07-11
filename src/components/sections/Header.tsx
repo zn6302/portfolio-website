@@ -12,7 +12,7 @@ export function Header() {
   return (
     <>
       <header className={`site-nav ${scrolled ? "hidden" : ""}`} aria-label="Primary">
-        <img src={assets.avatar} alt="Portfolio creator avatar" />
+        <img src={assets.avatar} alt="Portfolio creator avatar" width={320} height={320} />
         <nav>
           {navItems.map((item) => (
             <a key={item} href={item === "Home" ? "#" : `#${item.toLowerCase()}`}>

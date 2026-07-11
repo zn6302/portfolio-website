@@ -10,7 +10,7 @@ export function Contact() {
     <section className="section contact-section" id="contact">
       <div className="contact-grid">
         <div className="portrait-card contact-portrait">
-          <img src={assets.portrait} alt="Portrait of portfolio creator" />
+          <img src={assets.portrait} alt="Portrait of portfolio creator" width={680} height={952} loading="lazy" />
           <HiBubble small />
         </div>
         <div className="contact-form contact-direct">
