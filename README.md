@@ -45,9 +45,10 @@ pnpm build       # 型別檢查 + 打包，主 bundle gzip ≤ 150KB
 pnpm test:rwd    # RWD 水平溢出掃描（先跑 build + preview，見下）
 ```
 
-RWD 掃描用 `puppeteer-core`（devDependency，走系統 Chrome、不下載瀏覽器），需先啟動 preview：
+RWD 掃描用 `puppeteer-core`（本地可選工具，走系統 Chrome、不下載瀏覽器）。首次使用前先安裝到本機，再啟動 preview：
 
 ```bash
+pnpm add -D puppeteer-core   # 本地 QA 需要；Cloudflare build 不需要
 pnpm build && pnpm preview   # 另開終端
 pnpm test:rwd                # 預設掃 24 個寬度；node scripts/rwd-scan.mjs 390,768 只掃指定寬度
 ```
