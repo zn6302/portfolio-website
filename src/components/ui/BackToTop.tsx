@@ -48,7 +48,7 @@ export function BackToTop() {
       aria-hidden={!visible}
       tabIndex={visible ? 0 : -1}
       onClick={handleClick}
-      className={`fixed right-5 bottom-20 max-[480px]:right-4 max-[480px]:bottom-[72px] z-40 flex h-11 w-11 items-center justify-center rounded-full border-2 border-ink bg-paper shadow-card transition-[opacity,transform,box-shadow] duration-300 ease-out hover:shadow-hover hover:-translate-y-0.5 ${
+      className={`fixed right-5 bottom-20 max-[480px]:right-4 max-[480px]:bottom-[72px] z-40 flex h-11 w-11 items-center justify-center rounded-full border-2 border-ink bg-paper shadow-card transition-[opacity,transform,box-shadow] duration-200 ease-out hover:shadow-hover hover:-translate-y-0.5 focus-visible:shadow-hover focus-visible:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-deep focus-visible:outline-offset-2 ${
         visible
           ? "opacity-100 translate-y-0 pointer-events-auto"
           : "opacity-0 translate-y-2 pointer-events-none"

@@ -133,11 +133,42 @@ img {
 }
 
 .site-nav nav a {
-  transition: color 160ms ease;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size: 0% 1px;
+  padding-bottom: 2px;
+  transition:
+    color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-size 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.site-nav nav a:hover {
+.site-nav nav a:hover,
+.site-nav nav a:focus-visible {
   color: var(--violet);
+  background-size: 100% 1px;
+}
+
+.site-nav nav a:focus-visible {
+  outline: 2px solid var(--brand-deep);
+  outline-offset: 4px;
+}
+
+.contact-pill {
+  transition:
+    background 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.contact-pill:hover,
+.contact-pill:focus-visible {
+  background: var(--violet);
+  transform: translateY(-2px);
+}
+
+.contact-pill:focus-visible {
+  outline: 2px solid var(--brand-deep);
+  outline-offset: 3px;
 }
 
 .contact-pill {
@@ -215,7 +246,7 @@ img {
   gap: 6px;
   padding: 8px;
   border: 1px solid var(--line);
-  border-radius: 18px;
+  border-radius: 12px;
   background: rgba(255, 255, 255, 0.95);
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.08);
   backdrop-filter: blur(16px);
@@ -227,6 +258,17 @@ img {
   place-items: center;
   border-radius: 999px;
   font-size: 13px;
+  transition: opacity 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mobile-drawer a:hover,
+.mobile-drawer a:focus-visible {
+  opacity: 0.75;
+}
+
+.mobile-drawer a:focus-visible {
+  outline: 2px solid var(--brand-deep);
+  outline-offset: 2px;
 }
 
 .mobile-drawer a:last-child {
@@ -378,7 +420,7 @@ h1 {
 .portrait-card > img {
   width: 340px;
   height: 476px;
-  border-radius: 18px;
+  border-radius: 12px;
   object-fit: cover;
 }
 
@@ -428,11 +470,11 @@ h1 {
   opacity: 0;
   font-size: 44px;
   font-weight: 400;
-  transition: opacity 160ms ease;
+  transition: opacity 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hi-bubble svg {
-  transition: opacity 160ms ease;
+  transition: opacity 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hi-bubble:hover span,
@@ -516,7 +558,7 @@ h2 {
 
 .tilt-frame {
   justify-self: end;
-  border-radius: 26px;
+  border-radius: 12px;
   overflow: hidden;
   transform: rotate(8deg);
   transform-origin: 50% 50%;
@@ -575,7 +617,10 @@ h2 {
   stroke-width: 1.4;
   stroke-linecap: round;
   opacity: 0.9;
-  transition: stroke 280ms ease, opacity 280ms ease, stroke-width 280ms ease;
+  transition:
+    stroke 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    stroke-width 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sg-line-trunk {
@@ -603,7 +648,11 @@ h2 {
   border: 1.5px solid var(--line);
   box-shadow: var(--shadow-card);
   white-space: nowrap;
-  transition: transform 280ms ease, box-shadow 280ms ease, border-color 280ms ease, opacity 280ms ease;
+  transition:
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sg-node.is-dim {
@@ -783,6 +832,28 @@ h2 {
   font-size: 19px;
 }
 
+.contact-row a {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size: 0% 1px;
+  padding-bottom: 2px;
+  transition:
+    opacity 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-size 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.contact-row a:hover,
+.contact-row a:focus-visible {
+  opacity: 0.8;
+  background-size: 100% 1px;
+}
+
+.contact-row a:focus-visible {
+  outline: 2px solid var(--paper-2);
+  outline-offset: 3px;
+}
+
 .socials {
   display: flex;
   gap: 24px;
@@ -794,6 +865,25 @@ h2 {
   font-size: 28px;
   font-weight: 800;
   line-height: 1;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size: 0% 2px;
+  padding-bottom: 2px;
+  transition:
+    color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-size 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.socials a:hover,
+.socials a:focus-visible {
+  color: var(--jade);
+  background-size: 100% 2px;
+}
+
+.socials a:focus-visible {
+  outline: 2px solid var(--paper-2);
+  outline-offset: 3px;
 }
 
 .socials.compact {
@@ -818,13 +908,22 @@ h2 {
   color: var(--accent-deep);
   font-size: 30px;
   line-height: 1;
-  transition: background 160ms ease, color 160ms ease, transform 160ms ease;
+  transition:
+    background 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.outline-button:hover {
+.outline-button:hover,
+.outline-button:focus-visible {
   background: var(--accent);
   color: #fff;
   transform: translateY(-2px);
+}
+
+.outline-button:focus-visible {
+  outline: 2px solid var(--brand-deep);
+  outline-offset: 3px;
 }
 
 /* While useMagnetic controls a button's transform (desktop, pointer:fine),
@@ -907,7 +1006,7 @@ h2 {
   border-radius: 12px;
   background: var(--paper);
   box-shadow: var(--shadow-hover);
-  transition: box-shadow 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .deck-panel-media-img {
@@ -1022,7 +1121,9 @@ h2 {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background 200ms ease, color 200ms ease;
+  transition:
+    background 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    color 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .deck-panel-cue:hover,
@@ -1043,10 +1144,17 @@ h2 {
   letter-spacing: 0.03em;
   text-decoration: underline;
   text-underline-offset: 3px;
+  transition: color 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.deck-panel-link:hover {
+.deck-panel-link:hover,
+.deck-panel-link:focus-visible {
   color: var(--accent-deep);
+}
+
+.deck-panel-link:focus-visible {
+  outline: 2px solid var(--brand-deep);
+  outline-offset: 3px;
 }
 
 /* The "查看詳情" button opens the ProjectOverlay. Hovering the panel only lifts
@@ -1169,12 +1277,20 @@ h2 {
   background: var(--paper);
   color: var(--ink);
   cursor: pointer;
-  transition: background 160ms ease, transform 160ms ease;
+  transition:
+    background 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.project-overlay-close:hover {
+.project-overlay-close:hover,
+.project-overlay-close:focus-visible {
   background: var(--periwinkle);
   transform: translateY(-2px);
+}
+
+.project-overlay-close:focus-visible {
+  outline: 2px solid var(--brand-deep);
+  outline-offset: 2px;
 }
 
 .project-overlay-content {
@@ -1388,7 +1504,16 @@ h2 {
   font-weight: 700;
   letter-spacing: 0.04em;
   text-align: center;
-  transition: background 160ms ease, color 160ms ease, transform 160ms ease, border-color 160ms ease;
+  transition:
+    background 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.project-overlay-cta:focus-visible {
+  outline: 2px solid var(--brand-deep);
+  outline-offset: 3px;
 }
 
 .project-overlay-cta-primary {
@@ -1397,7 +1522,8 @@ h2 {
   color: #fff;
 }
 
-.project-overlay-cta-primary:hover {
+.project-overlay-cta-primary:hover,
+.project-overlay-cta-primary:focus-visible {
   background: var(--accent-deep);
   border-color: var(--accent-deep);
   transform: translateY(-2px);
@@ -1409,7 +1535,8 @@ h2 {
   color: var(--brand-deep);
 }
 
-.project-overlay-cta-secondary:hover {
+.project-overlay-cta-secondary:hover,
+.project-overlay-cta-secondary:focus-visible {
   background: var(--brand-deep);
   border-color: var(--brand-deep);
   color: #fff;
@@ -1438,13 +1565,22 @@ h2 {
   color: var(--ink);
   text-align: left;
   cursor: pointer;
-  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+  transition:
+    border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    background 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.project-overlay-navbtn:hover {
+.project-overlay-navbtn:hover,
+.project-overlay-navbtn:focus-visible {
   border-color: var(--brand);
   background: var(--soft);
   transform: translateY(-2px);
+}
+
+.project-overlay-navbtn:focus-visible {
+  outline: 2px solid var(--brand-deep);
+  outline-offset: 2px;
 }
 
 .project-overlay-navbtn-next {
@@ -1509,81 +1645,6 @@ h2 {
   }
 }
 
-.project-card {
-  position: relative;
-  min-height: 747px;
-  overflow: hidden;
-  border-radius: 20px;
-  background: #111;
-}
-
-.project-card img,
-.project-shade {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.project-card img {
-  object-fit: cover;
-}
-
-.project-shade {
-  background: linear-gradient(180deg, rgba(12, 12, 13, 0.34), rgba(12, 12, 13, 0.78));
-}
-
-.project-copy {
-  position: absolute;
-  inset: auto 80px 82px;
-  z-index: 2;
-  display: grid;
-  justify-items: center;
-  color: #fff;
-  text-align: center;
-}
-
-.project-copy span {
-  display: inline-grid;
-  min-height: 30px;
-  padding: 5px 18px;
-  place-items: center;
-  border-radius: 999px;
-  background: var(--violet);
-  color: #fff;
-  font-size: 14px;
-  font-weight: 400;
-}
-
-.project-copy h3 {
-  margin: 38px 0 14px;
-  font-size: clamp(44px, 6vw, 70px);
-  line-height: 1;
-}
-
-.project-copy p {
-  max-width: 620px;
-  margin: 0;
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 1.5;
-}
-
-.round-link {
-  position: absolute;
-  left: 50%;
-  bottom: 38px;
-  z-index: 3;
-  display: grid;
-  width: 70px;
-  height: 70px;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--violet);
-  color: #fff;
-  transform: translateX(-50%);
-}
-
 .contact-section {
   padding-bottom: 120px;
 }
@@ -1646,7 +1707,9 @@ h2 {
   outline: none;
   font-size: 16px;
   font-weight: 400;
-  transition: border-color 160ms ease, box-shadow 160ms ease;
+  transition:
+    border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .contact-form input:focus,
@@ -1670,7 +1733,7 @@ h2 {
 .contact-form textarea {
   min-height: 140px;
   padding: 24px;
-  border-radius: 22px;
+  border-radius: 8px;
   resize: vertical;
 }
 
@@ -1729,6 +1792,25 @@ h2 {
 .footer-top a:not(.socials a) {
   font-size: 20px;
   font-weight: 700;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size: 0% 1px;
+  padding-bottom: 2px;
+  transition:
+    opacity 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-size 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.footer-top a:not(.socials a):hover,
+.footer-top a:not(.socials a):focus-visible {
+  opacity: 0.8;
+  background-size: 100% 1px;
+}
+
+.footer-top a:not(.socials a):focus-visible {
+  outline: 2px solid var(--paper-2);
+  outline-offset: 3px;
 }
 
 .footer-bottom {
@@ -1749,6 +1831,17 @@ h2 {
 
 .footer-bottom a {
   text-decoration: underline;
+  transition: opacity 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.footer-bottom a:hover,
+.footer-bottom a:focus-visible {
+  opacity: 0.8;
+}
+
+.footer-bottom a:focus-visible {
+  outline: 2px solid var(--paper-2);
+  outline-offset: 3px;
 }
 
 .created {
@@ -1804,12 +1897,17 @@ h2 {
   border-radius: 12px;
   text-decoration: none;
   transform: rotate(var(--card-rot, 0deg));
-  transition: transform 220ms ease;
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sketch-card:hover,
 .sketch-card:focus-visible {
   transform: rotate(var(--card-rot, 0deg)) scale(1.04);
+}
+
+.sketch-card:focus-visible {
+  outline: 2px solid var(--brand-deep);
+  outline-offset: 4px;
 }
 
 .sketch-card-float {
@@ -1830,7 +1928,7 @@ h2 {
   border-radius: 12px;
   background: var(--soft);
   box-shadow: var(--shadow-card);
-  transition: box-shadow 220ms ease;
+  transition: box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sketch-card:hover .sketch-card-media,
@@ -1858,7 +1956,7 @@ h2 {
   background: linear-gradient(180deg, transparent 55%, rgba(41, 32, 37, 0.78) 100%);
   color: #fff;
   opacity: 0;
-  transition: opacity 220ms ease;
+  transition: opacity 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sketch-card:hover .sketch-card-caption,
@@ -2035,7 +2133,7 @@ h2 {
   .portrait-card > img {
     width: 180px;
     height: 250px;
-    border-radius: 14px;
+    border-radius: 12px;
   }
 
   .hero-right {
@@ -2093,7 +2191,7 @@ h2 {
     width: min(260px, 100%);
     margin: 32px auto 0;
     transform: none;
-    border-radius: 16px;
+    border-radius: 12px;
   }
 
   .services-image img {
@@ -2176,46 +2274,6 @@ h2 {
     font-size: 16px;
   }
 
-  .project-card {
-    min-height: 350px;
-    border-radius: 18px;
-    overflow: visible;
-  }
-
-  .project-card img,
-  .project-shade {
-    height: 350px;
-    border-radius: 18px;
-  }
-
-  .project-copy {
-    inset: 130px 18px auto;
-  }
-
-  .project-copy span {
-    min-height: 29px;
-    font-size: 14px;
-  }
-
-  .project-copy h3 {
-    margin: 18px 0 0;
-    font-size: 31px;
-  }
-
-  .project-copy p {
-    position: absolute;
-    top: 264px;
-    left: 0;
-    right: 0;
-    color: var(--ink);
-    text-align: left;
-    font-size: 16px;
-  }
-
-  .round-link {
-    display: none;
-  }
-
   .contact-section {
     padding-top: 64px;
   }
@@ -2232,7 +2290,7 @@ h2 {
   .contact-portrait > img {
     width: 180px;
     height: 250px;
-    border-radius: 14px;
+    border-radius: 12px;
   }
 
   .contact-portrait .hi-bubble {
@@ -2434,7 +2492,7 @@ h2 {
   justify-self: center;
   width: 340px;
   height: 476px;
-  border-radius: 18px;
+  border-radius: 12px;
 }
 
 /* In-flow slot video. Only shown in the reduced-motion static fallback
@@ -2588,7 +2646,11 @@ h2 {
   backdrop-filter: blur(14px);
   color: var(--muted);
   cursor: pointer;
-  transition: background 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+  transition:
+    background 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .ambient-audio-toggle:hover,
@@ -2597,6 +2659,11 @@ h2 {
   color: var(--brand-deep);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
+}
+
+.ambient-audio-toggle:focus-visible {
+  outline: 2px solid var(--brand-deep);
+  outline-offset: 2px;
 }
 
 .ambient-audio-toggle.is-on {
