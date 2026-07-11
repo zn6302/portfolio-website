@@ -163,7 +163,7 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef }: P
       tl.to(inner, { opacity: 1, duration: 0.2, ease: "power2.out" }, 0.15);
       tl.to(
         revealTargets,
-        { opacity: 1, y: 0, duration: 0.4, ease: "power2.out", stagger: 0.08 },
+        { opacity: 1, y: 0, duration: 0.4, ease: "power3.out", stagger: 0.08 },
         0.2,
       );
       if (mediaRef.current) {
