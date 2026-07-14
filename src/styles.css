@@ -2744,89 +2744,6 @@ video.project-overlay-media {
 }
 
 /* ---------------------------------------------------------------------- */
-/* Ambient background audio toggle                                        */
-/* ---------------------------------------------------------------------- */
-
-/* Bottom-right corner is free on every breakpoint: .sticky-status/.site-nav
-   sit top-center, .mobile-drawer sits top-left/right, and the only other
-   fixed layer (.project-overlay-backdrop, z-index 100) is a full-screen
-   modal rather than a corner widget — so z-index 40 (matching the nav
-   layer) can't collide with anything. */
-.ambient-audio-toggle {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  z-index: 40;
-  display: grid;
-  grid-template-areas: "icon";
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.88);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-  backdrop-filter: blur(14px);
-  color: var(--muted);
-  cursor: pointer;
-  transition:
-    background 200ms cubic-bezier(0.16, 1, 0.3, 1),
-    color 200ms cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1),
-    transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.ambient-audio-toggle:hover,
-.ambient-audio-toggle:focus-visible {
-  background: #fff;
-  color: var(--brand-deep);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
-}
-
-.ambient-audio-toggle:focus-visible {
-  outline: 2px solid var(--brand-deep);
-  outline-offset: 2px;
-}
-
-.ambient-audio-toggle.is-on {
-  border-color: var(--brand);
-  color: var(--brand-deep);
-}
-
-.ambient-audio-toggle-icon {
-  display: grid;
-  place-items: center;
-  grid-area: 1 / 1;
-  opacity: 1;
-  transform: scale(1);
-  transition: opacity 200ms ease, transform 200ms ease;
-}
-
-.ambient-audio-toggle-icon-on {
-  opacity: 0;
-  transform: scale(0.6);
-}
-
-.ambient-audio-toggle.is-on .ambient-audio-toggle-icon-off {
-  opacity: 0;
-  transform: scale(0.6);
-}
-
-.ambient-audio-toggle.is-on .ambient-audio-toggle-icon-on {
-  opacity: 1;
-  transform: scale(1);
-}
-
-@media (max-width: 760px) {
-  .ambient-audio-toggle {
-    right: 16px;
-    bottom: 16px;
-  }
-}
-
-/* ---------------------------------------------------------------------- */
 /* Paper grain — static CSS-only noise, no JS / no network request         */
 /* ---------------------------------------------------------------------- */
 
@@ -2852,7 +2769,7 @@ video.project-overlay-media {
      the way multiply would.
    - z-index sits above ordinary section content (which is unpositioned /
      z-index:auto or low single digits inside local stacking contexts) but
-     below .site-nav/.sticky-status/.ambient-audio-toggle (40) and the
+     below .site-nav/.sticky-status (40) and the
      .project-overlay-backdrop modal (100), so it never sits on top of the
      overlay's blurred backdrop or the nav pill.
    - pointer-events: none, no animation (static tile only — this is not a

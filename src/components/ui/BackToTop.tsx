@@ -5,13 +5,7 @@ import { getLenis, useBackToTop } from "../../hooks";
 gsap.registerPlugin(ScrollToPlugin);
 
 /**
- * Fixed circular "back to top" button. Positioned right:20px / bottom:80px
- * (16px / 72px on mobile) — deliberately offset upward from the bottom-right
- * corner rather than sitting flush at bottom:20px, because another branch
- * (feat/bgm) already fixes a music-toggle button at right:20px, bottom:20px,
- * same 44px size and z-index:40. Neither branch can see the other's code, so
- * this stacks the two into a vertical column instead of overlapping once the
- * branches merge.
+ * Fixed circular "back to top" button in the bottom-right corner.
  *
  * Visibility follows useBackToTop (scroll > one viewport or 400px, whichever
  * is smaller) with a CSS opacity/translateY fade so it never appears with a
@@ -48,7 +42,7 @@ export function BackToTop() {
       aria-hidden={!visible}
       tabIndex={visible ? 0 : -1}
       onClick={handleClick}
-      className={`fixed right-5 bottom-20 max-[480px]:right-4 max-[480px]:bottom-[72px] z-40 flex h-11 w-11 items-center justify-center rounded-full border-2 border-ink bg-paper shadow-card transition-[opacity,transform,box-shadow] duration-200 ease-out hover:shadow-hover hover:-translate-y-0.5 focus-visible:shadow-hover focus-visible:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-deep focus-visible:outline-offset-2 ${
+      className={`fixed right-5 bottom-5 max-[480px]:right-4 max-[480px]:bottom-4 z-40 flex h-11 w-11 items-center justify-center rounded-full border-2 border-ink bg-paper shadow-card transition-[opacity,transform,box-shadow] duration-200 ease-out hover:shadow-hover hover:-translate-y-0.5 focus-visible:shadow-hover focus-visible:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-deep focus-visible:outline-offset-2 ${
         visible
           ? "opacity-100 translate-y-0 pointer-events-auto"
           : "opacity-0 translate-y-2 pointer-events-none"
