@@ -1036,6 +1036,19 @@ h2 {
   will-change: transform;
 }
 
+/* Demo clips are 16:9 (or wider), so the default 16/10 slot would crop them.
+   Match the slot to the footage and letterbox anything wider — the box only
+   gets shorter, never wider, so no breakpoint's layout shifts. */
+.deck-panel-media--video {
+  aspect-ratio: 16 / 9;
+}
+
+/* Diagrams and clips must be shown whole: contain against the paper slot
+   instead of cover-cropping their edges (and their labels) away. */
+.deck-panel-media-img.is-contain {
+  object-fit: contain;
+}
+
 .deck-panel-media-empty {
   display: grid;
   place-items: center;
@@ -1415,6 +1428,33 @@ h2 {
   object-fit: cover;
 }
 
+/* Demo video: never crop the frame (the UI in it is the content), so letterbox
+   against ink instead of cover-cropping like a still. */
+video.project-overlay-media {
+  max-height: 540px;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  background: var(--ink);
+}
+
+/* Diagram covers (myBot's flow) — shown whole, on paper rather than ink so the
+   letterboxing reads as the diagram's own margin. */
+.project-overlay-media.is-contain {
+  max-height: 560px;
+  object-fit: contain;
+  background: var(--paper);
+}
+
+/* A dedicated detail image may use a different aspect ratio from the card
+   cover. Preserve its natural ratio instead of forcing it into the cropped
+   cover slot. */
+.project-overlay-media.is-detail-image {
+  height: auto;
+  max-height: none;
+  object-fit: contain;
+  background: var(--paper);
+}
+
 /* myBot-style fallback when a project has no shipped screenshot — a mono
    "system flow" strip instead of a broken image or empty space. */
 .project-overlay-flow {
@@ -1510,6 +1550,63 @@ h2 {
 
 .project-overlay-highlight-label::after {
   content: " — ";
+}
+
+/* Per-detail demo clips: clip left, the copy explaining it right. Stacks below
+   768px, where the clip is a poster still anyway (see useHeroVideoSources). */
+.project-overlay-clips {
+  margin: 40px 0 0;
+}
+
+.project-overlay-clip-list {
+  display: grid;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-overlay-clip {
+  display: grid;
+  grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.project-overlay-clip-media {
+  overflow: hidden;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  background: var(--ink);
+}
+
+.project-overlay-clip-video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.project-overlay-clip-title {
+  margin: 0 0 6px;
+  color: var(--ink);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.project-overlay-clip-caption {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+@media (max-width: 767px) {
+  .project-overlay-clip {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
 }
 
 .project-overlay-cta {
@@ -1852,19 +1949,26 @@ h2 {
   position: relative;
   display: block;
   border-radius: 12px;
-  text-decoration: none;
   transform: rotate(var(--card-rot, 0deg));
   transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sketch-card:hover,
-.sketch-card:focus-visible {
+.sketch-card:focus-within {
   transform: rotate(var(--card-rot, 0deg)) scale(1.04);
 }
 
-.sketch-card:focus-visible {
+.sketch-card:focus-within {
   outline: 2px solid var(--brand-deep);
   outline-offset: 4px;
+}
+
+.sketch-card-live {
+  position: relative;
+  display: block;
+  border-radius: 12px;
+  color: inherit;
+  text-decoration: none;
 }
 
 .sketch-card-float {
@@ -1874,7 +1978,7 @@ h2 {
 }
 
 .sketch-card:hover .sketch-card-float,
-.sketch-card:focus-visible .sketch-card-float {
+.sketch-card:focus-within .sketch-card-float {
   animation-play-state: paused;
 }
 
@@ -1889,7 +1993,7 @@ h2 {
 }
 
 .sketch-card:hover .sketch-card-media,
-.sketch-card:focus-visible .sketch-card-media {
+.sketch-card:focus-within .sketch-card-media {
   box-shadow: var(--shadow-hover);
 }
 
@@ -1917,7 +2021,7 @@ h2 {
 }
 
 .sketch-card:hover .sketch-card-caption,
-.sketch-card:focus-visible .sketch-card-caption {
+.sketch-card:focus-within .sketch-card-caption {
   opacity: 1;
 }
 
@@ -1934,6 +2038,35 @@ h2 {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--periwinkle);
+}
+
+.sketch-card-description {
+  margin: 20px 4px 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.sketch-card-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  margin: 14px 4px 0;
+}
+
+.sketch-card-links a {
+  color: var(--brand-deep);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+}
+
+.sketch-card-links a:hover,
+.sketch-card-links a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 /* Touch devices have no hover: keep the caption legible without a tap. */
@@ -2368,13 +2501,23 @@ h2 {
 
 .hero-intro-title {
   margin: 0;
-  max-width: 14ch;
-  /* Noto Sans TC 700 runs wider than Antonio at the same size; trim the
-     clamp ceiling (96px → 84px) so "FRONTEND / CREATIVE CODER" doesn't
-     overflow its 14ch cap on desktop. */
-  font-size: clamp(36px, 6.2vw, 84px);
+  /* Chinese tagline: a CJK glyph is ~1em wide (vs ~0.55em for the `ch` unit
+     the old English title was capped with), so the cap is in `em` and the
+     ceiling comes down — 9 chars at 72px still fits the hero on desktop, and
+     CJK wraps between any two characters on narrow screens. */
+  max-width: 12em;
+  font-size: clamp(28px, 5.4vw, 72px);
   font-weight: 900;
-  line-height: 0.95;
+  line-height: 1.12;
+}
+
+.hero-intro-en {
+  margin: 10px 0 0;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: clamp(13px, 1.5vw, 18px);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  opacity: 0.75;
 }
 
 /* Positioning sub-line under the hero title: mono, wide-tracked, quieter than
@@ -2601,89 +2744,6 @@ h2 {
 }
 
 /* ---------------------------------------------------------------------- */
-/* Ambient background audio toggle                                        */
-/* ---------------------------------------------------------------------- */
-
-/* Bottom-right corner is free on every breakpoint: .sticky-status/.site-nav
-   sit top-center, .mobile-drawer sits top-left/right, and the only other
-   fixed layer (.project-overlay-backdrop, z-index 100) is a full-screen
-   modal rather than a corner widget — so z-index 40 (matching the nav
-   layer) can't collide with anything. */
-.ambient-audio-toggle {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  z-index: 40;
-  display: grid;
-  grid-template-areas: "icon";
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.88);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-  backdrop-filter: blur(14px);
-  color: var(--muted);
-  cursor: pointer;
-  transition:
-    background 200ms cubic-bezier(0.16, 1, 0.3, 1),
-    color 200ms cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1),
-    transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.ambient-audio-toggle:hover,
-.ambient-audio-toggle:focus-visible {
-  background: #fff;
-  color: var(--brand-deep);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
-}
-
-.ambient-audio-toggle:focus-visible {
-  outline: 2px solid var(--brand-deep);
-  outline-offset: 2px;
-}
-
-.ambient-audio-toggle.is-on {
-  border-color: var(--brand);
-  color: var(--brand-deep);
-}
-
-.ambient-audio-toggle-icon {
-  display: grid;
-  place-items: center;
-  grid-area: 1 / 1;
-  opacity: 1;
-  transform: scale(1);
-  transition: opacity 200ms ease, transform 200ms ease;
-}
-
-.ambient-audio-toggle-icon-on {
-  opacity: 0;
-  transform: scale(0.6);
-}
-
-.ambient-audio-toggle.is-on .ambient-audio-toggle-icon-off {
-  opacity: 0;
-  transform: scale(0.6);
-}
-
-.ambient-audio-toggle.is-on .ambient-audio-toggle-icon-on {
-  opacity: 1;
-  transform: scale(1);
-}
-
-@media (max-width: 760px) {
-  .ambient-audio-toggle {
-    right: 16px;
-    bottom: 16px;
-  }
-}
-
-/* ---------------------------------------------------------------------- */
 /* Paper grain — static CSS-only noise, no JS / no network request         */
 /* ---------------------------------------------------------------------- */
 
@@ -2709,7 +2769,7 @@ h2 {
      the way multiply would.
    - z-index sits above ordinary section content (which is unpositioned /
      z-index:auto or low single digits inside local stacking contexts) but
-     below .site-nav/.sticky-status/.ambient-audio-toggle (40) and the
+     below .site-nav/.sticky-status (40) and the
      .project-overlay-backdrop modal (100), so it never sits on top of the
      overlay's blurred backdrop or the nav pill.
    - pointer-events: none, no animation (static tile only — this is not a

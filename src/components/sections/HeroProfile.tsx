@@ -46,7 +46,7 @@ export const HeroProfile = forwardRef<HTMLDivElement, HeroProfileProps>(function
       <div className="hero-right">
         <h1>CODING</h1>
         <p>
-          我做讓人想動手玩的互動網站——已上線的活動官網、把動作變成音樂的樂器、可玩的媒體識讀遊戲。
+          我用程式，將世界表現出來。
         </p>
         <div className="hero-profile-actions">
           <AvailabilityPill className="hero-profile-badge" />

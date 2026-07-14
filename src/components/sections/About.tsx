@@ -27,8 +27,11 @@ export function About({ disableCardFlip = false }: AboutProps) {
           <AvailabilityPill className="inline-availability" />
           <MaskHeading text="ABOUT" />
           <p className="lead">
-            我是葉子倪，政大數位內容碩一，核心興趣是 HCI 與互動藝術，目標是成為 Creative Coder。
-            碩論進行中：用 Meta Ray-Ban Display 智慧眼鏡打造智慧博物館導覽（GraphRAG · VideoRAG · LLM）。
+            我相信前端工程師是翻譯者：在設計與程式之間、在人與機器之間。我做的每一件作品，都是一次翻譯練習——把動作翻譯成音樂、把情緒翻譯成氣味、把設計稿裡的故事翻譯成會動的程式碼。
+          </p>
+          <p className="lead">
+            我是葉子倪，政大數位內容，喜歡 HCI 與互動藝術，<br />
+            目標是成為「能把設計、互動、工程和使用者體驗整合起來的前端工程師」。
           </p>
           <div className="stats-row">
             <div>

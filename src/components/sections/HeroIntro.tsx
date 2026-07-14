@@ -28,15 +28,11 @@ export const HeroIntro = forwardRef<HTMLDivElement>(function HeroIntro(_props, r
         YE ZI-NI
       </p>
       <h2 className="hero-intro-title" data-parallax="10">
-        FRONTEND / CREATIVE CODER
+        FRONTEND / <br />
+        CREATIVE CODER
       </h2>
-      {/* 3-second positioning line: composed only of existing site copy
-          (CLAUDE.md positioning + the Header badge's OPEN TO 2026 INTERNSHIP).
-          Below 760px the sticky AvailabilityPill already shows the internship
-          signal on the same screen, so CSS hides the second half there. */}
-      <p className="hero-intro-sub" data-parallax="8">
-        HCI × CREATIVE CODING
-        <span className="hero-intro-sub-extra"> · OPEN TO 2026 INTERNSHIP</span>
+      <p className="hero-intro-en" data-parallax="9">
+        I translate the invisible into experience.
       </p>
       <p className="hero-intro-hint" data-parallax="4">
         Scroll <span aria-hidden="true">↓</span>

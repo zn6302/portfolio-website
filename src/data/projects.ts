@@ -6,14 +6,15 @@ export const projects: Project[] = [
     category: "INTERACTIVE / CREATIVE CODING",
     title: "All Things Scored",
     description:
-      "把影片中穿越觸發線的動作即時轉成音樂。Canvas 逐像素差分偵測動態，Tone.js 合成音階與效果鏈——位置決定音高、強度決定力度，節拍量化讓隨機動作變成旋律。",
+      "動作是看不見的旋律。世界上所有會動的東西都在演奏，只是我們聽不見——我畫了一條線，讓任何穿過它的動作都被翻譯成音符。",
     image: "/projects/all-things-scored.webp",
+    video: "/projects/all-things-scored.mp4",
     tech: ["React", "TypeScript", "Tone.js", "Canvas"],
-    subtitle: "motion becomes music — 把動作變成樂器",
+    subtitle: "motion becomes music — 動作是看不見的旋律",
     outcome: "即時影像 → 音樂 · 穩定 60fps · 獨立開發",
     role: "獨立開發",
     overview:
-      "把 Computer Vision（背景差分）、Web Audio DSP（Tone.js 效果鏈與節拍量化）、音樂理論（音階映射）接在一起的即時「動作樂器」——影片中的物體穿越觸發線，就變成不會走音的旋律。",
+      "世界上所有會動的東西都在演奏，只是我們聽不見——這件作品畫一條線，把穿過它的動作翻譯成旋律。Computer Vision（背景差分）、Web Audio DSP（Tone.js 效果鏈與節拍量化）與樂理（音階映射），三個領域在同一條線上演奏。",
     highlights: [
       "自適應背景模型：EMA 雙學習率（觸發 0.01／未觸發 0.06），只掃觸發線上一條 scanline＋抽樣，穩定 60fps",
       "位置決定音高、強度決定力度，映射對齊音階而非連續頻率——怎麼動都不走音",
@@ -21,6 +22,7 @@ export const projects: Project[] = [
       "高頻 rAF 迴圈用 ref 同步 state，避開 stale closure——React 動畫迴圈的正確寫法",
     ],
     links: {
+      live: "https://zn6302.github.io/All-Things-Scored",
       github: "https://github.com/zn6302/All-Things-Scored",
     },
   },
@@ -29,23 +31,22 @@ export const projects: Project[] = [
     category: "SHIPPED / FRONTEND",
     title: "OpenHCI 2026 官方網站",
     description:
-      "依 Figma 從零開發、已上線的高互動活動官網。故障字元解碼動畫、像素風 loader、JSON 資料驅動內容；GitHub 多人協作走 PR 流程。",
+      "設計說了一個故障與像素的故事，程式就用動畫把它說完。這不只是設計稿的重現，而是讓每一次解碼與進場都延續「(AI)dentity」的世界觀。",
     image: "/projects/openhci-2026.webp",
+    video: "/projects/openhci-2026.mp4",
     tech: ["Next.js 15", "React 19", "Tailwind v4", "Framer Motion"],
-    subtitle: "(AI)dentity — 已上線的高互動活動官網",
+    subtitle: "(AI)dentity — 設計跟程式講同一個故事",
     outcome: "已上線 · 2026.openhci.com · 多人 PR 協作",
     role: "前端工程：UI 元件開發、設計系統維護、主導互動動畫",
     overview:
-      "OpenHCI 2026 工作坊官方網站，依 Figma 從零開發、GitHub Organization 多人 PR 協作，已上線於 2026.openhci.com。年度主題「(AI)dentity」＝故障、解碼、像素——設計跟程式講同一個故事。",
+      "設計團隊用故障與像素講「(AI)dentity」的故事，我的工作是讓程式碼把這個故事說完。依 Figma 從零開發、GitHub Organization 多人 PR 協作，已上線於 2026.openhci.com——好的活動官網不是設計稿的影印機。",
     highlights: [
       "把 use-scramble 二次封裝成 ScrollScramble／LoopingShockScramble 設計系統元件，IntersectionObserver 進場才觸發、once 播完即 unobserve",
       "像素風 GlobalLoader 雙條件 gating：最短展示 2.5s＋document.fonts.ready，避免 FOUT 也保住儀式感",
-      "講師/FAQ/贊助全抽成 JSON 資料驅動——每年換屆的志工組織，非工程幹部也能直接改內容",
       "Next.js 15 SSG（output: export）→ GitHub Pages＋Cloudflare DNS，零伺服器維運",
     ],
     links: {
       live: "https://2026.openhci.com",
-      github: "https://github.com/OpenHCI-tw/2026-official-site",
     },
   },
   {
@@ -53,21 +54,22 @@ export const projects: Project[] = [
     category: "INTERACTIVE / GAME",
     title: "Click or Check?",
     description:
-      "媒體識讀互動遊戲。把「流量 vs 公信力」的媒體倫理變成玩家必須權衡的雙軸數值系統——聳動標題換粉絲、犧牲信任。",
+      "媒體倫理很抽象，直到你必須親手按下「分享」。每一則新聞都是流量與公信力的拉扯，親手做過的選擇，比被告知正確答案更難忘。",
     image: "/projects/click-or-check.webp",
+    video: "/projects/click-or-check.mp4",
     tech: ["React 19", "Vite", "Tailwind"],
-    subtitle: "流量 vs 公信力——可玩的媒體倫理",
+    subtitle: "流量 vs 公信力 — 可玩的媒體倫理",
     outcome: "雙軸數值系統 · 零圖表庫資料視覺化",
     role: "獨立開發",
     overview:
-      "媒體識讀互動遊戲。玩家經營新聞平台，在「查證加信任」與「聳動標題換粉絲」之間權衡——把抽象的媒體倫理變成親手操作的雙軸數值系統。",
+      "「查證再分享」人人會說，但沒人感覺過它有多難——這個遊戲把媒體倫理翻譯成你必須親手權衡的選擇。玩家坐上新聞編輯的位子：查證要花時間、聳動標題換流量、信任會流失，而計分表本身就是教學設計。",
     highlights: [
       "查證流程是完整的時間軸狀態機（verifying→結果→fading→移除），用 cardTimersRef 統一清理所有 timer，杜絕卸載後 setState 與 memory leak",
       "計分表＝教學設計：標題聳動度 × 新聞真假的二維矩陣，數值設計即媒體倫理",
       "頂部雙軸 bar 用純數學算 CSS linear-gradient 做即時資料視覺化，零圖表庫",
-      "題庫集中資料驅動，老師可獨立擴充",
     ],
     links: {
+      live: "https://media-literacy-game-jade.vercel.app/",
       github: "https://github.com/JiaXiang114462003/media-literacy-game",
     },
   },
@@ -76,15 +78,17 @@ export const projects: Project[] = [
     category: "AI AGENT / FULLSTACK",
     title: "myBot 體態管理 LINE Bot",
     description:
-      "拍食物照 → Gemini Vision 辨識熱量與營養素 → 依當日剩餘額度主動建議下一餐。規則路由先擋、LLM 只管語意理解，後端一人完成。",
-    // Backend-only project — no shipped UI screenshot; renders a system-flow block.
+      "把「維持健康」這件難事，翻譯成拍一張照的小事。體態管理缺的往往不是知識，而是一個簡單到能夠每天持續的入口。",
+    // Backend-only project — the "UI" is LINE itself, so the cover is a flow
+    // diagram with a real conversation screenshot rather than an app shot.
+    image: "/projects/mybot_flow_mockup.svg",
+    imageFit: "contain",
     tech: ["TypeScript", "Vercel Serverless", "Gemini", "Supabase"],
-    subtitle: "隨傳隨到的科學實證體態管理師",
+    subtitle: "隨傳隨到的 AI 體態教練 — 把難事變成小事",
     outcome: "LINE Bot · 八層意圖路由 · 後端一人完成",
     role: "獨立開發（後端一人完成）",
-    flow: ["拍食物照", "Gemini Vision 辨識", "熱量／營養素", "依剩餘額度建議下一餐"],
     overview:
-      "LINE 體態管理 Bot：拍食物照或打字即可估算熱量與營養素、追蹤每日進度。核心設計哲學——該用規則就用規則、該用公式就用公式、只在語意理解上用 LLM。",
+      "體態管理失敗從來不是缺知識，是記錄太麻煩——所以我把它翻譯成一個最小動作：拍張照。溫柔的體驗，底下是冷靜的工程取捨：明確指令用規則擋、熱量用科學公式算，只把語意理解留給 LLM。AI 產品的關鍵不是到處用 AI，而是知道哪裡不該用。",
     highlights: [
       "八層意圖路由：便宜的正則/關鍵字先擋明確指令，擋不掉才進 Gemini——成本、延遲與可預測性的取捨",
       "兩段式拍照辨識＋TTL 暫存：先存 pending_context 反問補充，把 LINE 兩則獨立 webhook 關聯起來，解決多模態估份量不準",
@@ -98,14 +102,15 @@ export const projects: Project[] = [
     category: "CAPSTONE / PRODUCT",
     title: "SMILEY 情緒日記",
     description:
-      "畢業專題、擔任組長。情緒分析日記 App：BERT 六分類情緒模型（85–93%）+ TaiwanLLM 聊天回饋 + 芳療推薦，從痛點到商業模式端到端。",
-    image: "/projects/smiley.webp",
+      "療癒，從感受情緒開始。SMILEY 把日記裡說不出口的情緒，翻譯成顏色、音樂與氣味，讓察覺在不被逼迫的時候自然發生。",
+    image: "/projects/2.jpg",
+    detailImage: "/projects/smiley.jpg",
     tech: ["Flutter", "BERT", "Firebase", "MySQL"],
     subtitle: "療癒，從感受情緒開始",
     outcome: "畢業專題組長 · BERT 六分類 85–93%",
     role: "組長：統籌架構、UI Flow 到商業模式",
     overview:
-      "畢業專題。情緒分析日記 App：寫日記 → BERT 判讀主情緒 → 數據化分析、聊天機器人回饋、精油／音樂推薦 → 社群分享。從痛點到商業模式端到端。",
+      "很多人不是沒有情緒，是說不出口——SMILEY 把日記裡的情緒翻譯成顏色、音樂與氣味，讓察覺自然發生。BERT 判讀主情緒後，App 用另一種語言回應你。這是我第一次從痛點、模型、UI Flow 一路做到商業模式。",
     highlights: [
       "BERT 六分類情緒模型：NTCIR-14 約 170 萬組語料、固定切分跑三次，precision/recall 85–93%",
       "TaiwanLLM＋Ollama 本地部署聊天回饋，並自建四面向量化評估 rubric 把關 LLM 品質",

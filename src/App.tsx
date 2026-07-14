@@ -6,7 +6,7 @@ import {
   Projects,
   Sketches,
 } from "./components/sections";
-import { AmbientAudioToggle, BackToTop } from "./components/ui";
+import { BackToTop } from "./components/ui";
 import { useAnchorScroll, useLenis, useScrollReveal } from "./hooks";
 
 export default function App() {
@@ -32,7 +32,6 @@ export default function App() {
       </main>
       <Footer />
       <BackToTop />
-      <AmbientAudioToggle />
     </div>
   );
 }

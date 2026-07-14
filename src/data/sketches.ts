@@ -1,19 +1,22 @@
 import type { Sketch } from "../types";
 
 // 唯一內容來源：Playground / creative coding 作品牆。
-// 每件都是自站託管的 p5.js sketch（public/sketches/<slug>/index.html），
-// 點擊卡片會在新分頁開啟可玩的原作。
+// 點擊卡片會在新分頁開啟 GitHub Pages 上可玩的原作。
 export const sketches: Sketch[] = [
   {
     slug: "pixel-blocks",
-    title: "像素色塊",
-    description: "隨機色票驅動的直向像素色塊生成，畫布重跑一次就換一種配色與紋理。",
+    title: "Tinshack",
+    description: "鐵皮屋的鏽蝕與摺痕被拆成色彩、光影與密集圓點——每次生成，都是一面被不同時間留下痕跡的牆。",
     preview: "/sketches/previews/pixel-blocks.webp",
+    liveUrl: "https://zn6302.github.io/ccc_project1_Tinshack/",
+    githubUrl: "https://github.com/zn6302/ccc_project1_Tinshack",
   },
   {
     slug: "interactive-garden",
-    title: "互動花圃",
-    description: "以黃金角度排列的向量花卉場域，滑鼠靠近會讓花朵微微擺動。",
+    title: "Flowers",
+    description: "黃金角度是一串數字，直到它開成一座會跟著滑鼠呼吸的花圃。",
     preview: "/sketches/previews/interactive-garden.webp",
+    liveUrl: "https://zn6302.github.io/ccc_project2_flowers/",
+    githubUrl: "https://github.com/zn6302/ccc_project2_flowers",
   },
 ];
