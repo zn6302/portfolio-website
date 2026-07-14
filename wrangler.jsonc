@@ -1,5 +1,6 @@
 {
-  "name": "portfolio-website",
+  // The default Worker is preview-only. Production must explicitly use --env production.
+  "name": "portfolio-website-preview",
   "compatibility_date": "2026-07-07",
   "assets": {
     "directory": "./dist"

@@ -37,6 +37,36 @@ pnpm build
 pnpm preview
 ```
 
+## 分支與部署
+
+本專案採用固定發布流程：
+
+```text
+dev  開發中、尚未正式發布
+  ↓ Pull Request
+main 已確認、可部署的正式版本
+  ↓ Cloudflare Workers
+https://znye6302.com
+```
+
+日常修改請推到 `dev`，確認後透過 Pull Request 合併到 `main`；不要直接把未確認的功能推到
+`main`。
+
+Cloudflare Workers Builds 應使用以下設定：
+
+| 設定 | 值 |
+| --- | --- |
+| Production branch | `main` |
+| Build command | `pnpm build` |
+| Deploy command | `pnpm deploy` |
+| Non-production branch builds | Enabled |
+| Non-production branch deploy command | `pnpm deploy:preview` |
+
+`pnpm deploy` 只允許 `main` 部署 `production` environment，並更新 `znye6302.com`；
+`pnpm deploy:preview` 只上傳 preview version，不會推進正式流量。`wrangler.jsonc` 的預設 Worker
+名稱為 `portfolio-website-preview`，正式 Worker `portfolio-website` 只能透過
+`--env production` 明確部署，避免 `dev` 誤覆蓋正式網站。
+
 ## 品質護欄
 
 ```bash
@@ -91,5 +121,3 @@ pnpm test:rwd                # 預設掃 24 個寬度；node scripts/rwd-scan.mj
 改文案只改 `src/data/`。新增作品在 `src/data/projects.ts` 補一筆，截圖轉 webp（單張
 ≤ 300KB）放 `public/projects/` 並填 `image` 欄位；後端型、無截圖的作品可省略 `image`，會自動
 渲染純標題卡而非破圖。
-</content>
-</invoke>
