@@ -1,19 +1,8 @@
 {
-  // The top-level Worker is production. The dev environment owns dev.znye6302.com.
+  // Deploy code only. Bind custom domains in the Cloudflare dashboard so branch deploys cannot remove DNS routes.
   "name": "portfolio-website",
   "compatibility_date": "2026-07-07",
   "assets": {
     "directory": "./dist"
-  },
-  "routes": [
-    { "pattern": "znye6302.com", "custom_domain": true },
-    { "pattern": "www.znye6302.com", "custom_domain": true }
-  ],
-  "env": {
-    "dev": {
-      "routes": [
-        { "pattern": "dev.znye6302.com", "custom_domain": true }
-      ]
-    }
   }
 }
