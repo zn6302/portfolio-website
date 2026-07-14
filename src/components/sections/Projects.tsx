@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { projects } from "../../data";
 import type { Project } from "../../types";
+import { useHeroVideoSources, useInViewVideo } from "../../hooks";
 import { AvailabilityPill, MaskHeading } from "../ui";
 import { ProjectOverlay } from "./ProjectOverlay";
 
@@ -14,12 +15,41 @@ const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 // stacking + scrub reads poorly on short mobile viewports / URL-bar resizes).
 const DECK_QUERY = "(min-width: 901px)";
 
+// Silent looping demo clip in place of the still cover (all-things-scored).
+// Same gate as the hero video (`useHeroVideoSources`): below 768px or under
+// reduced-motion we never set a `src` at all — those visitors get the poster
+// still and never pay for the download. Playback is also parked whenever the
+// card is off screen, so an idle tab isn't decoding video nobody is looking at.
+function PanelVideo({ project }: { project: Project & { video: string } }) {
+  const shouldLoadVideo = useHeroVideoSources();
+  const videoRef = useInViewVideo(shouldLoadVideo);
+
+  return (
+    <div className="deck-panel-media deck-panel-media--video">
+      <video
+        ref={videoRef}
+        className="deck-panel-media-img is-contain"
+        src={shouldLoadVideo ? project.video : undefined}
+        poster={project.image}
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        aria-label={`${project.title} demo`}
+      />
+    </div>
+  );
+}
+
 function PanelMedia({ project }: { project: Project }) {
+  if (project.video) {
+    return <PanelVideo project={project as Project & { video: string }} />;
+  }
   if (project.image) {
     return (
       <div className="deck-panel-media">
         <img
-          className="deck-panel-media-img"
+          className={`deck-panel-media-img${project.imageFit === "contain" ? " is-contain" : ""}`}
           src={project.image}
           alt={`${project.title} cover`}
         />
@@ -237,9 +267,6 @@ export function Projects() {
       <div className="section deck-head">
         <AvailabilityPill className="inline-availability" />
         <MaskHeading text="SELECTED WORKS" />
-        <p className="lead">
-          這裡會放真實作品：HCI 研究、互動原型、creative coding sketch，或前端實作案例。
-        </p>
       </div>
 
       <div className="deck-track">

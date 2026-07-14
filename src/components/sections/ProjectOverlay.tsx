@@ -2,8 +2,8 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import gsap from "gsap";
-import type { Project } from "../../types";
-import { getLenis, useMagnetic } from "../../hooks";
+import type { Project, ProjectClip } from "../../types";
+import { getLenis, useHeroVideoSources, useInViewVideo, useMagnetic } from "../../hooks";
 import { projects as allProjects } from "../../data";
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
@@ -19,6 +19,11 @@ interface ProjectOverlayProps {
 
 // FLIP is desktop-only (the deck cards) and skipped under reduced motion; the
 // compact stacked layout and reduced-motion both fall back to the CSS fade.
+function prefersReducedMotion() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia(REDUCED_MOTION_QUERY).matches;
+}
+
 function canFlip() {
   if (typeof window === "undefined") return false;
   return (
@@ -46,6 +51,38 @@ function splitHighlight(text: string): { label: string | null; rest: string } {
   return { label: text.slice(0, idx), rest: text.slice(idx + sepLen) };
 }
 
+// One "detail" row: the clip proves the thing works, the copy beside it says
+// why it was built that way. Silent + looping + no controls — it's an
+// illustration of the paragraph next to it, not something to sit and watch.
+// `preload="none"` means opening the overlay costs nothing until a clip is
+// scrolled to; phones and reduced-motion get the poster and never fetch it.
+function ClipDetail({ clip }: { clip: ProjectClip }) {
+  const shouldLoadVideo = useHeroVideoSources();
+  const videoRef = useInViewVideo(shouldLoadVideo);
+
+  return (
+    <li className="project-overlay-clip">
+      <div className="project-overlay-clip-media">
+        <video
+          ref={videoRef}
+          className="project-overlay-clip-video"
+          src={shouldLoadVideo ? clip.src : undefined}
+          poster={clip.poster}
+          muted
+          loop
+          playsInline
+          preload="none"
+          aria-label={clip.title}
+        />
+      </div>
+      <div className="project-overlay-clip-copy">
+        <h4 className="project-overlay-clip-title">{clip.title}</h4>
+        <p className="project-overlay-clip-caption">{clip.caption}</p>
+      </div>
+    </li>
+  );
+}
+
 // Full-screen project detail overlay. Rendered whenever `project` is set;
 // handles its own enter/exit animation, focus management, ESC/backdrop
 // dismissal, and background scroll locking (see the effect below for why it
@@ -63,7 +100,7 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef }: P
   const panelRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const mediaRef = useRef<HTMLImageElement>(null);
+  const mediaRef = useRef<HTMLElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const scrollPositionRef = useRef(0);
   const originRectRef = useRef<DOMRect | null>(null);
@@ -433,12 +470,44 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef }: P
               )}
             </div>
 
-            {activeProject.image ? (
+            {activeProject.video ? (
+              <div className="project-overlay-media-wrap ov-reveal">
+                {/* The clip is silent, so it can just play — but it keeps
+                    `controls` (27s of demo is worth being able to pause/scrub)
+                    and only autoplays when motion is welcome. Keyed so a
+                    prev/next swap tears the element down instead of leaving the
+                    previous project's demo playing. */}
+                <video
+                  key={activeProject.id}
+                  ref={(el) => {
+                    mediaRef.current = el;
+                  }}
+                  className="project-overlay-media"
+                  src={activeProject.video}
+                  poster={activeProject.image}
+                  controls
+                  muted
+                  loop
+                  playsInline
+                  autoPlay={!prefersReducedMotion()}
+                  preload="metadata"
+                  aria-label={`${activeProject.title} demo`}
+                />
+              </div>
+            ) : activeProject.detailImage || activeProject.image ? (
               <div className="project-overlay-media-wrap ov-reveal">
                 <img
-                  ref={mediaRef}
-                  className="project-overlay-media"
-                  src={activeProject.image}
+                  ref={(el) => {
+                    mediaRef.current = el;
+                  }}
+                  className={`project-overlay-media${
+                    activeProject.detailImage
+                      ? " is-detail-image"
+                      : activeProject.imageFit === "contain"
+                        ? " is-contain"
+                        : ""
+                  }`}
+                  src={activeProject.detailImage ?? activeProject.image}
                   alt={`${activeProject.title} cover`}
                 />
               </div>
@@ -482,6 +551,17 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef }: P
                     );
                   })}
                 </ol>
+              </div>
+            )}
+
+            {activeProject.clips && activeProject.clips.length > 0 && (
+              <div className="project-overlay-clips ov-reveal">
+                <span className="project-overlay-label">巧思 DETAILS</span>
+                <ul className="project-overlay-clip-list">
+                  {activeProject.clips.map((clip) => (
+                    <ClipDetail clip={clip} key={clip.src} />
+                  ))}
+                </ul>
               </div>
             )}
           </div>

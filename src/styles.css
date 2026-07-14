@@ -1036,6 +1036,19 @@ h2 {
   will-change: transform;
 }
 
+/* Demo clips are 16:9 (or wider), so the default 16/10 slot would crop them.
+   Match the slot to the footage and letterbox anything wider — the box only
+   gets shorter, never wider, so no breakpoint's layout shifts. */
+.deck-panel-media--video {
+  aspect-ratio: 16 / 9;
+}
+
+/* Diagrams and clips must be shown whole: contain against the paper slot
+   instead of cover-cropping their edges (and their labels) away. */
+.deck-panel-media-img.is-contain {
+  object-fit: contain;
+}
+
 .deck-panel-media-empty {
   display: grid;
   place-items: center;
@@ -1415,6 +1428,33 @@ h2 {
   object-fit: cover;
 }
 
+/* Demo video: never crop the frame (the UI in it is the content), so letterbox
+   against ink instead of cover-cropping like a still. */
+video.project-overlay-media {
+  max-height: 540px;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  background: var(--ink);
+}
+
+/* Diagram covers (myBot's flow) — shown whole, on paper rather than ink so the
+   letterboxing reads as the diagram's own margin. */
+.project-overlay-media.is-contain {
+  max-height: 560px;
+  object-fit: contain;
+  background: var(--paper);
+}
+
+/* A dedicated detail image may use a different aspect ratio from the card
+   cover. Preserve its natural ratio instead of forcing it into the cropped
+   cover slot. */
+.project-overlay-media.is-detail-image {
+  height: auto;
+  max-height: none;
+  object-fit: contain;
+  background: var(--paper);
+}
+
 /* myBot-style fallback when a project has no shipped screenshot — a mono
    "system flow" strip instead of a broken image or empty space. */
 .project-overlay-flow {
@@ -1510,6 +1550,63 @@ h2 {
 
 .project-overlay-highlight-label::after {
   content: " — ";
+}
+
+/* Per-detail demo clips: clip left, the copy explaining it right. Stacks below
+   768px, where the clip is a poster still anyway (see useHeroVideoSources). */
+.project-overlay-clips {
+  margin: 40px 0 0;
+}
+
+.project-overlay-clip-list {
+  display: grid;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-overlay-clip {
+  display: grid;
+  grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.project-overlay-clip-media {
+  overflow: hidden;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  background: var(--ink);
+}
+
+.project-overlay-clip-video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.project-overlay-clip-title {
+  margin: 0 0 6px;
+  color: var(--ink);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.project-overlay-clip-caption {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+@media (max-width: 767px) {
+  .project-overlay-clip {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
 }
 
 .project-overlay-cta {
