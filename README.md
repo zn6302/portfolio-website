@@ -45,9 +45,13 @@ pnpm preview
 dev  開發中、尚未正式發布
   ↓ Pull Request
 main 已確認、可部署的正式版本
-  ↓ Cloudflare Workers
-https://znye6302.com
 ```
+
+| 分支 | 網址 | 用途 |
+| --- | --- | --- |
+| `main` | https://znye6302.com | 正式網站 |
+| `dev` | https://dev.znye6302.com | 固定開發預覽站 |
+| 其他非正式分支 | Cloudflare 產生的臨時 Preview URL | 單次功能／PR 預覽 |
 
 日常修改請推到 `dev`，確認後透過 Pull Request 合併到 `main`；不要直接把未確認的功能推到
 `main`。
@@ -58,14 +62,15 @@ Cloudflare Workers Builds 應使用以下設定：
 | --- | --- |
 | Production branch | `main` |
 | Build command | `pnpm build` |
-| Deploy command | `pnpm deploy` |
+| Deploy command | `pnpm run deploy` |
 | Non-production branch builds | Enabled |
-| Non-production branch deploy command | `pnpm deploy:preview` |
+| Version command | `pnpm run deploy:preview` |
 
-`pnpm deploy` 只允許 `main` 部署 `production` environment，並更新 `znye6302.com`；
-`pnpm deploy:preview` 只上傳 preview version，不會推進正式流量。`wrangler.jsonc` 的預設 Worker
-名稱為 `portfolio-website-preview`，正式 Worker `portfolio-website` 只能透過
-`--env production` 明確部署，避免 `dev` 誤覆蓋正式網站。
+部署腳本會根據 Cloudflare 的 `WORKERS_CI_BRANCH` 自動分流：
+
+- `main`：執行 `wrangler deploy --env production`，更新 `znye6302.com`。
+- `dev`：執行 `wrangler deploy --env dev`，更新固定的 `dev.znye6302.com`。
+- 其他分支：執行 `wrangler versions upload`，建立隔離的臨時預覽版本。
 
 ## 品質護欄
 

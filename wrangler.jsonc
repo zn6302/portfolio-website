@@ -1,11 +1,17 @@
 {
-  // The default Worker is preview-only. Production must explicitly use --env production.
+  // The default Worker is for ephemeral previews. Named environments own fixed domains.
   "name": "portfolio-website-preview",
   "compatibility_date": "2026-07-07",
   "assets": {
     "directory": "./dist"
   },
   "env": {
+    "dev": {
+      "name": "portfolio-website-dev",
+      "routes": [
+        { "pattern": "dev.znye6302.com", "custom_domain": true }
+      ]
+    },
     "production": {
       "name": "portfolio-website",
       "routes": [
