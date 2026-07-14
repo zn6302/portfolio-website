@@ -27,14 +27,11 @@ if (mode === 'preview' && branch === 'main') {
 let wranglerArgs
 
 if (mode === 'production') {
-  // Production is the top-level Worker so its existing custom domains stay attached.
-  wranglerArgs = ['wrangler', 'deploy']
+  wranglerArgs = ['wrangler', 'deploy', '--name', 'portfolio-website']
 } else if (branch === 'dev') {
-  // Wrangler creates portfolio-website-dev from the top-level Worker name.
-  wranglerArgs = ['wrangler', 'deploy', '--env', 'dev']
+  wranglerArgs = ['wrangler', 'deploy', '--name', 'portfolio-website-dev']
 } else {
-  // Feature branches upload isolated versions without changing production traffic.
-  wranglerArgs = ['wrangler', 'versions', 'upload']
+  wranglerArgs = ['wrangler', 'versions', 'upload', '--name', 'portfolio-website-preview']
 }
 
 console.log(`Deploy mode: ${mode}; branch: ${branch || '(unknown)'}`)
