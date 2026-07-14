@@ -68,9 +68,9 @@ Cloudflare Workers Builds 應使用以下設定：
 
 部署腳本會根據 Cloudflare 的 `WORKERS_CI_BRANCH` 自動分流：
 
-- `main`：執行 `wrangler deploy --env production`，更新 `znye6302.com`。
+- `main`：執行 `wrangler deploy`，更新頂層正式 Worker 與 `znye6302.com`。
 - `dev`：執行 `wrangler deploy --env dev`，更新固定的 `dev.znye6302.com`。
-- 其他分支：執行 `wrangler versions upload`，建立隔離的臨時預覽版本。
+- 其他分支：執行 `wrangler versions upload`，建立臨時預覽版本，不改動正式流量。
 
 ## 品質護欄
 
