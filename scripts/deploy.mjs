@@ -27,12 +27,13 @@ if (mode === 'preview' && branch === 'main') {
 let wranglerArgs
 
 if (mode === 'production') {
-  wranglerArgs = ['wrangler', 'deploy', '--env', 'production']
+  // Production is the top-level Worker so its existing custom domains stay attached.
+  wranglerArgs = ['wrangler', 'deploy']
 } else if (branch === 'dev') {
-  // The shared dev branch owns the fixed dev.znye6302.com environment.
+  // Wrangler creates portfolio-website-dev from the top-level Worker name.
   wranglerArgs = ['wrangler', 'deploy', '--env', 'dev']
 } else {
-  // Feature branches get isolated ephemeral preview versions.
+  // Feature branches upload isolated versions without changing production traffic.
   wranglerArgs = ['wrangler', 'versions', 'upload']
 }
 
