@@ -1,22 +1,18 @@
 {
-  // The default Worker is for ephemeral previews. Named environments own fixed domains.
-  "name": "portfolio-website-preview",
+  // The top-level Worker is production. The dev environment owns dev.znye6302.com.
+  "name": "portfolio-website",
   "compatibility_date": "2026-07-07",
   "assets": {
     "directory": "./dist"
   },
+  "routes": [
+    { "pattern": "znye6302.com", "custom_domain": true },
+    { "pattern": "www.znye6302.com", "custom_domain": true }
+  ],
   "env": {
     "dev": {
-      "name": "portfolio-website-dev",
       "routes": [
         { "pattern": "dev.znye6302.com", "custom_domain": true }
-      ]
-    },
-    "production": {
-      "name": "portfolio-website",
-      "routes": [
-        { "pattern": "znye6302.com", "custom_domain": true },
-        { "pattern": "www.znye6302.com", "custom_domain": true }
       ]
     }
   }
