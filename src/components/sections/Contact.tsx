@@ -7,10 +7,10 @@ export function Contact() {
   const magneticGithub = useMagnetic();
 
   return (
-    <section className="section contact-section" id="contact">
+    <section className="section contact-section" id="contact" aria-label="聯絡方式">
       <div className="contact-grid">
         <div className="portrait-card contact-portrait" data-scroll-reveal>
-          <img src={assets.portrait} alt="Portrait of portfolio creator" width={680} height={952} loading="lazy" />
+          <img src={assets.portrait} alt="葉子倪的個人半身照" width={680} height={952} loading="lazy" />
           <HiBubble small />
         </div>
         <div className="contact-form contact-direct" data-scroll-reveal data-scroll-reveal-delay="0.16">

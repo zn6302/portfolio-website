@@ -21,7 +21,7 @@ export function About({ disableCardFlip = false }: AboutProps) {
   const magnetic = useMagnetic();
 
   return (
-    <section className="section about-section" id="about" ref={sectionRef}>
+    <section className="section about-section" id="about" aria-label="關於我" ref={sectionRef}>
       <div className="section-grid about-grid">
         <div data-scroll-reveal>
           <AvailabilityPill className="inline-availability" />
@@ -69,7 +69,7 @@ export function About({ disableCardFlip = false }: AboutProps) {
           <img
             className="scroll-flip-front"
             src={assets.aboutKeyframe}
-            alt="Illustration of the designer at her desk, from the hero animation"
+            alt="葉子倪坐在書桌前工作的插畫，擷取自首頁動畫畫格"
           />
         </div>
       </div>

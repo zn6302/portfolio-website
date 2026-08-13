@@ -10,3 +10,4 @@ export { useHeroParallax } from "./useHeroParallax";
 export { useBackToTop } from "./useBackToTop";
 export { useLenis, getLenis } from "./useLenis";
 export { useScrollReveal } from "./useScrollReveal";
+export { useProjectRoute } from "./useProjectRoute";

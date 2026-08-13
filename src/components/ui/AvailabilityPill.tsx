@@ -11,7 +11,7 @@ export function AvailabilityPill({ className = "" }: { className?: string }) {
     >
       <img
         src={assets.avatar}
-        alt="Portfolio creator avatar"
+        alt="葉子倪的個人照"
         className="w-10 h-10 rounded-full object-cover"
         width={320}
         height={320}

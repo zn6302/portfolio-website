@@ -21,9 +21,24 @@ export const HeroProfile = forwardRef<HTMLDivElement, HeroProfileProps>(function
 
   return (
     <div className="hero-profile" ref={ref}>
+      {/* "HCI" / "CODING" below are purely visual split-column typography (the
+          floating journey video flips in between them) — not real headings.
+          The page's one semantic <h1> lives in App.tsx, outside every
+          animated hero container so it survives all motion states (see the
+          comment there). These are demoted to <span> (not <p> — styles.css has
+          `.hero-right p` / `.hero-card-journey .hero-right p` /
+          `.hero-profile .hero-right p` rules meant for the body-copy
+          paragraph that sits next to "CODING"; those are tag selectors, so a
+          <p> here would accidentally match them too and lose its type size —
+          confirmed by an actual before/after DOM diff. <span> matches none of
+          them). `.hero-visual-title` is listed alongside every `h1` selector
+          in styles.css so the type scale stays literally the same rule, not a
+          copy that can drift; color still comes from the inherited
+          `.hero-card-journey { color: var(--color-paper-light) }`, same as
+          before — untouched. */}
       <div className="hero-left">
         <p className="eyebrow">葉子倪</p>
-        <h1>HCI</h1>
+        <span className="hero-visual-title">HCI</span>
       </div>
 
       {/* Flip landing target. On desktop it stays empty — the floating journey
@@ -44,7 +59,7 @@ export const HeroProfile = forwardRef<HTMLDivElement, HeroProfileProps>(function
       </div>
 
       <div className="hero-right">
-        <h1>CODING</h1>
+        <span className="hero-visual-title">CODING</span>
         <p>
           我用程式，將世界表現出來。
         </p>

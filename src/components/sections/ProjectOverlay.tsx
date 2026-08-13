@@ -15,6 +15,12 @@ interface ProjectOverlayProps {
   originEl?: HTMLElement | null;
   onClose: () => void;
   returnFocusRef: HTMLElement | null;
+  /** Called when the prev/next strip swaps the displayed project in place —
+   *  lets the parent keep the URL (`/projects/<slug>`) in sync via
+   *  `history.replaceState` without touching the open/close FLIP mechanics
+   *  below (`rendered`/`flip` are untouched by this). Optional so the
+   *  overlay still works standalone. */
+  onNavigate?: (slug: string) => void;
 }
 
 // FLIP is desktop-only (the deck cards) and skipped under reduced motion; the
@@ -95,7 +101,7 @@ function ClipDetail({ clip }: { clip: ProjectClip }) {
 // `overrideProject` lets the bottom prev/next strip swap the displayed case
 // study in place — without touching `rendered`/`flip`, so it never replays the
 // FLIP open animation, only a simple content cross-fade.
-export function ProjectOverlay({ project, originEl, onClose, returnFocusRef }: ProjectOverlayProps) {
+export function ProjectOverlay({ project, originEl, onClose, returnFocusRef, onNavigate }: ProjectOverlayProps) {
   const backdropRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
@@ -350,6 +356,7 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef }: P
   // never replays the shared-element morph. Reduced motion swaps instantly.
   const navigateTo = (target: Project) => {
     if (target.id === activeProject.id) return;
+    onNavigate?.(target.id);
     const reduce = window.matchMedia(REDUCED_MOTION_QUERY).matches;
     panelRef.current?.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
     const el = contentRef.current;

@@ -8,6 +8,10 @@ export interface Sketch {
   title: string;
   description: string;
   preview: string;
+  /** Descriptive alt text for the preview screenshot — describes what the
+   *  generated sketch actually looks like (not just "<title> 預覽畫面"), for
+   *  screen readers and Google Image Search. */
+  alt: string;
   liveUrl: string;
   githubUrl: string;
 }

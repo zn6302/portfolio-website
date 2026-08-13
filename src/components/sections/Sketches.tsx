@@ -14,7 +14,7 @@ const CARD_META = [
 
 export function Sketches() {
   return (
-    <section className="section sketches-section" id="sketches">
+    <section className="section sketches-section" id="sketches" aria-label="Playground：Creative Coding 互動作品">
       <div className="section-head" data-scroll-reveal>
         <span className="sketches-eyebrow">PLAYGROUND / CREATIVE CODING</span>
         <MaskHeading text="PLAYGROUND" />
@@ -46,7 +46,7 @@ export function Sketches() {
               >
                 <span className="sketch-card-float">
                   <span className="sketch-card-media">
-                    <img src={sketch.preview} alt={`${sketch.title} 預覽畫面`} loading="lazy" />
+                    <img src={sketch.preview} alt={sketch.alt} loading="lazy" />
                   </span>
                 </span>
                 <span className="sketch-card-caption">

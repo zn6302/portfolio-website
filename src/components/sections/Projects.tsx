@@ -1,9 +1,9 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { projects } from "../../data";
 import type { Project } from "../../types";
-import { useHeroVideoSources, useInViewVideo } from "../../hooks";
+import { useHeroVideoSources, useInViewVideo, useProjectRoute } from "../../hooks";
 import { AvailabilityPill, MaskHeading } from "../ui";
 import { ProjectOverlay } from "./ProjectOverlay";
 
@@ -126,7 +126,17 @@ function PanelCopy({
 }
 
 export function Projects() {
-  const [activeProject, setActiveProject] = useState<Project | null>(null);
+  // URL is the source of truth for which project is open (History API, no
+  // router — see useProjectRoute) — the overlay itself is just a lookup off
+  // `activeSlug`. This also makes deep links (`/projects/<slug>`) and
+  // browser back/forward "just work": on mount `activeSlug` is read straight
+  // from `location.pathname`, so a direct load opens the right overlay with
+  // no click having happened (originRef/focusRef stay null, which correctly
+  // skips the FLIP shared-element animation and falls back to the plain CSS
+  // fade — there's no card to FLIP from).
+  const { activeSlug, openProject: openRoute, closeProject: closeRoute, replaceProject } =
+    useProjectRoute();
+  const activeProject = activeSlug ? (projects.find((p) => p.id === activeSlug) ?? null) : null;
   const sectionRef = useRef<HTMLElement>(null);
   // FLIP expand origin (the clicked panel's media) and the element focus returns
   // to on close (the panel itself) — kept separate so the shared-element morph
@@ -257,10 +267,10 @@ export function Projects() {
     // on the panel artwork.
     focusRef.current = buttonEl;
     originRef.current = articleEl?.querySelector<HTMLElement>(".deck-panel-media") ?? articleEl ?? buttonEl;
-    setActiveProject(project);
+    openRoute(project.id);
   };
 
-  const closeProject = () => setActiveProject(null);
+  const closeProject = () => closeRoute();
 
   return (
     <section className="projects-deck" id="projects" ref={sectionRef}>
@@ -296,6 +306,7 @@ export function Projects() {
         project={activeProject}
         originEl={originRef.current}
         onClose={closeProject}
+        onNavigate={replaceProject}
         returnFocusRef={focusRef.current}
       />
     </section>

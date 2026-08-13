@@ -388,7 +388,12 @@ img {
   text-transform: uppercase;
 }
 
-h1 {
+/* `.hero-visual-title` = hero 的 "HCI" / "CODING" 兩個大字。它們是純視覺排版，
+   不是語意標題（全站唯一的 <h1> 在 App.tsx，見該檔註解），所以標籤是 <span>；
+   但字級必須與 h1 完全一致，因此一律跟著 h1 的選擇器一起列，而不是另外複製一份
+   規則——複製會在有人調整 h1 型級時無聲漂移。 */
+h1,
+.hero-visual-title {
   font-family: "Noto Sans TC", sans-serif;
   font-weight: 900;
   text-transform: uppercase;
@@ -407,7 +412,10 @@ h3 {
   text-transform: uppercase;
 }
 
-h1 {
+h1,
+.hero-visual-title {
+  /* span 預設是 inline，補 block 才能還原原本 <h1> 的盒模型（對 h1 本身無作用）。 */
+  display: block;
   margin: 0;
   /* Noto Sans TC 900 is wider than Antonio's condensed display cut at the
      same font-size — trim the clamp ceiling (124px → 108px) so "HCI" /
@@ -602,6 +610,13 @@ h2 {
 /* ------------------------------------------------------------------ */
 /* Skills constellation (SkillsGraph) + phone tag-grid fallback        */
 /* ------------------------------------------------------------------ */
+
+/* 視覺上隱藏的標題不該套用 uppercase：它沒有視覺效果，卻會讓部分螢幕閱讀器
+   把 "YE ZI-NI" 當縮寫逐字母念出來。h1 的 tag 選擇器帶了 text-transform，
+   所以這裡明確還原。 */
+h1.sr-only {
+  text-transform: none;
+}
 
 .sr-only {
   position: absolute;
@@ -2098,7 +2113,8 @@ video.project-overlay-media {
     display: none;
   }
 
-  h1 {
+  h1,
+  .hero-visual-title {
     font-size: 78px;
   }
 
@@ -2215,7 +2231,8 @@ video.project-overlay-media {
     font-size: 25px;
   }
 
-  h1 {
+  h1,
+  .hero-visual-title {
     font-size: 56px;
     line-height: 0.95;
   }
@@ -2424,7 +2441,8 @@ video.project-overlay-media {
     font-size: 44px;
   }
 
-  h1 {
+  h1,
+  .hero-visual-title {
     font-size: 50px;
   }
 

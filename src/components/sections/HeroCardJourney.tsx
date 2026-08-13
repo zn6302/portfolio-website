@@ -373,6 +373,7 @@ export function HeroCardJourney() {
               loop
               playsInline
               preload="metadata"
+              aria-hidden="true"
             >
               {loadVideo && (
                 <>

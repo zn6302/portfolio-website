@@ -23,7 +23,7 @@ export function Services({ disableCardFlip = false }: ServicesProps) {
   useScrollFlip(cardRef, { ...SERVICES_FLIP, triggerRef: sectionRef, disabled: disableCardFlip });
 
   return (
-    <section className="section services" id="skills" ref={sectionRef}>
+    <section className="section services" id="skills" aria-label="技能棧" ref={sectionRef}>
       <div className="section-grid">
         <div data-scroll-reveal>
           <AvailabilityPill className="inline-availability" />
@@ -62,7 +62,7 @@ export function Services({ disableCardFlip = false }: ServicesProps) {
         </div>
         <div className="tilt-frame services-image scroll-flip-card" ref={cardRef}>
           <img className="scroll-flip-back" src={assets.portraitBack} alt="" aria-hidden="true" width={2730} height={1536} loading="lazy" />
-          <img className="scroll-flip-front" src={assets.servicesPortrait} alt="Portrait of the designer" width={680} height={952} loading="lazy" />
+          <img className="scroll-flip-front" src={assets.servicesPortrait} alt="葉子倪的個人半身照" width={680} height={952} loading="lazy" />
         </div>
       </div>
     </section>

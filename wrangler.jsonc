@@ -3,6 +3,18 @@
   "name": "portfolio-website",
   "compatibility_date": "2026-07-07",
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    // Default "auto-trailing-slash" 307-redirects clean project URLs
+    // (/projects/<slug>) to a trailing-slash variant before serving the
+    // prerendered dist/projects/<slug>/index.html (verified with `wrangler
+    // dev` against the actual prerender output). Canonical tags, sitemap.xml
+    // and the client-side History API routing (useProjectRoute.ts) all use
+    // the no-trailing-slash form, so "drop-trailing-slash" makes that exact
+    // URL the one served directly (no redirect hop for crawlers/shared
+    // links) and redirects the trailing-slash variant back to it instead.
+    // Deliberately NOT "single-page-application": that would 200 every
+    // unmatched path (including typos/removed projects) instead of a real
+    // 404, which is a soft-404 SEO hazard.
+    "html_handling": "drop-trailing-slash"
   }
 }
