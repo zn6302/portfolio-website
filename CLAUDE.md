@@ -1,7 +1,8 @@
 # CLAUDE.md — zini-portfolio
 
-葉子倪的個人作品集網站。目標：2026/7/15 前上線，用於實習申請。
-讀者是實習審查者（停留 1–3 分鐘），優先序：真實作品 > 技術能力 > 個人風格。
+葉子倪的個人作品集網站，用於實習申請。**已上線於 https://znye6302.com**（Cloudflare Workers），
+現階段是持續迭代而非趕上線。讀者是實習審查者（停留 1–3 分鐘），
+優先序：真實作品 > 技術能力 > 個人風格。
 
 > 本檔案於 2026/7/6 整合 `docs/design-system.md`(v1.0)與 `website-color-guide.md` 之間的衝突。
 > 三份文件的關係：**本文件是唯一的最終規範**；`website-color-guide.md` 是色彩的延伸說明文件（tag、按鈕、可及性細節可查）；`docs/design-system.md` 的色票／字體／圓角／卡片邊框規範**已停用**，但其排版尺度、間距、動效 variant 程式碼仍可參考（已在下方對應章節整合）。
@@ -11,8 +12,8 @@
 1. **迭代現有架構，永遠不要重建專案**。不要建議換框架、換打包工具、重寫元件結構。
 2. **禁止引入新顏色**。只能使用本文件第「色彩 token」章節的 token（即 `src/index.css` 的 `@theme`）。`docs/design-system.md` 的舊色票（mist/slate/jade/coral-red/peach/blush/sand/mocha/periwinkle）不可再使用。需要深淺變化用 opacity 或 Tailwind 的 `color-mix`，不准加新 hex。
 3. **每次 UI 修改後必須檢查五個尺寸**：1440 / 1120 / 768 / 390 / 320（1120 與 320 是歷史破版帶，詳見 `docs/RWD指南.md`）。可用 `node scripts/rwd-scan.mjs` 自動掃水平溢出，或以截圖驗證。
-4. 動畫語言上限四種：Hero 卡片翻轉旅程（HeroCardJourney）、區塊 GSAP ScrollTrigger 進場、卡片 hover、hero 影片。全站捲動驅動動畫統一用 GSAP ScrollTrigger（`useScrollFlip`），不要引入第二套動畫函式庫（過去規劃的 Framer Motion／Lenis／R3F 均未採用，見「技術棧」）。不要加真正的第五種動畫語言。
-5. 所有動畫必須尊重 `prefers-reduced-motion`（現有 pattern 見 `useHeroVideoSources.ts`、`useAnchorScroll.ts`；ScrollTrigger 動畫需個別檢查 `window.matchMedia('(prefers-reduced-motion: reduce)')` 後降級或跳過）。
+4. 動畫語言上限四種：Hero 卡片翻轉旅程（HeroCardJourney）、區塊 GSAP ScrollTrigger 進場、卡片 hover、hero 影片。全站捲動驅動動畫統一用 GSAP ScrollTrigger（`useScrollFlip`），不要引入第二套動畫函式庫（Framer Motion／R3F 均未採用，見「技術棧」；Lenis 有用，但它只做捲動慣性不做動畫）。文字遮罩進場（`MaskHeading`）、磁吸 hover（`useMagnetic`）、hero 視差（`useHeroParallax`）是既有四種語言的參數變體，不算第五種。不要加真正的第五種動畫語言。
+5. 所有動畫必須尊重 `prefers-reduced-motion`（現有 pattern 見 `useHeroVideoSources.ts`、`useAnchorScroll.ts`、`useLenis.ts`；ScrollTrigger 動畫需個別檢查 `window.matchMedia('(prefers-reduced-motion: reduce)')` 後降級或跳過）。**注意 `display:none` 的祖先無法用子層 `visibility:visible` 逃脫**——需要在所有動態狀態下都保持可存取的元素（例如全站唯一的 `<h1>`），必須放在不受動畫容器影響的位置，見 `App.tsx`。
 6. 網站定位是「HCI × creative coding 學生作品集」。禁止加入接案顧問式區塊（Process、Testimonials、FAQ、假 Blog）。注意：`src/components/sections/Services.tsx` 檔名沿用舊稱，實際內容是技能分類表（`src/data/services.ts`：前端工程/互動動畫/後端資料/AI 研究），不是接案服務項目，不違反本條。
 7. 沒完成的內容直接不放，禁止「coming soon」死連結。
 
@@ -22,22 +23,35 @@
 - **純 CSS variables**：視覺基準線在 `src/styles.css`（手寫，2000+ 行，`:root` 即色彩/圓角/陰影 token 來源）
 - Tailwind CSS v4：僅 incremental adoption，`src/index.css` 的 `@theme` 鏡射 `styles.css` 的色票供少量元件用 utility class 寫（目前僅 `AvailabilityPill.tsx`）；沒有載入 preflight，也沒有獨立的 tailwind config 檔，新元件預設仍手寫 CSS class 到 `styles.css`
 - GSAP + ScrollTrigger：唯一的捲動驅動動畫方案（`useScrollFlip`、`useAnchorScroll` 用 ScrollToPlugin、Projects/ProjectOverlay/Footer/HeroCardJourney 內都直接用 ScrollTrigger）
-- 沒有 Framer Motion、沒有 Lenis、沒有 React Three Fiber/Scene.tsx——這些是舊規劃，實作階段換成上述純 CSS + GSAP 方案，見下方架構樹
+- Lenis：**有在用**（`useLenis`，`App.tsx` 掛載）。它只負責桌機的平滑捲動慣性，reduced-motion 與觸控裝置會整個跳過；捲動驅動的「動畫」仍然全部由 ScrollTrigger 負責，兩者不重疊。`useAnchorScroll` 有 Lenis 時走 Lenis，否則退回 ScrollToPlugin
+- 沒有 Framer Motion、沒有 React Three Fiber/Scene.tsx——這些是舊規劃，實作階段換成上述純 CSS + GSAP 方案，見下方架構樹
 
 ## 架構
 
 ```
 src/
+├── App.tsx                      # 組裝根：掛 useLenis/useAnchorScroll/useScrollReveal，
+│                                #   並持有全站唯一的 <h1>（.sr-only，見下方 SEO 章節）
 ├── data/                        # 唯一內容來源，改文案只改這裡
 │   ├── projects.ts              # 5 件作品的完整內容（title/highlights/links…）
+│   ├── sketches.ts              # Playground creative coding 小品（外連 GitHub Pages）
 │   ├── services.ts              # 技能分類（Services 區塊實際顯示為技能表，非接案服務）
 │   ├── navigation.ts            # 導覽項目
-│   └── assets.ts                # 圖片路徑集中管理
+│   ├── assets.ts                # 圖片路徑集中管理
+│   └── seo.ts                   # 每件作品的 seoTitle/seoDescription/og/canonical
 ├── hooks/
 │   ├── useScrollFlip.ts         # GSAP ScrollTrigger 包裝：捲動驅動的 from/to transform
+│   ├── useScrollReveal.ts       # section 進場 reveal
+│   ├── useLenis.ts              # 桌機平滑捲動（reduced-motion 與觸控裝置會跳過）
+│   ├── useProjectRoute.ts       # History API：/projects/<slug> ↔ ProjectOverlay 開關
 │   ├── useCountUp.ts            # 數字滾動計數（cubic ease-out，非 GSAP）
+│   ├── useMagnetic.ts           # 磁吸 hover
+│   ├── useHeroParallax.ts       # hero 視差
 │   ├── useScrolled.ts           # 監聽 scrollY 判斷導覽列是否加陰影
-│   ├── useAnchorScroll.ts       # hash 連結點擊 → GSAP ScrollToPlugin（取代原生 scroll-behavior）
+│   ├── useNearBottom.ts         # 是否接近頁尾（導覽列狀態用）
+│   ├── useBackToTop.ts          # 回頂按鈕顯示邏輯
+│   ├── useInViewVideo.ts        # 進入視窗才播放影片
+│   ├── useAnchorScroll.ts       # hash 連結點擊 → Lenis／GSAP ScrollToPlugin
 │   └── useHeroVideoSources.ts   # <768px 或 reduced-motion 時完全不設定影片 src，只留 poster
 └── components/
     ├── sections/
@@ -45,17 +59,25 @@ src/
     │   ├── HeroCardJourney.tsx  # 頂層捲動編排：同一張卡從 hero 一路 flip 到 Services/About 卡槽
     │   │   ├── HeroTransition.tsx（內含 HeroIntro.tsx 打字標題 + HeroProfile.tsx 人像卡）
     │   │   ├── Services.tsx     # 技能表卡（disableCardFlip 模式，非接案服務項目）
+    │   │   │   └── SkillsGraph.tsx  # 技能星座圖，窄螢幕退化成 tag grid
     │   │   └── About.tsx        # About / NOW / Contact 前導卡
     │   ├── Projects.tsx         # 精選作品清單卡，點卡開 ProjectOverlay.tsx（全螢幕詳情覆蓋層）
+    │   ├── Sketches.tsx         # Playground 作品牆
     │   ├── Contact.tsx
     │   └── Footer.tsx
     └── ui/
         ├── AvailabilityPill.tsx # 唯一用 Tailwind utility 寫的元件
+        ├── MaskHeading.tsx      # 文字遮罩進場標題（預設 as="h2"，各 section 的區塊標題）
+        ├── BackToTop.tsx
         ├── HiBubble.tsx
         └── Socials.tsx
 ```
 
 沒有獨立的「Reveal.tsx」統一進場元件——各 section 的進場動畫直接寫在自己的 GSAP ScrollTrigger / CSS transition 裡（見下方動態系統）。
+
+`scripts/` 下有三支：`prerender.mjs`（build 後產生作品頁靜態 HTML + sitemap + robots）、
+`rwd-scan.mjs`（RWD 水平溢出掃描，需先手動 `npm i -D puppeteer-core`，刻意不列入依賴）、
+`deploy.mjs`（依分支分流 Cloudflare 部署目標）。
 
 ## 色彩 token（鎖定，唯一來源，取代 docs/design-system.md 舊色票）
 
@@ -139,7 +161,7 @@ src/
 - **捲動觸發的動畫一律用 GSAP ScrollTrigger**（`useScrollFlip`、Projects/ProjectOverlay/Footer/HeroCardJourney 內的 ScrollTrigger 用法）；卡片 hover 用純 CSS `:hover` transition。兩者不可疊在同一元素上。
 - `useAnchorScroll`：GSAP `ScrollToPlugin` 取代原生 `scroll-behavior: smooth`（見 `src/styles.css` 開頭註解，避免雙重驅動捲動）。
 - 已知例外：`useCountUp`（統計數字滾動）用手寫 `requestAnimationFrame` + cubic ease-out，不掛 GSAP 也不掛 Framer Motion——這是「卡片 hover / 區塊進場」語言下的參數變體，不算新增動畫類型。
-- `feat/animations` 分支正在驗收 F1–F4 動效精修（MaskHeading 文字遮罩進場、useMagnetic 磁吸 hover、useHeroParallax 視差），尚未合併進 dev，驗收通過前不視為站上既有動畫語言。
+- F1–F4 動效精修**已驗收合併**，`feat/animations` 分支已移除：`MaskHeading`（文字遮罩進場，各 section 的 h2 都用它）、`useMagnetic`（磁吸 hover，用於 HeroProfile/Contact/About/ProjectOverlay）、`useHeroParallax`（hero 視差，用於 HeroIntro）都是站上既有動畫語言的一部分。
 
 ## 元件規範（已依鎖定色票重新對應）
 
@@ -182,7 +204,7 @@ src/
 | 文字一律用 `-deep`/`-soft`/`-muted` 系或 `ink` | 用 `matcha`/`clay` 原色當內文 |
 | 陰影輕（`shadow-soft`）+ 2px `ink` 邊框作為主要質感語言 | 厚重 drop shadow，或無邊框的純扁平卡片（docs/design-system.md 舊做法，已停用） |
 | 圓角 8–12px + 膠囊（nav/按鈕/標籤既有結構） | 超過 12px 的大圓角、任何 0 圓角矩形 |
-| 動態慢而有空氣感（0.4–0.7s），捲動用 GSAP ScrollTrigger、hover 用純 CSS transition | 快速彈跳、過度 spring、引入第二套動畫函式庫（Framer Motion/Lenis 等） |
+| 動態慢而有空氣感（0.4–0.7s），捲動用 GSAP ScrollTrigger、hover 用純 CSS transition | 快速彈跳、過度 spring、引入第二套動畫函式庫（Framer Motion 等；Lenis 已在用，只做捲動慣性） |
 | hero 背景可疊極淡 radial glow | UI 元件（卡片/按鈕）使用漸層 |
 
 ## 素材路徑約定
@@ -202,7 +224,7 @@ Hero 影片規則：`<768px` 或 `prefers-reduced-motion: reduce` 時，`useHero
 
 ## 效能底線
 
-- 主 bundle（JS）gzip ≤ 150KB（現況：`npm run build` 約 120KB gzip，dev 與 feat/animations 分支皆在底線內）
+- 主 bundle（JS）gzip ≤ 150KB（現況：`npm run build` 約 134KB gzip）
 - 圖片上線前壓縮（截圖轉 webp，單張 ≤ 300KB；`public/projects/*.webp`、`public/hero/*.webp` 已依此處理）
 - Lighthouse Performance 手機 ≥ 80 才算過（尚未實測，見待辦）
 
@@ -214,6 +236,24 @@ Hero 影片規則：`<768px` 或 `prefers-reduced-motion: reduce` 時，`useHero
 4. 佔位卡數量回報（目標：0）
 5. `prefers-reduced-motion` 開啟時頁面仍完整可用
 6. title / meta description / OG 標籤完整
+7. 動到頁面結構時：全站仍只有一個 `<h1>`、標題層級不跳號、非裝飾圖片有具描述性的 alt
+8. 動到 `projects.ts` 時：`src/data/seo.ts` 對應的 `seoTitle`/`seoDescription` 一併更新，
+   且 build 後確認 `dist/projects/<slug>/index.html` 有正確產生
+
+## SEO 架構（2026/8/13 建立）
+
+網站是 SPA，但**每件作品有自己可索引的靜態頁**，不靠 Google 執行 JS：
+
+- `src/hooks/useProjectRoute.ts`：History API 驅動 ProjectOverlay。開卡片 push `/projects/<slug>`，
+  關閉與瀏覽器返回會 pop，深連結進站直接開對應作品。**沒有裝 router**，不要為了加頁面就引入 react-router。
+- `scripts/prerender.mjs`：`npm run build` 最後一步。以 `dist/index.html` 為模板，為每件作品產生
+  `dist/projects/<slug>/index.html`——各自的 title/description/canonical/OG，`Person`+`CreativeWork`
+  JSON-LD，以及塞在 `#root` 裡的完整語意化內容（React 掛載時會清空並接手）。同時產生 sitemap.xml
+  與 robots.txt（非 `main` 分支自動 `Disallow: /`，避免 preview 站與正式站重複內容）。
+- `wrangler.jsonc` 的 `html_handling: "drop-trailing-slash"` 讓無斜線的 canonical 網址直接命中，
+  且**刻意不用** `single-page-application`——那會讓所有錯誤路徑回 200，製造 soft 404。
+- 文案長度用「顯示寬度」而非字元數（全形計 2、半形計 1）：title ≤ 60、description ≤ 155。
+  中文全形佔兩倍寬，套用英文的「155 字元」標準會被 Google 截斷。
 
 ## 目前狀態與待辦（隨進度更新此節）
 
@@ -222,11 +262,15 @@ Hero 影片規則：`<768px` 或 `prefers-reduced-motion: reduce` 時，`useHero
 - [x] 5 件真實作品已上線（`src/data/projects.ts`：All Things Scored、OpenHCI 2026 官網、Click or Check?、myBot、SMILEY），無佔位卡
 - [x] 人像/作品截圖已替換為真實素材（`public/hero/`、`public/projects/`）
 - [x] title / meta description / og:title / og:description / og:type 齊全（`index.html`）
-- [x] 2026/7/8：文件與實況校正——技術棧改為純 CSS + GSAP（無 Framer Motion/Lenis/R3F），架構樹改為實際檔案清單
-- [ ] Vercel 部署
-- [ ] og:image / og:url（部署後補正式網址）
-- [ ] favicon：目前無 favicon 檔案、`index.html` 無 `<link rel="icon">`，瀏覽器預設請求 `/favicon.ico` 回 404（QA 已測得，不影響頁面內容，屬待補視覺資產）
-- [ ] `feat/animations` 分支 F1–F4 動效精修驗收（MaskHeading、useMagnetic、useHeroParallax）後併回 dev
+- [x] Cloudflare Workers 部署（**不是 Vercel**）：`main` → znye6302.com、`dev` → dev.znye6302.com，
+      分流邏輯在 `scripts/deploy.mjs`，設定見 README「分支與部署」
+- [x] og:image / og:url 已補正式網址；favicon 已補（`public/favicon.svg` + `index.html` 的 `<link rel="icon">`）
+- [x] F1–F4 動效精修已合併（`MaskHeading`、`useMagnetic`、`useHeroParallax` 都已在用），`feat/animations` 分支已移除
+- [x] 2026/8/13：SEO 改造——5 件作品獨立 URL + 預渲染 + sitemap/robots + JSON-LD；
+      修正全站兩個 `<h1>`（原本是「HCI」「CODING」）為單一含姓名的 `<h1>`；圖片 alt 全面改寫
+- [ ] Google Search Console：提交 `https://znye6302.com/sitemap.xml`，並對 5 個作品頁要求建立索引
+- [ ] 確認 Cloudflare 的 Content Signals 設定沒有蓋掉自產的 `robots.txt`（部署後 curl 一次，
+      看得到 `Sitemap:` 那行才算數；改動前線上 `/robots.txt` 是 Cloudflare 代管的純註解檔）
 - [ ] Lighthouse Performance 手機分數實測（效能底線 ≥80，尚未實測記錄）
 
 ## v2 路線（7/15 後，現在不做）
