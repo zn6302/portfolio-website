@@ -59,7 +59,7 @@ src/
 │   └── useHeroVideoSources.ts   # <768px 或 reduced-motion 時完全不設定影片 src，只留 poster
 └── components/
     ├── sections/
-    │   ├── Header.tsx           # 膠囊導覽 + OPEN TO 2026 INTERNSHIP 徽章
+    │   ├── Header.tsx           # 膠囊導覽（桌機常駐）+ 找實習中 / OPEN TO INTERNSHIPS 徽章
     │   ├── HeroCardJourney.tsx  # 頂層捲動編排：同一張卡從 hero 一路 flip 到 Services/About 卡槽
     │   │   ├── HeroTransition.tsx（內含 HeroIntro.tsx 打字標題 + HeroProfile.tsx 人像卡）
     │   │   ├── Services.tsx     # 技能表卡（disableCardFlip 模式，非接案服務項目）
@@ -231,7 +231,7 @@ Hero 影片規則：`<768px` 或 `prefers-reduced-motion: reduce` 時，`useHero
 
 ## 效能底線
 
-- 主 bundle（JS）gzip ≤ 150KB（現況：`npm run build` 約 134KB gzip）
+- 主 bundle（JS）gzip ≤ 150KB（現況：`npm run build` 約 141KB gzip）
 - 圖片上線前壓縮（截圖轉 webp，單張 ≤ 300KB；`public/projects/*.webp`、`public/hero/*.webp` 已依此處理）
 - Lighthouse Performance 手機 ≥ 80 才算過（尚未實測，見待辦）
 
@@ -296,6 +296,9 @@ Hero 影片規則：`<768px` 或 `prefers-reduced-motion: reduce` 時，`useHero
 - [x] 2026/8/13：SEO 改造——5 件作品獨立 URL + 預渲染 + sitemap/robots + JSON-LD；
       修正全站兩個 `<h1>`（原本是「HCI」「CODING」）為單一含姓名的 `<h1>`；圖片 alt 全面改寫
 - [x] 2026/10/21：英文版上線（`/en` 全站 + 作品頁）、中 / EN 切換、依國家預設語系（見「雙語」）
+- [x] 2026/10/22：夜間打磨（Awwwards 評分基準 5.2 → 約 6.6）：桌機導覽常駐、skip link、按鈕系統與 clay 每屏一次、
+      hero 收合節奏、作品卡與 overlay（返回鍵行為）、Contact／Footer 對齊、Playground 卡片、中英文案去 AI 味
+      （元件內寫死的文案已集中到 `ui.ts`）。回滾點：tag `pre-polish-20261022`
 - [ ] Google Search Console：提交 `https://znye6302.com/sitemap.xml`，並對 5 個作品頁要求建立索引
 - [ ] 確認 Cloudflare 的 Content Signals 設定沒有蓋掉自產的 `robots.txt`（部署後 curl 一次，
       看得到 `Sitemap:` 那行才算數；改動前線上 `/robots.txt` 是 Cloudflare 代管的純註解檔）
