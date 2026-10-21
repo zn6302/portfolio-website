@@ -108,6 +108,9 @@ export function HeroCardJourney() {
       gsap.set(card, { autoAlpha: 0 });
       gsap.set(intro, { autoAlpha: 0 });
       gsap.set(profile, { autoAlpha: 1 });
+      // A desktop timeline killed mid-shrink (OS setting toggled at runtime)
+      // can leave an inline `--hero-converge`; the static hero never offsets.
+      profile.style.removeProperty("--hero-converge");
       return () => {
         root.classList.remove("hero-static");
       };
@@ -312,7 +315,10 @@ export function HeroCardJourney() {
         timeline
           .to(card, { ...rectVars("profile"), rotateY: 0, rotateX: 0, scale: 1, duration: a * 0.65, ease: "none" }, 0)
           .to(intro, { autoAlpha: 0, y: -24, duration: a * 0.35, ease: "none" }, 0)
-          .to(profile, { autoAlpha: 1, duration: a * 0.35, ease: "none" }, a * 0.35)
+          // power1.in: the card is still 2–2.5× its slot when the profile starts,
+          // so keep HCI / CODING faint while they overlap its edges and let
+          // them firm up as the card clears them.
+          .to(profile, { autoAlpha: 1, duration: a * 0.35, ease: "power1.in" }, a * 0.35)
           .to(profile, { "--hero-converge": "0px", duration: a * 0.35, ease: "power2.out" }, a * 0.35)
           // The hero scrolls away from `a`: clear the profile text in the first
           // 20% of phase 2 so HCI / CODING and the CTAs never sit over the card

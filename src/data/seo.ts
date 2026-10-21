@@ -27,7 +27,7 @@ export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
 export const HOME_SEO_EN = {
   title: "YE Zi-Ni | Creative Developer · HCI × Interactive Frontend",
   description:
-    "YE Zi-Ni's HCI × creative coding portfolio: interactive pieces in React, TypeScript and p5.js, and the live OpenHCI 2026 site, where she led the animation.",
+    "YE Zi-Ni's HCI × creative coding portfolio: React, TypeScript and p5.js pieces, plus the live OpenHCI 2026 site, where she led the interactive animation.",
 };
 
 interface ProjectSeoCopy {
@@ -55,7 +55,7 @@ const PROJECT_SEO_COPY: Record<Locale, Record<string, ProjectSeoCopy>> = {
     "openhci-2026": {
       seoTitle: "OpenHCI 2026 官方網站 — (AI)dentity｜葉子倪 YE Zi-Ni",
       seoDescription:
-        "OpenHCI 2026 官方網站，團隊用 Next.js 15、React 19、Tailwind v4、Framer Motion 開發，已上線於 2026.openhci.com。她寫 UI 元件、主導互動動畫。",
+        "OpenHCI 2026 官方網站，團隊用 Next.js 15、React 19、Tailwind v4、Framer Motion 開發，已上線於 2026.openhci.com。葉子倪寫 UI 元件，並主導互動動畫。",
     },
     "click-or-check": {
       seoTitle: "Click or Check? — 媒體識讀新聞遊戲｜葉子倪 YE Zi-Ni",
@@ -70,7 +70,7 @@ const PROJECT_SEO_COPY: Record<Locale, Record<string, ProjectSeoCopy>> = {
     smiley: {
       seoTitle: "SMILEY 情緒日記 — 用 BERT 辨識情緒的 App｜葉子倪 YE Zi-Ni",
       seoDescription:
-        "用 Flutter、BERT、Firebase、MySQL 開發的情緒日記 App（畢業專題）：BERT 六分類辨識主要情緒（precision/recall 85–93%），再推薦顏色、音樂與精油。",
+        "用 Flutter、BERT、Firebase、MySQL 開發的情緒日記 App（畢業專題）：BERT 六分類辨識主要情緒（precision/recall 85–93%），再以顏色、音樂和精油回應。",
     },
   },
   // 英文同樣以顯示寬度計（英文字母一律計 1），所以就是一般的 60 / 155 字元上限。
@@ -83,7 +83,7 @@ const PROJECT_SEO_COPY: Record<Locale, Record<string, ProjectSeoCopy>> = {
     "openhci-2026": {
       seoTitle: "OpenHCI 2026 Official Website — (AI)dentity | YE Zi-Ni",
       seoDescription:
-        "Live at 2026.openhci.com: a team site in Next.js 15, React 19, Tailwind v4 and Framer Motion. She wrote UI components and led the interactive animation.",
+        "Live at 2026.openhci.com: a team site in Next.js 15, React 19, Tailwind v4 and Framer Motion. YE Zi-Ni wrote UI components and led interactive animation.",
     },
     "click-or-check": {
       seoTitle: "Click or Check? — A Media-Literacy News Game | YE Zi-Ni",

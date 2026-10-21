@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLocale } from "../../hooks";
-import { Socials } from "../ui";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -73,20 +72,21 @@ export function Footer() {
       >
         <path ref={curveRef} className="footer-bounce-path" d={makeFooterCurve(90)} />
       </svg>
+      {/* Two columns, each a mono label over its link. No "Now" column: the
+          hero badge and the header pill already say it. */}
       <div className="footer-top">
         <div>
-          <span>{t.emailLabel}:</span>
-          <span>
-            <a href="mailto:znye.6302@gmail.com">znye.6302@gmail.com</a>
-          </span>
+          <span className="footer-label">{t.emailLabel}</span>
+          <a href="mailto:znye.6302@gmail.com">znye.6302@gmail.com</a>
         </div>
         <div>
-          <span>{t.nowLabel}:</span>
-          <span>{t.availability}</span>
-        </div>
-        <div>
-          <span>{t.socialLabel}:</span>
-          <Socials compact />
+          <span className="footer-label">{t.githubLabel}</span>
+          <a href="https://github.com/zn6302" target="_blank" rel="noopener noreferrer">
+            github.com/zn6302
+            <span className="footer-arrow" aria-hidden="true">
+              ↗
+            </span>
+          </a>
         </div>
       </div>
       <div className="footer-bottom">

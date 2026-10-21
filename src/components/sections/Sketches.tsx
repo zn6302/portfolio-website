@@ -48,23 +48,23 @@ export function Sketches() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
+                {/* The caption chip rides inside the float layer so it stays
+                    pinned to the artwork's corner while the image bobs. */}
                 <span className="sketch-card-float">
                   <span className="sketch-card-media">
                     <img src={sketch.preview} alt={sketch.alt} loading="lazy" />
                   </span>
-                </span>
-                <span className="sketch-card-caption">
-                  <span className="sketch-card-name">{sketch.title}</span>
-                  <span className="sketch-card-cta" aria-hidden="true">
-                    OPEN ↗
+                  <span className="sketch-card-caption">
+                    <span className="sketch-card-name">{sketch.title}</span>
+                    <span className="sketch-card-cta" aria-hidden="true">
+                      OPEN ↗
+                    </span>
                   </span>
                 </span>
               </a>
               <p className="sketch-card-description">{sketch.description}</p>
+              {/* The artwork above is the live link; the text row only adds the source. */}
               <div className="sketch-card-links">
-                <a href={sketch.liveUrl} target="_blank" rel="noopener noreferrer">
-                  LIVE SITE ↗
-                </a>
                 <a href={sketch.githubUrl} target="_blank" rel="noopener noreferrer">
                   GITHUB ↗
                 </a>

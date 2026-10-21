@@ -45,7 +45,7 @@ export interface UiCopy {
   heroConcept: string;
   scrollHint: string;
 
-  /** Availability pill text (AvailabilityPill.tsx, footer). */
+  /** Availability pill text (AvailabilityPill.tsx). */
   availability: string;
 
   // Call-to-action labels.
@@ -57,8 +57,6 @@ export interface UiCopy {
   // Contact / about / footer labels.
   githubLabel: string;
   emailLabel: string;
-  nowLabel: string;
-  socialLabel: string;
   statProjects: string;
   statSketches: string;
   footerCredit: string;
@@ -89,10 +87,10 @@ export const ui: Record<Locale, UiCopy> = {
     heroTagline: "我在政大讀數位內容學程，主導過 OpenHCI\u00a02026 官網的互動動畫。",
     aboutLabel: "關於我",
     aboutLead:
-      "我寫前端，也做 creative coding。OpenHCI 2026 官網，我寫 UI 元件、維護設計系統，並主導互動動畫；自己做過拍照記熱量的 LINE Bot、用動作演奏的網頁樂器。",
+      "我寫前端，也做 creative coding。在 OpenHCI 2026 官網，我寫 UI 元件、維護設計系統，並主導互動動畫；自己做過拍照記熱量的 LINE Bot 和用動作演奏的網頁樂器。",
     aboutIntro: [
       "我喜歡 HCI 和互動藝術。",
-      "我想做的前端工作，是設計和動畫也能自己動手的那種。",
+      "我想找的前端工作，是設計和動畫也能自己動手做的那種。",
     ],
     statLaunched: "個已上線的活動官網",
     aboutImageAlt: "葉子倪在書桌前打鍵盤的插畫，身邊飄著紙張，桌上有盆栽和一杯咖啡",
@@ -103,7 +101,7 @@ export const ui: Record<Locale, UiCopy> = {
     contactLabel: "聯絡方式",
     contactLead: "我在找前端或 creative coding 實習。寄信找我最快，公開的程式碼在 GitHub。",
     sketchesLabel: "Playground：p5.js 小品",
-    sketchesLead: "這裡放的是沒有 deadline 的 p5.js 小品，寫來保持手感，點開就能在新分頁玩。",
+    sketchesLead: "這些是沒有 deadline、寫來保持手感的小品，點一下會在新分頁開啟，可以直接玩。",
     viewDetails: "看作品細節 →",
     // 「」 around the title keeps the spacing right whether a title ends in
     // Latin ("Click or Check?") or CJK ("SMILEY 情緒日記").
@@ -125,8 +123,6 @@ export const ui: Record<Locale, UiCopy> = {
     ctaGithub: "GITHUB",
     githubLabel: "GitHub",
     emailLabel: "Email",
-    nowLabel: "Now",
-    socialLabel: "Social",
     statProjects: "件作品",
     statSketches: "件 p5.js 小品",
     footerCredit: "© 2026 葉子倪 · 用 React、TypeScript 和 GSAP 寫成",
@@ -148,10 +144,10 @@ export const ui: Record<Locale, UiCopy> = {
     heroTagline: "I study Digital Content at National Chengchi University and led the interactive animation for the OpenHCI\u00a02026 website.",
     aboutLabel: "About me",
     aboutLead:
-      "I write frontend code and make creative-coding pieces. On the OpenHCI 2026 website, my part was UI components, design-system maintenance and the interactive animation, which I led. On my own, I've made a LINE bot that logs meals from a photo and a browser instrument played by motion in a video.",
+      "I write frontend code and make creative-coding pieces. On the OpenHCI 2026 website I wrote UI components, maintained the design system and led the interactive animation. On my own, I've made a LINE bot that logs meals from a photo and a browser instrument played by motion in a video.",
     aboutIntro: [
       "I like HCI and interactive art.",
-      "I want frontend work where I shape the design and the motion as well as the code.",
+      "I want frontend work where I shape the design and the motion as well as the code.",
     ],
     statLaunched: "live event site",
     aboutImageAlt:
@@ -164,7 +160,7 @@ export const ui: Record<Locale, UiCopy> = {
     contactLead:
       "I'm looking for a frontend or creative-coding internship. Email is the fastest way to reach me; my public code is on GitHub.",
     sketchesLabel: "Playground: p5.js sketches",
-    sketchesLead: "Small p5.js pieces I make for practice when nothing is due. Each one opens in a new tab, ready to play.",
+    sketchesLead: "I make these small pieces for practice when nothing is due. Each one opens in a new tab, ready to play.",
     viewDetails: "View details →",
     viewDetailsLabel: (title) => `View details for ${title}`,
     detailsLabel: "DETAILS",
@@ -184,8 +180,6 @@ export const ui: Record<Locale, UiCopy> = {
     ctaGithub: "GITHUB",
     githubLabel: "GitHub",
     emailLabel: "Email",
-    nowLabel: "Now",
-    socialLabel: "Social",
     statProjects: "projects",
     statSketches: "p5.js sketches",
     footerCredit: "© 2026 YE Zi-Ni · Built with React, TypeScript and GSAP",

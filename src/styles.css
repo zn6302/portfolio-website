@@ -660,14 +660,11 @@ h1,
 }
 
 /* Decorative overhang rule: an element hanging outside the content box must
-   never overhang more than the page margin available at that band, or the
-   viewport clips it. Below 1240px the centered contact grid's side offset
-   drops under the 62px overhang, so pull the bubble in. */
-@media (max-width: 1240px) {
-  .hi-bubble.small {
-    left: -26px;
-  }
-}
+   never overhang more than the space available beside it, or the viewport
+   clips it. Contact's portrait sits in the right track at ≥1081 (the 62px
+   overhang lands in the 80px column gap) and is centred at ≤1080 (≥190px
+   free on each side), so the full overhang fits at every width above the
+   ≤760 inset version. */
 
 .section {
   padding: 96px 0;
@@ -679,10 +676,6 @@ h1,
   grid-template-columns: 600px 1fr;
   gap: 80px;
   align-items: center;
-}
-
-.inline-availability {
-  display: none;
 }
 
 h2 {
@@ -1037,8 +1030,10 @@ h1.sr-only {
 }
 
 /* The Email label is a 13px mono eyebrow, the same type as .section-eyebrow,
-   and the same 80% paper-light on the dark journey band. */
-.contact-row-label {
+   and the same 80% paper-light on the dark journey band. The footer's
+   Email / GitHub labels share it (same dark slate band). */
+.contact-row-label,
+.footer-label {
   font-family: "IBM Plex Mono", monospace;
   font-size: 13px;
   font-weight: 500;
@@ -1047,7 +1042,8 @@ h1.sr-only {
   text-transform: uppercase;
 }
 
-.hero-card-journey .contact-row-label {
+.hero-card-journey .contact-row-label,
+.footer-label {
   color: color-mix(in srgb, var(--color-paper-light) 80%, transparent);
 }
 
@@ -1096,7 +1092,7 @@ h1.sr-only {
     background-size 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Two classes so the footer's `.footer-top span` (14px/400) can't shrink it. */
+/* Two classes so a broader `span` rule can't shrink the arrow. */
 .socials .socials-arrow {
   margin-left: 0.3em;
   font: inherit;
@@ -1111,18 +1107,6 @@ h1.sr-only {
 .socials a:focus-visible {
   outline: 2px solid var(--paper-2);
   outline-offset: 3px;
-}
-
-.socials.compact {
-  margin: 0;
-  gap: 16px;
-}
-
-/* Footer: same 20/700 as the footer email link beside it. */
-.socials.compact a {
-  color: #fff;
-  font-size: 20px;
-  font-weight: 700;
 }
 
 /* Button system (CLAUDE.md「按鈕」): 48px pill, 24px side padding, 16px label.
@@ -2120,10 +2104,12 @@ video.project-overlay-media {
   padding-bottom: 120px;
 }
 
+/* Text on the shared 1120 column's left edge (the same x as every section
+   h2), portrait in a fixed right track. The track is the 340px card; the
+   Hi bubble's 62px overhang falls into the 80px gap. ≤1080 stacks (below). */
 .contact-grid {
-  grid-template-columns: 390px 560px;
-  gap: 70px;
-  justify-content: center;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 80px;
 }
 
 .contact-portrait > img {
@@ -2145,6 +2131,48 @@ video.project-overlay-media {
   gap: 24px;
 }
 
+/* The address as the display line (CLAUDE.md display: 61px/900 at desktop,
+   28px floor on phones). The link stays inline so the hover underline (same
+   background-size sweep as the other text links) follows both lines when it
+   breaks at the <wbr> after the @; overflow-wrap is the last-resort guard.
+   A faint resting underline marks it as a link before hover. */
+.contact-email {
+  margin: 8px 0 0;
+  color: var(--ink);
+  font-size: clamp(28px, 5vw, 61px);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.contact-email a {
+  background-image:
+    linear-gradient(currentColor, currentColor),
+    linear-gradient(
+      color-mix(in srgb, currentColor 22%, transparent),
+      color-mix(in srgb, currentColor 22%, transparent)
+    );
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size:
+    0% 3px,
+    100% 3px;
+  transition: background-size 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.contact-email a:hover,
+.contact-email a:focus-visible {
+  background-size:
+    100% 3px,
+    100% 3px;
+}
+
+.contact-email a:focus-visible {
+  outline: 2px solid var(--brand-deep);
+  outline-offset: 4px;
+}
+
 .contact-direct-links {
   display: flex;
   flex-wrap: wrap;
@@ -2163,7 +2191,10 @@ video.project-overlay-media {
   position: relative;
   isolation: isolate;
   overflow: visible;
-  padding: 48px 80px 32px;
+  /* 20px inline padding = the .section gutter, and the rows below are capped
+     at 1120px, so the footer shares the section h2 left edge at every width
+     (1440: x=160, ≤1120: x=20). */
+  padding: 48px 20px 32px;
   background: var(--color-paper-deep);
   color: var(--color-paper-light);
 }
@@ -2186,10 +2217,10 @@ video.project-overlay-media {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, max-content);
   width: min(1120px, 100%);
   margin: 0 auto;
-  gap: 48px;
+  gap: 32px 96px;
 }
 
 .footer-top > div {
@@ -2197,13 +2228,15 @@ video.project-overlay-media {
   gap: 6px;
 }
 
-.footer-top span,
 .footer-bottom {
   font-size: 14px;
   font-weight: 400;
 }
 
-.footer-top a:not(.socials a) {
+/* justify-self: the hover underline spans the link, not the whole column
+   (the column is 1fr on phones). */
+.footer-top a {
+  justify-self: start;
   font-size: 20px;
   font-weight: 700;
   background-image: linear-gradient(currentColor, currentColor);
@@ -2216,15 +2249,19 @@ video.project-overlay-media {
     background-size 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.footer-top a:not(.socials a):hover,
-.footer-top a:not(.socials a):focus-visible {
+.footer-top a:hover,
+.footer-top a:focus-visible {
   opacity: 0.8;
   background-size: 100% 1px;
 }
 
-.footer-top a:not(.socials a):focus-visible {
+.footer-top a:focus-visible {
   outline: 2px solid var(--paper-2);
   outline-offset: 3px;
+}
+
+.footer-arrow {
+  margin-left: 0.3em;
 }
 
 .footer-bottom {
@@ -2236,7 +2273,7 @@ video.project-overlay-media {
   justify-content: space-between;
   margin: 24px auto 0;
   padding-top: 32px;
-  border-top: 1px solid rgba(255, 255, 255, 0.8);
+  border-top: 1px solid color-mix(in srgb, var(--color-paper-light) 18%, transparent);
 }
 
 .footer-bottom p {
@@ -2275,14 +2312,15 @@ video.project-overlay-media {
 /* ---------------------------------------------------------------------- */
 
 /* Only 2 sketches ship on the wall (pixel-blocks + interactive-garden):
-   a fixed 2-col grid, capped width, centered in the section so the cards
-   read as an intentional duo instead of two cards adrift in a 3-col grid. */
+   a fixed 2-col grid of capped columns, left-aligned to the section column
+   (same left edge as the PLAYGROUND heading) so the cards read as an
+   intentional duo instead of two cards adrift in a 3-col grid. */
 .sketches-wall {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 460px));
   gap: 64px 48px;
-  max-width: 760px;
-  margin-inline: auto;
+  max-width: none;
+  margin-inline: 0;
 }
 
 /* Loose, non-grid rhythm: nudge the second card down so the pair doesn't
@@ -2293,23 +2331,12 @@ video.project-overlay-media {
 
 /* Two-layer transform split so hover (outer, static rotate) and the float
    loop (inner, translateY + tiny wobble) never fight over the same
-   `transform` property on the same element. */
+   `transform` property on the same element. Only the artwork link tilts:
+   the article itself stays level so the description and GITHUB link below
+   are set straight. */
 .sketch-card {
   position: relative;
   display: block;
-  border-radius: 12px;
-  transform: rotate(var(--card-rot, 0deg));
-  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.sketch-card:hover,
-.sketch-card:focus-within {
-  transform: rotate(var(--card-rot, 0deg)) scale(1.04);
-}
-
-.sketch-card:focus-within {
-  outline: 2px solid var(--brand-deep);
-  outline-offset: 4px;
 }
 
 .sketch-card-live {
@@ -2318,16 +2345,35 @@ video.project-overlay-media {
   border-radius: 12px;
   color: inherit;
   text-decoration: none;
+  transform: rotate(var(--card-rot, 0deg));
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sketch-card-live:hover,
+.sketch-card-live:focus-visible {
+  transform: rotate(var(--card-rot, 0deg)) scale(1.04);
+}
+
+/* The ring sits on the artwork frame (not the link box) so it follows the
+   float and doesn't drift off the image when the bob pauses mid-way. */
+.sketch-card-live:focus-visible {
+  outline: none;
+}
+
+.sketch-card-live:focus-visible .sketch-card-media {
+  outline: 2px solid var(--brand-deep);
+  outline-offset: 4px;
 }
 
 .sketch-card-float {
+  position: relative;
   display: block;
   animation: sketch-float var(--card-duration, 8s) ease-in-out infinite;
   animation-delay: var(--card-delay, 0s);
 }
 
-.sketch-card:hover .sketch-card-float,
-.sketch-card:focus-within .sketch-card-float {
+.sketch-card-live:hover .sketch-card-float,
+.sketch-card-live:focus-visible .sketch-card-float {
   animation-play-state: paused;
 }
 
@@ -2341,8 +2387,8 @@ video.project-overlay-media {
   transition: box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.sketch-card:hover .sketch-card-media,
-.sketch-card:focus-within .sketch-card-media {
+.sketch-card-live:hover .sketch-card-media,
+.sketch-card-live:focus-visible .sketch-card-media {
   box-shadow: var(--shadow-hover);
 }
 
@@ -2353,31 +2399,33 @@ video.project-overlay-media {
   object-fit: cover;
 }
 
+/* Solid ink pill chip in the artwork's bottom-left corner (no gradient on UI). */
 .sketch-card-caption {
   position: absolute;
-  inset: 0;
+  inset: auto auto 12px 12px;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-end;
-  gap: 4px;
-  padding: 16px;
-  border-radius: 12px;
-  background: linear-gradient(180deg, transparent 55%, rgba(41, 32, 37, 0.78) 100%);
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+  max-width: calc(100% - 24px);
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 82%, transparent);
   color: #fff;
   opacity: 0;
   transition: opacity 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.sketch-card:hover .sketch-card-caption,
-.sketch-card:focus-within .sketch-card-caption {
+.sketch-card-live:hover .sketch-card-caption,
+.sketch-card-live:focus-visible .sketch-card-caption {
   opacity: 1;
 }
 
 .sketch-card-name {
   font-family: "Noto Sans TC", sans-serif;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
+  line-height: 1.3;
 }
 
 .sketch-card-cta {
@@ -2391,7 +2439,7 @@ video.project-overlay-media {
 
 .sketch-card-description {
   margin: 20px 4px 0;
-  color: var(--muted);
+  color: var(--ink);
   font-size: 16px;
   line-height: 1.7;
 }
@@ -2403,8 +2451,12 @@ video.project-overlay-media {
   margin: 14px 4px 0;
 }
 
+/* Padding grows the tap target to ~44px; the matching negative margin keeps
+   the row's layout height unchanged. */
 .sketch-card-links a {
-  color: var(--brand-deep);
+  padding: 14px 6px;
+  margin: -14px -6px;
+  color: var(--ink);
   font-family: "IBM Plex Mono", monospace;
   font-size: 12px;
   font-weight: 500;
@@ -2418,11 +2470,16 @@ video.project-overlay-media {
   text-underline-offset: 4px;
 }
 
-/* Touch devices have no hover: keep the caption legible without a tap. */
+.sketch-card-links a:focus-visible {
+  outline: 2px solid var(--brand-deep);
+  outline-offset: 0;
+  border-radius: 8px;
+}
+
+/* Touch devices have no hover: keep the caption chip visible without a tap. */
 @media (hover: none) {
   .sketch-card-caption {
     opacity: 1;
-    background: linear-gradient(180deg, transparent 40%, rgba(41, 32, 37, 0.78) 100%);
   }
 }
 
@@ -2439,6 +2496,14 @@ video.project-overlay-media {
 @media (prefers-reduced-motion: reduce) {
   .sketch-card-float {
     animation: none;
+  }
+
+  /* Keep the static tilt but drop the hover zoom. */
+  .sketch-card-live,
+  .sketch-card-live:hover,
+  .sketch-card-live:focus-visible {
+    transform: rotate(var(--card-rot, 0deg));
+    transition: none;
   }
 }
 
@@ -2464,8 +2529,9 @@ video.project-overlay-media {
     justify-self: center;
   }
 
-  /* Single-column band: center the portrait (like phones already do) so the
-     hi-bubble's left overhang stays inside the viewport. */
+  /* Single-column band: the portrait follows the text, centred (like the
+     Skills/About cards here) so the hi-bubble's left overhang stays inside
+     the viewport. */
   .contact-portrait {
     justify-self: center;
   }
@@ -2659,10 +2725,6 @@ video.project-overlay-media {
 
   .section {
     padding: 64px 0;
-  }
-
-  .inline-availability {
-    display: none;
   }
 
   .lead {

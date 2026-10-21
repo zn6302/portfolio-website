@@ -39,7 +39,7 @@ export function About({ disableCardFlip = false }: AboutProps) {
               ))}
             </p>
             {/* Only countable facts, read from the data so they can't drift.
-                No "Now" row: the hero badge and the footer already say it. */}
+                No "Now" row: the hero badge and the header pill already say it. */}
             <div className="stats-row">
               <div>
                 <strong>{projects[locale].length}</strong>

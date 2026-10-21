@@ -22,7 +22,7 @@ export const projectCopyEn: Record<string, ProjectCopy> = {
     highlights: [
       "Scans one line only: an adaptive background model (an EMA with learning rates of 0.01 when triggered and 0.06 otherwise) samples just the one scanline along the trigger line, and the piece runs at a steady 60fps",
       "Never off-key: position sets pitch and intensity sets velocity, and every pitch snaps to the scale, so nothing lands between notes",
-      "Bursts don't clip: notes play on a Tone.js PolySynth through an effects chain, with Transport beat quantization (@8n/@16n), and each of 20 segments has a cooldown that throttles voices",
+      "Dense motion doesn't clip: notes play on a Tone.js PolySynth through an effects chain and can snap to the Transport beat (@8n/@16n); each of 20 segments has a cooldown that throttles voices",
       "Refs in the rAF loop: the high-frequency loop syncs state through refs, which avoids stale closures",
     ],
   },
@@ -35,7 +35,7 @@ export const projectCopyEn: Record<string, ProjectCopy> = {
     outcome: "Live · 2026.openhci.com · team PR workflow",
     role: "Frontend engineer: UI components, design-system maintenance, interactive animation lead",
     overview:
-      "The theme, \"(AI)dentity\", is about how identity glitches, gets decoded and gets put back together in the age of AI, and the design team's pixel-and-glitch look comes straight from it. We built the site from scratch from their Figma files, with several people sending pull requests to a repo in a shared GitHub organization.",
+      "The theme, \"(AI)dentity\", is about how identity glitches, gets decoded and gets put back together in the age of AI. We built the site from scratch, working from the design team's Figma files, with several people sending pull requests to a shared GitHub organization.",
     highlights: [
       "Scramble text as components: use-scramble is wrapped in two design-system components, ScrollScramble and LoopingShockScramble; an IntersectionObserver starts each one when it scrolls into view and unobserves it after it plays once",
       "A loader with two gates: the pixel-art GlobalLoader stays up for at least 2.5s and waits for document.fonts.ready, so text never flashes in a fallback font (FOUT)",
@@ -46,16 +46,16 @@ export const projectCopyEn: Record<string, ProjectCopy> = {
     category: "INTERACTIVE / GAME",
     title: "Click or Check?",
     description:
-      "You're the news editor, and before you hit \"Share\" on a story, you decide whether to check it. Checking costs time; a sensational headline buys traffic but can cost credibility.",
+      "You're the news editor. Before you hit \"Share\" on a story, you decide whether to check it. Checking costs time, a sensational headline buys traffic, and credibility drains away.",
     subtitle: "A news game about trading traffic against credibility",
     outcome: "Media-literacy game · playable online · code on GitHub",
-    role: "Frontend developer",
+    role: "Solo developer",
     overview:
-      "Whether it pays to check a story before you share it depends on how sensational its headline is and whether it's true. It's a React 19 and Vite app, hosted on Vercel.",
+      "Each story is scored on how sensational its headline is and whether it's true, and the two-axis bar at the top updates as you play. The game is a React 19 and Vite app, hosted on Vercel.",
     highlights: [
       "No leaked timers: fact-checking runs as a timed state machine (verifying → result → fading → removed), and a single cardTimersRef clears every timer, so nothing calls setState after unmount and nothing leaks memory",
       "Scored on a 2D grid: one axis is how sensational the headline is and the other is whether the story is true",
-      "Drawn with plain CSS: the two-axis bar at the top is a linear-gradient computed from a formula and updated live, without a chart library",
+      "Drawn with plain CSS: the two-axis bar at the top is a linear-gradient computed from a formula and updated live",
     ],
   },
   mybot: {
@@ -69,12 +69,12 @@ export const projectCopyEn: Record<string, ProjectCopy> = {
     outcome: "LINE bot · 8-layer intent routing · solo backend",
     role: "Solo backend developer",
     overview:
-      "Logging food usually means opening an app, searching for each item and filling in a form; with myBot, you start by taking a photo. In the backend I put the LLM last, to keep cost and latency down and the replies more predictable: rules catch explicit commands, a formula works out daily calorie needs, and only photos, plus messages that need language understanding, go to the LLM.",
+      "Logging food usually means opening an app, searching for each item and filling in a form; with myBot, you start by taking a photo. In the backend I put the LLM last, to keep cost and latency down and the replies more predictable: rules catch explicit commands, a formula works out daily calorie needs, and only photos and messages that need language understanding reach the LLM.",
     highlights: [
       "Rules before Gemini: 8-layer intent routing runs cheap regex and keyword checks on explicit commands first, and only what gets past them reaches Gemini",
-      "Asks about portion size: photo recognition takes two steps; the bot saves a pending_context with a TTL, asks a follow-up and ties the two LINE webhook calls (photo and reply) together, so Gemini's portion estimate is more accurate",
-      "Cycle-aware replies: the menstrual cycle is split proportionally into four phases, and the phase goes into the system prompts of three LLMs (coach, cravings, strength training)",
-      "TDEE by formula: calculated with the Mifflin-St Jeor equation instead of estimated by the LLM, so the same inputs always give the same number",
+      "Asks about portion size: photo recognition takes two steps; the bot saves a pending_context with a TTL, asks a follow-up and ties the two LINE webhook calls (photo and reply) together, so Gemini's portion estimate is more accurate",
+      "Cycle-aware replies: the menstrual cycle is split proportionally into four phases, and the current phase goes into the system prompts of three LLMs (coach, cravings, strength training)",
+      "TDEE by formula: calculated with the Mifflin-St Jeor equation, not estimated by the LLM, so the same inputs always give the same number",
     ],
   },
   smiley: {

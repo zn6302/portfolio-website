@@ -9,7 +9,7 @@ const projectsZh: Project[] = [
     category: "INTERACTIVE / CREATIVE CODING",
     title: "All Things Scored",
     description:
-      "畫面上有一條線。走過的人、跳上桌的貓，任何東西穿過它都會發出一個音符：位置決定音高，動作越大，音就越大聲。",
+      "畫面上有一條線。走過的人、跳上桌的貓，任何東西穿過它都會發出一個音符：穿過的位置決定音高，動作越大，音就越大聲。",
     image: "/projects/all-things-scored.webp",
     video: "/projects/all-things-scored.mp4",
     tech: ["React", "TypeScript", "Tone.js", "Canvas"],
@@ -21,7 +21,7 @@ const projectsZh: Project[] = [
     highlights: [
       "只看一條線：自適應背景模型用 EMA 雙學習率（觸發 0.01／未觸發 0.06），只掃觸發線所在的那條 scanline 並抽樣，穩定 60fps",
       "不會走音：位置決定音高、強度決定力度；音高只取音階上的音，不用連續頻率",
-      "動作再密也不爆音：音符經 Tone.js PolySynth 和效果鏈發出，搭配 Transport 節拍量化（@8n/@16n）；20 個區段各有 cooldown，做 voice throttling",
+      "動作再密也不爆音：音符經 Tone.js PolySynth 和效果鏈發出，可選擇用 Transport 量化到 @8n/@16n；20 個區段各有 cooldown，做 voice throttling",
       "動畫迴圈讀 ref：高頻 rAF 迴圈用 ref 同步 state，避開 stale closure",
     ],
     links: {
@@ -40,9 +40,9 @@ const projectsZh: Project[] = [
     tech: ["Next.js 15", "React 19", "Tailwind v4", "Framer Motion"],
     subtitle: "以「(AI)dentity」為主題的活動官網",
     outcome: "已上線 · 2026.openhci.com · 多人 PR 協作",
-    role: "前端工程：寫 UI 元件、維護設計系統、主導互動動畫",
+    role: "前端工程師：UI 元件、設計系統維護、主導互動動畫",
     overview:
-      "這個主題談身分在 AI 時代怎麼故障、被解碼、再重組，設計團隊的像素和故障風就是從這裡來的。網站是我們照 Figma 設計稿從零寫的，在 GitHub Organization 用 PR 協作。",
+      "「(AI)dentity」談的是身分在 AI 時代怎麼故障、被解碼、再重組。網站是我們照設計團隊的 Figma 稿從零寫的，在 GitHub Organization 用 PR 協作。",
     highlights: [
       "亂碼字做成元件：把 use-scramble 包成 ScrollScramble／LoopingShockScramble 設計系統元件，進場時由 IntersectionObserver 觸發，播一次就 unobserve",
       "Loader 雙重門檻：像素風 GlobalLoader 至少顯示 2.5s，並等 document.fonts.ready 才關閉，避免 FOUT",
@@ -57,19 +57,19 @@ const projectsZh: Project[] = [
     category: "INTERACTIVE / GAME",
     title: "Click or Check?",
     description:
-      "你是新聞編輯。查證花時間，聳動標題能換流量，但可能賠上公信力；每則新聞都要你在按「分享」前決定查不查。",
+      "你是新聞編輯。查證要花時間，聳動標題能換流量，公信力則會流失；每則新聞都要你在按「分享」前決定查不查。",
     image: "/projects/click-or-check.webp",
     video: "/projects/click-or-check.mp4",
     tech: ["React 19", "Vite", "Tailwind"],
     subtitle: "在流量與公信力之間取捨的新聞遊戲",
     outcome: "媒體識讀遊戲 · 可線上試玩 · 程式碼公開",
-    role: "前端開發",
+    role: "獨立開發",
     overview:
-      "先查證再分享划不划算，要看每則新聞的標題多聳動、內容是真是假。遊戲用 React 19 和 Vite 寫成，部署在 Vercel。",
+      "每則新聞依標題多聳動、內容是真是假計分，頂部的雙軸數值條即時更新。遊戲用 React 19 和 Vite 寫，部署在 Vercel。",
     highlights: [
-      "Timer 全部收乾淨：查證流程是時間軸狀態機（verifying → result → fading → removed），timer 都由 cardTimersRef 清理，卸載後不再 setState，也沒有 memory leak",
+      "計時器全部收乾淨：查證流程是時間軸狀態機（verifying → result → fading → removed），所有 timer 都由同一個 cardTimersRef 清理，元件卸載後不再 setState，也沒有 memory leak",
       "二維矩陣計分：一軸是標題多聳動，另一軸是新聞真假",
-      "只用 CSS 畫：頂部的雙軸數值條是公式算出的 CSS linear-gradient，即時更新，沒有用圖表庫",
+      "只用 CSS 畫：頂部的雙軸數值條是用公式算出的 CSS linear-gradient，即時更新",
     ],
     links: {
       live: "https://media-literacy-game-jade.vercel.app/",
@@ -92,12 +92,12 @@ const projectsZh: Project[] = [
     outcome: "LINE Bot · 八層意圖路由 · 後端獨立開發",
     role: "後端獨立開發",
     overview:
-      "記飲食最麻煩的是打開 App、搜尋食物、填表格；用 myBot，先拍照就好。後端我把 LLM 放在最後一關，壓住成本和延遲，也讓回覆比較可預期：明確指令先用規則擋，每日熱量需求用公式算，只有照片，以及需要理解語意的訊息，才輪到 LLM。",
+      "記飲食最麻煩的是打開 App、搜尋食物、填表格；用 myBot，先拍照就好。後端我把 LLM 放在最後一關，壓住成本和延遲，也讓回覆比較可預期：明確指令先用規則擋，每日熱量需求用公式算，LLM 只處理照片和需要理解語意的訊息。",
     highlights: [
       "規則優先：八層意圖路由先用便宜的 regex／關鍵字擋下明確指令，擋不掉的才送進 Gemini",
-      "追問補份量：拍照辨識分兩段，pending_context 先存進 TTL 暫存，再追問份量，串起兩則獨立的 LINE webhook，Gemini 估的份量就更準",
-      "依週期調整回覆：月經週期按比例算出四個階段，注入「教練」「渴望」「重訓」三個 LLM 的 system prompt",
-      "TDEE 用公式算：套 Mifflin-St Jeor 公式，不交給 LLM 估，同樣的輸入每次都得到同樣的數字",
+      "追問補份量：拍照辨識分兩段。Bot 先把 pending_context 存進 TTL 暫存，再追問份量，把兩則獨立的 LINE webhook 串起來，讓 Gemini 估的份量更準",
+      "依週期調整回覆：月經週期按比例分成四個階段，再把目前階段注入「教練」「渴望」「重訓」三個 LLM 的 system prompt",
+      "TDEE 用公式算：套 Mifflin-St Jeor 方程式，不讓 LLM 估，同樣的輸入每次都得到同樣的數字",
     ],
     links: {},
   },
