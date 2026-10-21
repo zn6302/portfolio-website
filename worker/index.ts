@@ -1,10 +1,10 @@
 /**
- * Country-based language default.
+ * Country-based language default, plus host-based robots.txt.
  *
- * Runs only for the zh page URLs that have an English twin — `/` and
- * `/projects/*` (see `run_worker_first` in wrangler.jsonc); every other
- * request, including all of /en and every asset, is served straight from
- * dist/ without invoking this script.
+ * Runs only for `/`, `/projects/*` and `/robots.txt` (see
+ * `run_worker_first` in wrangler.jsonc); every other request, including all
+ * of /en and every other asset, is served straight from dist/ without
+ * invoking this script.
  *
  * A first-time visitor outside the Chinese-reading regions gets a 302 to the
  * same page under /en. Explicit choices always win: the language toggle
@@ -12,8 +12,15 @@
  * redirected back. Crawlers and link-preview fetchers are never redirected,
  * so search engines (Googlebot crawls from US IPs) and shared-link cards
  * index each URL in its own language; hreflang tells them about the twin.
+ *
+ * /robots.txt also comes through here: dist/ always holds the indexable
+ * production file, and every other hostname (dev.znye6302.com, workers.dev,
+ * previews — same build, duplicate content) gets a blanket Disallow instead.
  */
 import { LOCALE_COOKIE, localePath } from "../src/data/locale";
+
+/** The only hostname search engines should index. */
+const PRODUCTION_HOST = "znye6302.com";
 
 /** Visitors from these countries keep the Chinese site by default. */
 const ZH_COUNTRIES = new Set(["TW", "HK", "MO", "CN"]);
@@ -45,6 +52,13 @@ function prefersEnglish(request: CfRequest): boolean {
 export default {
   async fetch(request: CfRequest, env: Env): Promise<Response> {
     const url = new URL(request.url);
+
+    if (url.pathname === "/robots.txt" && url.hostname !== PRODUCTION_HOST) {
+      return new Response("User-agent: *\nDisallow: /\n", {
+        headers: { "Content-Type": "text/plain; charset=utf-8" },
+      });
+    }
+
     const isPageRead = request.method === "GET" || request.method === "HEAD";
 
     if (isPageRead && ZH_PAGE.test(url.pathname) && prefersEnglish(request)) {

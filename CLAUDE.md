@@ -256,7 +256,9 @@ Hero 影片規則：`<768px` 或 `prefers-reduced-motion: reduce` 時，`useHero
 - `scripts/prerender.mjs`：`npm run build` 最後一步。以 `dist/index.html` 為模板，為每件作品產生
   `dist/projects/<slug>/index.html`——各自的 title/description/canonical/OG，`Person`+`CreativeWork`
   JSON-LD，以及塞在 `#root` 裡的完整語意化內容（React 掛載時會清空並接手）。同時產生 sitemap.xml
-  與 robots.txt（非 `main` 分支自動 `Disallow: /`，避免 preview 站與正式站重複內容）。
+  與 robots.txt（build 一律產生允許索引的正式版；`worker/index.ts` 依請求網域，在
+  znye6302.com 以外的網域——dev、workers.dev、preview——一律回 `Disallow: /`，避免重複內容。
+  不再依 build 分支判斷：哪個分支部署到哪個網域是 Cloudflare 後台設定，build 看不到）。
 - `wrangler.jsonc` 的 `html_handling: "drop-trailing-slash"` 讓無斜線的 canonical 網址直接命中，
   且**刻意不用** `single-page-application`——那會讓所有錯誤路徑回 200，製造 soft 404。
 - 文案長度用「顯示寬度」而非字元數（全形計 2、半形計 1）：title ≤ 60、description ≤ 155。

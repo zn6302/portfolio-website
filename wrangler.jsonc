@@ -2,14 +2,14 @@
   // Deploy code only. Bind custom domains in the Cloudflare dashboard so branch deploys cannot remove DNS routes.
   "name": "portfolio-website",
   "compatibility_date": "2026-07-07",
-  // Country-based zh/en default (see the file's header comment). Only the
-  // paths in run_worker_first reach it; everything else stays a pure static
-  // asset hit, exactly as before.
+  // Country-based zh/en default + host-based robots.txt (see the file's
+  // header comment). Only the paths in run_worker_first reach it; everything
+  // else stays a pure static asset hit, exactly as before.
   "main": "worker/index.ts",
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
-    "run_worker_first": ["/", "/projects/*"],
+    "run_worker_first": ["/", "/projects/*", "/robots.txt"],
     // Default "auto-trailing-slash" 307-redirects clean project URLs
     // (/projects/<slug>) to a trailing-slash variant before serving the
     // prerendered dist/projects/<slug>/index.html (verified with `wrangler

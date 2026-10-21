@@ -418,28 +418,21 @@ function buildSitemap(homeUrls, projectsSeo, today) {
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>\n`;
 }
 
-// dev.znye6302.com (the fixed dev preview site) and any non-main Cloudflare
-// preview URL serve the exact same build as the production site
-// (https://znye6302.com) — see README.md "分支與部署". Left unguarded, that's
-// a second publicly-crawlable copy of the whole site: real duplicate-content
-// risk. Cloudflare Workers Builds sets WORKERS_CI_BRANCH during the build
-// step, so we use it here to only ship an indexable robots.txt when this
-// build is actually main (or a local/dev-machine build, where the var is
-// unset) — every other branch gets a blanket Disallow. Canonical tags are
-// still hardcoded to the production SITE_URL regardless (see seo.ts) as a
-// second layer of protection even if this check is ever bypassed.
+// dev.znye6302.com, *.workers.dev and Cloudflare preview URLs serve the
+// exact same build as the production site (https://znye6302.com) — left
+// unguarded, that's a second publicly-crawlable copy of the whole site.
+// This used to be decided at build time from WORKERS_CI_BRANCH, but which
+// branch deploys to which hostname is a dashboard setting the build can't
+// see (a dev-branch build once shipped `Disallow: /` to znye6302.com). So
+// the file written here is always the indexable production one, and
+// worker/index.ts answers /robots.txt with a blanket Disallow on every
+// hostname other than znye6302.com — decided per request, by host.
+// Canonical tags stay hardcoded to SITE_URL (see seo.ts) as a second layer.
 function buildRobots(SITE_URL) {
-  const branch = process.env.WORKERS_CI_BRANCH;
-  const isProductionBuild = !branch || branch === "main";
-  const header = `# dev.znye6302.com 與非 main 分支的 Cloudflare preview 網址，實際上部署的是同一份
-# build 產物（見 README.md「分支與部署」），若原樣允許索引，會與正式站
-# ${SITE_URL} 形成重複內容（duplicate content）。因此依 Cloudflare Workers
-# Builds 在 build 階段注入的 WORKERS_CI_BRANCH 環境變數分流：本機開發（未設定
-# 該變數）與 main 分支才產生允許索引的版本，其餘分支一律 Disallow 全站。
+  const header = `# 這份是正式站 ${SITE_URL} 的 robots.txt。dev.znye6302.com、*.workers.dev 與
+# preview 網址部署的是同一份 build，若也允許索引會與正式站形成重複內容，所以
+# worker/index.ts 會依「請求的網域」在正式網域以外一律回傳 Disallow 全站。
 `;
-  if (!isProductionBuild) {
-    return `${header}User-agent: *\nDisallow: /\n`;
-  }
   return `${header}User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`;
 }
 
