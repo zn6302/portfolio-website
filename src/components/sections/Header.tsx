@@ -1,13 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
 import { assets, navItems } from "../../data";
 import { useScrolled, useNearBottom } from "../../hooks";
 import { AvailabilityPill } from "../ui";
 
+function useSkillsReached() {
+  const [skillsReached, setSkillsReached] = useState(false);
+
+  useEffect(() => {
+    const skills = document.getElementById("skills");
+    if (!skills) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      setSkillsReached(entry.isIntersecting || entry.boundingClientRect.top <= 0);
+    });
+    observer.observe(skills);
+    return () => observer.disconnect();
+  }, []);
+
+  return skillsReached;
+}
+
 export function Header() {
   const scrolled = useScrolled();
   const nearBottom = useNearBottom();
+  const skillsReached = useSkillsReached();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!skillsReached || nearBottom) setMenuOpen(false);
+  }, [skillsReached, nearBottom]);
 
   return (
     <>
@@ -25,19 +47,28 @@ export function Header() {
         </a>
       </header>
 
-      <div className={`sticky-status ${scrolled ? "visible" : ""} ${nearBottom ? "near-bottom" : ""}`}>
-        <AvailabilityPill />
+      <div
+        className={`sticky-status ${scrolled ? "visible" : ""} ${skillsReached ? "skills-reached" : ""} ${nearBottom ? "near-bottom" : ""}`}
+      >
+        <AvailabilityPill className="header-availability" />
         <button
           className="menu-button"
           type="button"
           aria-label="Menu"
+          aria-controls="mobile-navigation"
+          aria-expanded={menuOpen}
           onClick={() => setMenuOpen((open) => !open)}
         >
           <Menu size={21} strokeWidth={2} />
         </button>
       </div>
 
-      <div className={`mobile-drawer ${menuOpen ? "open" : ""}`}>
+      <nav
+        id="mobile-navigation"
+        className={`mobile-drawer ${menuOpen && skillsReached ? "open" : ""}`}
+        aria-label="Mobile navigation"
+        aria-hidden={!menuOpen || !skillsReached}
+      >
         {navItems.map((item) => (
           <a key={item} href={item === "Home" ? "#" : `#${item.toLowerCase()}`} onClick={() => setMenuOpen(false)}>
             {item}
@@ -46,7 +77,7 @@ export function Header() {
         <a href="#contact" onClick={() => setMenuOpen(false)}>
           Contact
         </a>
-      </div>
+      </nav>
     </>
   );
 }

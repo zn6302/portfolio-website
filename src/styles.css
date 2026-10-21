@@ -250,7 +250,7 @@ img {
   top: 86px;
   left: 20px;
   right: 20px;
-  z-index: 38;
+  z-index: 45;
   display: none;
   grid-template-columns: repeat(5, 1fr);
   gap: 6px;
@@ -2178,13 +2178,20 @@ video.project-overlay-media {
     display: none;
   }
 
-  .sticky-status {
+  .sticky-status,
+  .sticky-status.visible {
     top: 20px;
     gap: 0;
     width: 278px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -12px);
+  }
+
+  .sticky-status.visible.skills-reached {
     opacity: 1;
     pointer-events: auto;
-    transform: translateX(-50%);
+    transform: translate(-50%, 0);
   }
 
   /* .site-nav is display:none on mobile, so .sticky-status is the only nav
@@ -2206,6 +2213,22 @@ video.project-overlay-media {
     font-size: 16px;
   }
 
+  .header-availability {
+    gap: 8px;
+    padding-left: 6px;
+    padding-right: 56px;
+    font-size: 13px;
+  }
+
+  .header-availability img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .header-availability i {
+    display: none;
+  }
+
   .menu-button {
     position: absolute;
     right: 4px;
@@ -2213,8 +2236,15 @@ video.project-overlay-media {
     margin-left: 0;
   }
 
+  .mobile-drawer {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
   .mobile-drawer.open {
     display: grid;
+    visibility: visible;
+    pointer-events: auto;
   }
 
   .section {
