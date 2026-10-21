@@ -151,7 +151,7 @@ export const ui: Record<Locale, UiCopy> = {
     ],
     statLaunched: "live event site",
     aboutImageAlt:
-      "Illustration of YE Zi-Ni typing at a desk, with papers floating around her, a potted plant and a cup of coffee",
+      "Illustration of YE Zi-Ni typing at a desk, with papers floating around, a potted plant and a cup of coffee",
     skillsLabel: "Skills",
     skillsHeading: "SKILLS / STACK",
     skillsLead: "Tools I've used, grouped by what they're for.",

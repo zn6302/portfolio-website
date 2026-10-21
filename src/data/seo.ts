@@ -27,7 +27,7 @@ export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
 export const HOME_SEO_EN = {
   title: "YE Zi-Ni | Creative Developer · HCI × Interactive Frontend",
   description:
-    "YE Zi-Ni's HCI × creative coding portfolio: React, TypeScript and p5.js pieces, plus the live OpenHCI 2026 site, where she led the interactive animation.",
+    "YE Zi-Ni's HCI × creative coding portfolio: React, TypeScript and p5.js pieces, plus the live OpenHCI 2026 site (interactive animation lead).",
 };
 
 interface ProjectSeoCopy {
