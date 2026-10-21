@@ -1,24 +1,23 @@
 import { assets } from "../../data";
-import { useMagnetic } from "../../hooks";
+import { useLocale, useMagnetic } from "../../hooks";
 import { AvailabilityPill, HiBubble, MaskHeading } from "../ui";
 
 export function Contact() {
   const magneticEmail = useMagnetic();
   const magneticGithub = useMagnetic();
+  const { t } = useLocale();
 
   return (
-    <section className="section contact-section" id="contact" aria-label="聯絡方式">
+    <section className="section contact-section" id="contact" aria-label={t.contactLabel}>
       <div className="contact-grid">
         <div className="portrait-card contact-portrait" data-scroll-reveal>
-          <img src={assets.portrait} alt="葉子倪的個人半身照" width={680} height={952} loading="lazy" />
+          <img src={assets.portrait} alt={t.portraitAlt} width={680} height={952} loading="lazy" />
           <HiBubble small />
         </div>
         <div className="contact-form contact-direct" data-scroll-reveal data-scroll-reveal-delay="0.16">
           <AvailabilityPill className="inline-availability" />
           <MaskHeading text="CONTACT" />
-          <p className="lead">
-            想看更多或聊聊互動專案，歡迎透過以下方式找我。
-          </p>
+          <p className="lead">{t.contactLead}</p>
           <div className="contact-direct-links">
             <a
               ref={magneticEmail}

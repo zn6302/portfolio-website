@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
+import { localePath, stripLocale } from "../data";
+import { useLocale } from "./useLocale";
 
 const PROJECT_PATH_PREFIX = "/projects/";
 
-/** Extracts `<slug>` from `/projects/<slug>` (trailing slash tolerant); null otherwise. */
+/** Extracts `<slug>` from `/projects/<slug>` or `/en/projects/<slug>`
+ *  (trailing slash tolerant); null otherwise. */
 function slugFromLocation(): string | null {
   if (typeof window === "undefined") return null;
-  const { pathname } = window.location;
+  const pathname = stripLocale(window.location.pathname);
   if (!pathname.startsWith(PROJECT_PATH_PREFIX)) return null;
   const slug = pathname.slice(PROJECT_PATH_PREFIX.length).replace(/\/+$/, "");
   return slug.length > 0 ? slug : null;
@@ -18,8 +21,8 @@ interface UseProjectRoute {
   activeSlug: string | null;
   /** Push `/projects/<slug>` and open it. Call from a project-card click. */
   openProject: (slug: string) => void;
-  /** Push `/` and close the overlay. Call from the overlay's close
-   *  button/ESC/backdrop-click handler. */
+  /** Push the locale's home (`/` or `/en`) and close the overlay. Call from
+   *  the overlay's close button/ESC/backdrop-click handler. */
   closeProject: () => void;
   /** Swap the open project in place (the overlay's prev/next strip) without
    *  growing back-button history — uses `replaceState`, not `pushState`, so
@@ -37,6 +40,9 @@ interface UseProjectRoute {
  * site.
  */
 export function useProjectRoute(): UseProjectRoute {
+  // Paths stay inside the current locale: on the English site a card opens
+  // `/en/projects/<slug>` and closing returns to `/en`.
+  const { locale } = useLocale();
   const [activeSlug, setActiveSlug] = useState<string | null>(slugFromLocation);
 
   // Browser back/forward: the URL has already changed by the time this
@@ -47,28 +53,35 @@ export function useProjectRoute(): UseProjectRoute {
     return () => window.removeEventListener("popstate", onPopState);
   }, []);
 
-  const openProject = useCallback((slug: string) => {
-    const path = `${PROJECT_PATH_PREFIX}${slug}`;
-    if (window.location.pathname !== path) {
-      window.history.pushState({ projectSlug: slug }, "", path);
-    }
-    setActiveSlug(slug);
-  }, []);
+  const openProject = useCallback(
+    (slug: string) => {
+      const path = localePath(`${PROJECT_PATH_PREFIX}${slug}`, locale);
+      if (window.location.pathname !== path) {
+        window.history.pushState({ projectSlug: slug }, "", path);
+      }
+      setActiveSlug(slug);
+    },
+    [locale],
+  );
 
   const closeProject = useCallback(() => {
-    if (window.location.pathname !== "/") {
-      window.history.pushState({}, "", "/");
+    const home = localePath("/", locale);
+    if (window.location.pathname !== home) {
+      window.history.pushState({}, "", home);
     }
     setActiveSlug(null);
-  }, []);
+  }, [locale]);
 
-  const replaceProject = useCallback((slug: string) => {
-    const path = `${PROJECT_PATH_PREFIX}${slug}`;
-    if (window.location.pathname !== path) {
-      window.history.replaceState({ projectSlug: slug }, "", path);
-    }
-    setActiveSlug(slug);
-  }, []);
+  const replaceProject = useCallback(
+    (slug: string) => {
+      const path = localePath(`${PROJECT_PATH_PREFIX}${slug}`, locale);
+      if (window.location.pathname !== path) {
+        window.history.replaceState({ projectSlug: slug }, "", path);
+      }
+      setActiveSlug(slug);
+    },
+    [locale],
+  );
 
   return { activeSlug, openProject, closeProject, replaceProject };
 }

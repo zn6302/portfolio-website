@@ -1,6 +1,6 @@
 import { forwardRef, type RefObject } from "react";
 import { assets } from "../../data";
-import { useMagnetic } from "../../hooks";
+import { useLocale, useMagnetic } from "../../hooks";
 import { AvailabilityPill } from "../ui";
 
 interface HeroProfileProps {
@@ -18,6 +18,7 @@ export const HeroProfile = forwardRef<HTMLDivElement, HeroProfileProps>(function
   ref,
 ) {
   const magnetic = useMagnetic();
+  const { t } = useLocale();
 
   return (
     <div className="hero-profile" ref={ref}>
@@ -37,7 +38,7 @@ export const HeroProfile = forwardRef<HTMLDivElement, HeroProfileProps>(function
           `.hero-card-journey { color: var(--color-paper-light) }`, same as
           before — untouched. */}
       <div className="hero-left">
-        <p className="eyebrow">葉子倪</p>
+        <p className="eyebrow">{t.heroName}</p>
         <span className="hero-visual-title">HCI</span>
       </div>
 
@@ -60,9 +61,7 @@ export const HeroProfile = forwardRef<HTMLDivElement, HeroProfileProps>(function
 
       <div className="hero-right">
         <span className="hero-visual-title">CODING</span>
-        <p>
-          我用程式，將世界表現出來。
-        </p>
+        <p>{t.heroTagline}</p>
         <div className="hero-profile-actions">
           <AvailabilityPill className="hero-profile-badge" />
           <a ref={magnetic} className="outline-button hero-profile-cta" href="#contact">

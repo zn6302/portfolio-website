@@ -7,7 +7,7 @@ import {
   Sketches,
 } from "./components/sections";
 import { BackToTop } from "./components/ui";
-import { useAnchorScroll, useLenis, useScrollReveal } from "./hooks";
+import { useAnchorScroll, useLenis, useLocale, useScrollReveal } from "./hooks";
 
 export default function App() {
   // Lenis owns window scroll on desktop (skipped under reduced-motion and on
@@ -16,6 +16,7 @@ export default function App() {
   useLenis();
   useAnchorScroll();
   useScrollReveal();
+  const { t } = useLocale();
 
   return (
     <div className="app">
@@ -28,7 +29,7 @@ export default function App() {
             有某個狀態會讓它整個離開渲染樹與無障礙樹（display:none 無法用子層
             的 visibility:visible 逃脫，實測確認）。放在這裡則不受任何動畫狀態
             影響，也同時是 DOM 中的第一個標題。 */}
-        <h1 className="sr-only">葉子倪 YE Zi-Ni — HCI × Creative Coding 作品集</h1>
+        <h1 className="sr-only">{t.h1}</h1>
         {/* HeroCardJourney renders Hero + Services (Skills constellation,
             disableCardFlip) + About (disableCardFlip) as one scroll-jacked
             card animation — Skills already sits between Hero and Projects

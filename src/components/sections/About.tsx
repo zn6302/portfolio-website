@@ -1,6 +1,6 @@
-import { useRef } from "react";
+import { Fragment, useRef } from "react";
 import { assets } from "../../data";
-import { useScrollFlip, useMagnetic } from "../../hooks";
+import { useLocale, useScrollFlip, useMagnetic } from "../../hooks";
 import { AvailabilityPill, MaskHeading, Socials } from "../ui";
 
 const ABOUT_FLIP = {
@@ -19,24 +19,27 @@ export function About({ disableCardFlip = false }: AboutProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   useScrollFlip(cardRef, { ...ABOUT_FLIP, triggerRef: sectionRef, disabled: disableCardFlip });
   const magnetic = useMagnetic();
+  const { t } = useLocale();
 
   return (
-    <section className="section about-section" id="about" aria-label="關於我" ref={sectionRef}>
+    <section className="section about-section" id="about" aria-label={t.aboutLabel} ref={sectionRef}>
       <div className="section-grid about-grid">
         <div data-scroll-reveal>
           <AvailabilityPill className="inline-availability" />
           <MaskHeading text="ABOUT" />
+          <p className="lead">{t.aboutLead}</p>
           <p className="lead">
-            我相信前端工程師是翻譯者：在設計與程式之間、在人與機器之間。我做的每一件作品，都是一次翻譯練習——把動作翻譯成音樂、把情緒翻譯成氣味、把設計稿裡的故事翻譯成會動的程式碼。
-          </p>
-          <p className="lead">
-            我是葉子倪，政大數位內容，喜歡 HCI 與互動藝術，<br />
-            目標是成為「能把設計、互動、工程和使用者體驗整合起來的前端工程師」。
+            {t.aboutIntro.map((line, index) => (
+              <Fragment key={line}>
+                {index > 0 && <br />}
+                {line}
+              </Fragment>
+            ))}
           </p>
           <div className="stats-row">
             <div>
               <strong>1</strong>
-              <span>個已上線官網</span>
+              <span>{t.statLaunched}</span>
             </div>
             <div>
               <strong>5+</strong>
@@ -69,7 +72,7 @@ export function About({ disableCardFlip = false }: AboutProps) {
           <img
             className="scroll-flip-front"
             src={assets.aboutKeyframe}
-            alt="葉子倪坐在書桌前工作的插畫，擷取自首頁動畫畫格"
+            alt={t.aboutImageAlt}
           />
         </div>
       </div>

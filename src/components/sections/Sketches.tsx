@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import { sketches } from "../../data";
+import { useLocale } from "../../hooks";
 import { MaskHeading } from "../ui";
 
 // Per-card float/rotation variety. Index-matched to `sketches`; if more
@@ -13,18 +14,18 @@ const CARD_META = [
 ];
 
 export function Sketches() {
+  const { locale, t } = useLocale();
+
   return (
-    <section className="section sketches-section" id="sketches" aria-label="Playground：Creative Coding 互動作品">
+    <section className="section sketches-section" id="sketches" aria-label={t.sketchesLabel}>
       <div className="section-head" data-scroll-reveal>
         <span className="sketches-eyebrow">PLAYGROUND / CREATIVE CODING</span>
         <MaskHeading text="PLAYGROUND" />
-        <p className="lead">
-          翻譯的練習簿——把演算法與隨機性，翻譯成可以觀看、可以玩的東西。
-        </p>
+        <p className="lead">{t.sketchesLead}</p>
       </div>
 
       <div className="sketches-wall" data-scroll-reveal data-scroll-reveal-delay="0.16">
-        {sketches.map((sketch, index) => {
+        {sketches[locale].map((sketch, index) => {
           const meta = CARD_META[index % CARD_META.length];
           return (
             <article

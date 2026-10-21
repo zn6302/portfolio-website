@@ -1,8 +1,8 @@
-import type { Sketch } from "../types";
+import type { Locale, Sketch } from "../types";
 
 // 唯一內容來源：Playground / creative coding 作品牆。
 // 點擊卡片會在新分頁開啟 GitHub Pages 上可玩的原作。
-export const sketches: Sketch[] = [
+const sketchesZh: Sketch[] = [
   {
     slug: "pixel-blocks",
     title: "Tinshack",
@@ -22,3 +22,21 @@ export const sketches: Sketch[] = [
     githubUrl: "https://github.com/zn6302/ccc_project2_flowers",
   },
 ];
+
+// English text per slug; everything else is inherited from the zh entry.
+const sketchCopyEn: Record<string, Pick<Sketch, "description" | "alt">> = {
+  "pixel-blocks": {
+    description:
+      "The rust and creases of a tin shack, broken down into color, light and dense dots — every run generates a wall marked by a different stretch of time.",
+    alt: "A p5.js-generated texture of a rusted, creased tin shack wall, built from dense colored dots that form irregular patches.",
+  },
+  "interactive-garden": {
+    description: "The golden angle is just a number — until it blooms into a garden that breathes with your mouse.",
+    alt: "An interactive p5.js flower garden laid out by the golden angle; the flowers sway as the mouse moves.",
+  },
+};
+
+export const sketches: Record<Locale, Sketch[]> = {
+  zh: sketchesZh,
+  en: sketchesZh.map((sketch) => ({ ...sketch, ...sketchCopyEn[sketch.slug] })),
+};

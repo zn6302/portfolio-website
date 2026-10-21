@@ -1,3 +1,6 @@
+/** Site language. `zh` (Traditional Chinese) is the root site, `en` lives under /en. */
+export type Locale = "zh" | "en";
+
 export interface Service {
   title: string;
   items: string[];
@@ -63,3 +66,11 @@ export interface Project {
     github?: string;
   };
 }
+
+/** The translatable text fields of a Project. Other locales supply these per
+ *  project id and inherit everything else (media, tech, links) from the zh
+ *  entry, so assets and links can never drift between languages. */
+export type ProjectCopy = Pick<
+  Project,
+  "category" | "title" | "description" | "subtitle" | "outcome" | "role" | "overview" | "highlights"
+>;

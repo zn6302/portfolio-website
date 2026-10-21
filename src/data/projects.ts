@@ -1,6 +1,9 @@
-import type { Project } from "../types";
+import type { Locale, Project } from "../types";
+import { projectCopyEn } from "./projects.en";
 
-export const projects: Project[] = [
+// zh is the base entry for every project; the English site swaps in the text
+// fields from projects.en.ts and keeps everything else.
+const projectsZh: Project[] = [
   {
     id: "all-things-scored",
     category: "INTERACTIVE / CREATIVE CODING",
@@ -120,3 +123,8 @@ export const projects: Project[] = [
     links: {},
   },
 ];
+
+export const projects: Record<Locale, Project[]> = {
+  zh: projectsZh,
+  en: projectsZh.map((project) => ({ ...project, ...projectCopyEn[project.id] })),
+};

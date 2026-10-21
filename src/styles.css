@@ -109,7 +109,10 @@ img {
 
 .site-nav {
   gap: 30px;
-  width: 508px;
+  /* Sized to its items (avatar, links, 中/EN toggle, Contact) rather than a
+     fixed width. max-content, not auto: as a fixed box at left:50% it would
+     otherwise shrink-wrap to half the viewport. */
+  width: max-content;
   height: 56px;
   padding: 8px 10px;
   border: 1px solid var(--line);
@@ -191,6 +194,72 @@ img {
   color: #fff;
   font-size: 16px;
   font-weight: 400;
+}
+
+/* 中 / EN switch (LangToggle). Desktop: a small segmented pill in .site-nav
+   with the current language filled. In .mobile-drawer it collapses to a plain
+   cell showing only the language you'd switch to (rules further down). */
+.lang-toggle {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 2px;
+  height: 40px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-family: "IBM Plex Mono", "Noto Sans TC", monospace;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  transition: border-color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lang-toggle span {
+  display: grid;
+  min-width: 32px;
+  height: 100%;
+  padding: 0 8px;
+  place-items: center;
+  border-radius: 999px;
+  transition:
+    background 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lang-toggle .is-active {
+  background: var(--soft);
+  color: var(--ink);
+}
+
+.lang-toggle:hover,
+.lang-toggle:focus-visible {
+  border-color: var(--brand);
+}
+
+.lang-toggle:hover span:not(.is-active),
+.lang-toggle:focus-visible span:not(.is-active) {
+  color: var(--ink);
+}
+
+.lang-toggle:focus-visible {
+  outline: 2px solid var(--brand-deep);
+  outline-offset: 3px;
+}
+
+.mobile-drawer .lang-toggle {
+  height: auto;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  font-family: inherit;
+  font-size: 13px;
+  letter-spacing: normal;
+}
+
+.mobile-drawer .lang-toggle .is-active {
+  display: none;
 }
 
 .availability {

@@ -8,3 +8,4 @@ public/thisME.JPG
 public/thisME.png
 .env
 .env.local
+.wrangler/

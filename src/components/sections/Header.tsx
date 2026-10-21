@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
 import { assets, navItems } from "../../data";
 import { useScrolled, useNearBottom } from "../../hooks";
-import { AvailabilityPill } from "../ui";
+import { AvailabilityPill, LangToggle } from "../ui";
 
 function useSkillsReached() {
   const [skillsReached, setSkillsReached] = useState(false);
@@ -42,6 +42,7 @@ export function Header() {
             </a>
           ))}
         </nav>
+        <LangToggle />
         <a className="contact-pill" href="#contact">
           Contact
         </a>
@@ -74,6 +75,7 @@ export function Header() {
             {item}
           </a>
         ))}
+        <LangToggle />
         <a href="#contact" onClick={() => setMenuOpen(false)}>
           Contact
         </a>

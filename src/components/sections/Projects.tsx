@@ -1,9 +1,9 @@
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { projects } from "../../data";
+import { projects as projectsByLocale } from "../../data";
 import type { Project } from "../../types";
-import { useHeroVideoSources, useInViewVideo, useProjectRoute } from "../../hooks";
+import { useHeroVideoSources, useInViewVideo, useLocale, useProjectRoute } from "../../hooks";
 import { AvailabilityPill, MaskHeading } from "../ui";
 import { ProjectOverlay } from "./ProjectOverlay";
 
@@ -72,6 +72,8 @@ function PanelCopy({
   project: Project;
   onOpen?: (buttonEl: HTMLElement) => void;
 }) {
+  const { t } = useLocale();
+
   return (
     <div className="deck-panel-copy">
       <span className="deck-panel-eyebrow">{project.category}</span>
@@ -94,10 +96,10 @@ function PanelCopy({
             type="button"
             className="deck-panel-cue"
             aria-haspopup="dialog"
-            aria-label={`查看 ${project.title} 詳情`}
+            aria-label={t.viewDetailsLabel(project.title)}
             onClick={(event) => onOpen?.(event.currentTarget)}
           >
-            查看詳情 ↗
+            {t.viewDetails}
           </button>
         )}
         {project.links?.live && (
@@ -136,6 +138,8 @@ export function Projects() {
   // fade — there's no card to FLIP from).
   const { activeSlug, openProject: openRoute, closeProject: closeRoute, replaceProject } =
     useProjectRoute();
+  const { locale } = useLocale();
+  const projects = projectsByLocale[locale];
   const activeProject = activeSlug ? (projects.find((p) => p.id === activeSlug) ?? null) : null;
   const sectionRef = useRef<HTMLElement>(null);
   // FLIP expand origin (the clicked panel's media) and the element focus returns

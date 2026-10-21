@@ -1,6 +1,6 @@
 import gsap from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
-import { getLenis, useBackToTop } from "../../hooks";
+import { getLenis, useBackToTop, useLocale } from "../../hooks";
 
 gsap.registerPlugin(ScrollToPlugin);
 
@@ -14,6 +14,7 @@ gsap.registerPlugin(ScrollToPlugin);
  */
 export function BackToTop() {
   const visible = useBackToTop();
+  const { t } = useLocale();
 
   const handleClick = () => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -38,7 +39,7 @@ export function BackToTop() {
   return (
     <button
       type="button"
-      aria-label="回到頂部"
+      aria-label={t.backToTop}
       aria-hidden={!visible}
       tabIndex={visible ? 0 : -1}
       onClick={handleClick}

@@ -1,6 +1,6 @@
 # zini-portfolio — 葉子倪個人作品集
 
-葉子倪的個人作品集網站，用於 2026 實習申請。單頁、無後端，聚焦真實作品：HCI 研究、互動
+葉子倪的個人作品集網站，用於 2026 實習申請。單頁、中英雙語（英文在 `/en`），聚焦真實作品：HCI 研究、互動
 原型、creative coding、前端實作。設計與工程規範以 [CLAUDE.md](CLAUDE.md) 為唯一最終依據。
 
 ## 技術棧
@@ -72,6 +72,9 @@ Cloudflare Workers Builds 應使用以下設定：
 - `dev`：執行 `wrangler deploy --env dev`，更新固定的 `dev.znye6302.com`。
 - 其他分支：執行 `wrangler versions upload`，建立臨時預覽版本，不改動正式流量。
 
+三個環境都是同一份 Worker（`wrangler.jsonc` 的 `main: worker/index.ts`）：除了依訪客國家
+把中文頁導到 `/en`，其餘請求都直接由 `dist/` 靜態檔回應，細節見 CLAUDE.md「雙語」。
+
 ## 品質護欄
 
 ```bash
@@ -98,6 +101,7 @@ pnpm test:rwd                # 預設掃 24 個寬度；node scripts/rwd-scan.mj
 ├── CLAUDE.md                  # 設計系統與工程規範（最終依據）
 ├── docs/                      # 延伸文件（RWD 指南、色彩指南、design-system 舊稿）
 ├── scripts/rwd-scan.mjs       # RWD 水平溢出掃描器
+├── worker/index.ts            # Cloudflare Worker：依國家預設中 / 英文
 └── src/
     ├── main.tsx               # React 進入點
     ├── App.tsx                # 組合各頁面區塊
@@ -123,6 +127,7 @@ pnpm test:rwd                # 預設掃 24 個寬度；node scripts/rwd-scan.mj
 
 ## 內容維護
 
-改文案只改 `src/data/`。新增作品在 `src/data/projects.ts` 補一筆，截圖轉 webp（單張
+改文案只改 `src/data/`，中英文要一起改（英文作品文案在 `projects.en.ts`，介面文案在
+`ui.ts`）。新增作品在 `src/data/projects.ts` 補一筆、`projects.en.ts` 補英文，截圖轉 webp（單張
 ≤ 300KB）放 `public/projects/` 並填 `image` 欄位；後端型、無截圖的作品可省略 `image`，會自動
 渲染純標題卡而非破圖。
