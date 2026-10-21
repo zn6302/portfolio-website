@@ -1,5 +1,5 @@
-import { forwardRef, useRef } from "react";
-import { useHeroParallax } from "../../hooks";
+import { Fragment, forwardRef, useRef } from "react";
+import { useHeroParallax, useLocale } from "../../hooks";
 
 /**
  * First hero segment: the light overlay that sits on top of the full-screen
@@ -15,6 +15,10 @@ import { useHeroParallax } from "../../hooks";
 export const HeroIntro = forwardRef<HTMLDivElement>(function HeroIntro(_props, ref) {
   const localRef = useRef<HTMLDivElement>(null);
   useHeroParallax(localRef);
+  const { t } = useLocale();
+  // "\n" in the role copy marks the line break; the trailing space keeps a
+  // word gap between the lines in the heading's accessible text.
+  const roleLines = t.heroRole.split("\n");
 
   const setRefs = (node: HTMLDivElement | null) => {
     localRef.current = node;
@@ -25,17 +29,21 @@ export const HeroIntro = forwardRef<HTMLDivElement>(function HeroIntro(_props, r
   return (
     <div className="hero-intro" ref={setRefs}>
       <p className="hero-intro-eyebrow" data-parallax="6">
-        YE ZI-NI
+        {t.heroIntroName}
       </p>
       <h2 className="hero-intro-title" data-parallax="10">
-        FRONTEND / <br />
-        CREATIVE CODER
+        {roleLines.map((line, index) => (
+          <Fragment key={index}>
+            {index > 0 && <br />}
+            {index < roleLines.length - 1 ? `${line} ` : line}
+          </Fragment>
+        ))}
       </h2>
       <p className="hero-intro-en" data-parallax="9">
-        I translate the invisible into experience.
+        {t.heroConcept}
       </p>
       <p className="hero-intro-hint" data-parallax="4">
-        Scroll <span aria-hidden="true">↓</span>
+        {t.scrollHint} <span aria-hidden="true">↓</span>
       </p>
     </div>
   );

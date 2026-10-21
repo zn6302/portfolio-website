@@ -18,10 +18,13 @@ export function Sketches() {
 
   return (
     <section className="section sketches-section" id="sketches" aria-label={t.sketchesLabel}>
-      <div className="section-head" data-scroll-reveal>
-        <span className="sketches-eyebrow">PLAYGROUND / CREATIVE CODING</span>
+      <div className="section-head">
+        <span className="section-eyebrow" aria-hidden="true">04 / 05</span>
         <MaskHeading text="PLAYGROUND" />
-        <p className="lead">{t.sketchesLead}</p>
+        {/* Reveal the lead only; the heading has its own mask reveal. */}
+        <p className="lead" data-scroll-reveal data-scroll-reveal-delay="0.12">
+          {t.sketchesLead}
+        </p>
       </div>
 
       <div className="sketches-wall" data-scroll-reveal data-scroll-reveal-delay="0.16">

@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { assets, services } from "../../data";
 import { useLocale, useScrollFlip } from "../../hooks";
-import { AvailabilityPill, MaskHeading } from "../ui";
+import { MaskHeading } from "../ui";
 import { SkillsGraph } from "./SkillsGraph";
 
 const SERVICES_FLIP = {
@@ -27,35 +27,39 @@ export function Services({ disableCardFlip = false }: ServicesProps) {
   return (
     <section className="section services" id="skills" aria-label={t.skillsLabel} ref={sectionRef}>
       <div className="section-grid">
-        <div data-scroll-reveal>
-          <AvailabilityPill className="inline-availability" />
+        <div>
+          <span className="section-eyebrow" aria-hidden="true">01 / 05</span>
           <MaskHeading text={t.skillsHeading} />
-          <p className="lead">{t.skillsLead}</p>
+          {/* The reveal fades the content under the heading, not the heading
+              itself, which already has its own mask reveal. */}
+          <div data-scroll-reveal data-scroll-reveal-delay="0.12">
+            <p className="lead">{t.skillsLead}</p>
 
-          {/* Accessible, structured source of truth (read by screen readers on
-              every viewport). The visual graph and phone tag grid below are
-              aria-hidden alternatives of this same list. */}
-          <ul className="sr-only skills-sr-list">
-            {categories.map((service) => (
-              <li key={service.title}>{t.skillsRow(stripIndex(service.title), service.items)}</li>
-            ))}
-          </ul>
+            {/* Accessible, structured source of truth (read by screen readers on
+                every viewport). The visual graph and phone tag grid below are
+                aria-hidden alternatives of this same list. */}
+            <ul className="sr-only skills-sr-list">
+              {categories.map((service) => (
+                <li key={service.title}>{t.skillsRow(stripIndex(service.title), service.items)}</li>
+              ))}
+            </ul>
 
-          {/* Desktop / tablet (>760px): constellation graph. */}
-          <SkillsGraph />
+            {/* Desktop / tablet (>760px): constellation graph. */}
+            <SkillsGraph />
 
-          {/* Phones (<=760px): plain category tag grid — no shrunk graph. */}
-          <div className="skills-taggrid" aria-hidden="true">
-            {categories.map((service) => (
-              <div className="skills-taggroup" key={service.title}>
-                <h3>{stripIndex(service.title)}</h3>
-                <ul>
-                  {service.items.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+            {/* Phones (<=760px): plain category tag grid — no shrunk graph. */}
+            <div className="skills-taggrid" aria-hidden="true">
+              {categories.map((service) => (
+                <div className="skills-taggroup" key={service.title}>
+                  <h3>{stripIndex(service.title)}</h3>
+                  <ul>
+                    {service.items.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
         <div className="tilt-frame services-image scroll-flip-card" ref={cardRef}>

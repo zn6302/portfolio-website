@@ -4,7 +4,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { projects as projectsByLocale } from "../../data";
 import type { Project } from "../../types";
 import { useHeroVideoSources, useInViewVideo, useLocale, useProjectRoute } from "../../hooks";
-import { AvailabilityPill, MaskHeading } from "../ui";
+import { MaskHeading } from "../ui";
 import { ProjectOverlay } from "./ProjectOverlay";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -20,12 +20,23 @@ const DECK_QUERY = "(min-width: 901px)";
 // reduced-motion we never set a `src` at all — those visitors get the poster
 // still and never pay for the download. Playback is also parked whenever the
 // card is off screen, so an idle tab isn't decoding video nobody is looking at.
-function PanelVideo({ project }: { project: Project & { video: string } }) {
+function PanelVideo({
+  project,
+  onOpen,
+}: {
+  project: Project & { video: string };
+  onOpen?: () => void;
+}) {
   const shouldLoadVideo = useHeroVideoSources();
   const videoRef = useInViewVideo(shouldLoadVideo);
+  const { t } = useLocale();
 
   return (
-    <div className="deck-panel-media deck-panel-media--video">
+    <div
+      className="deck-panel-media deck-panel-media--video"
+      onClick={onOpen}
+      tabIndex={onOpen ? -1 : undefined}
+    >
       <video
         ref={videoRef}
         className="deck-panel-media-img is-contain"
@@ -35,23 +46,39 @@ function PanelVideo({ project }: { project: Project & { video: string } }) {
         loop
         playsInline
         preload="metadata"
-        aria-label={`${project.title} demo`}
+        aria-label={t.demoLabel(project.title)}
       />
     </div>
   );
 }
 
-function PanelMedia({ project }: { project: Project }) {
+// The artwork is a pointer shortcut to the case study (`onOpen`), so clicking
+// the thing that lifts on hover does what it promises. It is deliberately not
+// in the Tab order: the "查看詳情" cue button in PanelCopy stays the one
+// keyboard / screen-reader control, so AT users don't meet the same action
+// twice. tabIndex={-1} (still not a Tab stop) only lets a click/tap focus the
+// artwork as a pointer focus — otherwise focus stays on <body> and Chrome
+// paints a keyboard ring on the overlay's programmatic focus moves (close
+// button on open, cue on close), leaving the cue filled and the artwork lifted
+// for mouse and touch users.
+function PanelMedia({ project, onOpen }: { project: Project; onOpen?: () => void }) {
+  const { t } = useLocale();
   if (project.video) {
-    return <PanelVideo project={project as Project & { video: string }} />;
+    return <PanelVideo project={project as Project & { video: string }} onOpen={onOpen} />;
   }
   if (project.image) {
     return (
-      <div className="deck-panel-media">
+      <div className="deck-panel-media" onClick={onOpen} tabIndex={onOpen ? -1 : undefined}>
         <img
           className={`deck-panel-media-img${project.imageFit === "contain" ? " is-contain" : ""}`}
           src={project.image}
-          alt={`${project.title} cover`}
+          alt={project.imageAlt ?? t.coverAlt(project.title)}
+          // Intrinsic 16:10 hint (the slot's ratio) so the box is reserved
+          // before the file arrives; CSS still sizes it to fill the slot.
+          loading="lazy"
+          decoding="async"
+          width={1600}
+          height={1000}
         />
       </div>
     );
@@ -59,24 +86,42 @@ function PanelMedia({ project }: { project: Project }) {
   // mybot has no screenshot on purpose — render a token-coloured title block
   // instead of a broken image.
   return (
-    <div className="deck-panel-media deck-panel-media-empty" aria-hidden="true">
+    <div
+      className="deck-panel-media deck-panel-media-empty"
+      aria-hidden="true"
+      onClick={onOpen}
+      tabIndex={onOpen ? -1 : undefined}
+    >
       <span className="deck-panel-media-empty-title">{project.title}</span>
     </div>
   );
 }
 
+// "01 / 05" — position in the deck, derived from the list (not copy).
+const pad2 = (n: number) => String(n).padStart(2, "0");
+
 function PanelCopy({
   project,
+  index,
+  total,
   onOpen,
 }: {
   project: Project;
+  index: number;
+  total: number;
   onOpen?: (buttonEl: HTMLElement) => void;
 }) {
   const { t } = useLocale();
 
   return (
     <div className="deck-panel-copy">
-      <span className="deck-panel-eyebrow">{project.category}</span>
+      <span className="deck-panel-eyebrow">
+        <span className="deck-panel-count">
+          {pad2(index + 1)} / {pad2(total)}
+        </span>
+        <span aria-hidden="true"> · </span>
+        {project.category}
+      </span>
       <h3 className="deck-panel-title">{project.title}</h3>
       {project.subtitle && <p className="deck-panel-subtitle">{project.subtitle}</p>}
       {project.outcome && <p className="deck-panel-outcome">{project.outcome}</p>}
@@ -173,17 +218,19 @@ export function Projects() {
 
       ctx = gsap.context(() => {
         if (!deck) {
-          // Mobile / narrow: simple one-shot rise + fade per card.
+          // Mobile / narrow: simple one-shot rise + fade per card. Plain
+          // opacity, not autoAlpha: visibility:hidden would drop the card's
+          // buttons and links out of the Tab order until it is revealed.
           panels.forEach((panel) => {
             const inner = panel.querySelector<HTMLElement>(".deck-panel-inner");
             if (!inner) return;
-            gsap.set(inner, { autoAlpha: 0, y: 24 });
+            gsap.set(inner, { opacity: 0, y: 24 });
             ScrollTrigger.create({
               trigger: panel,
               start: "top 82%",
               once: true,
               onEnter: () =>
-                gsap.to(inner, { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }),
+                gsap.to(inner, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }),
             });
           });
           document.fonts?.ready.then(() => ScrollTrigger.refresh());
@@ -196,18 +243,33 @@ export function Projects() {
           const inner = panel.querySelector<HTMLElement>(".deck-panel-inner");
           const isLast = index === panels.length - 1;
 
-          // Entrance: screenshot un-zooms and copy fades up as the panel rises
-          // from the bottom of the viewport to the top (where it will pin).
-          const entrance = gsap.timeline({
-            scrollTrigger: { trigger: panel, start: "top bottom", end: "top top", scrub: true },
-          });
-          if (media) entrance.fromTo(media, { scale: 1.08 }, { scale: 1, ease: "none" }, 0);
+          // Entrance: the screenshot un-zooms over the whole rise (panel top
+          // from the bottom of the viewport to the top, where it pins), but
+          // the copy finishes fading up by the time the panel top reaches 35%
+          // of the viewport — so it rests fully opaque for the end of the rise
+          // and the hold, instead of peaking for a single frame. Plain opacity,
+          // not autoAlpha, so the buttons/links stay in the Tab order (focus
+          // scrolls the panel in and the scrub catches up).
+          if (media)
+            gsap.fromTo(
+              media,
+              { scale: 1.08 },
+              {
+                scale: 1,
+                ease: "none",
+                scrollTrigger: { trigger: panel, start: "top bottom", end: "top top", scrub: true },
+              },
+            );
           if (copy)
-            entrance.fromTo(
+            gsap.fromTo(
               copy,
-              { autoAlpha: 0, y: 32 },
-              { autoAlpha: 1, y: 0, ease: "none" },
-              0,
+              { opacity: 0, y: 32 },
+              {
+                opacity: 1,
+                y: 0,
+                ease: "none",
+                scrollTrigger: { trigger: panel, start: "top bottom", end: "top 35%", scrub: true },
+              },
             );
 
           if (isLast) return;
@@ -224,18 +286,21 @@ export function Projects() {
             anticipatePin: 1,
           });
 
-          // Depth: while the *next* panel covers this one, recede it.
+          // Depth: while the *next* panel covers this one, recede it. Starts
+          // only once the next panel is past the middle of the viewport (top
+          // at 55%), so the pinned panel holds at full strength first; it
+          // dims to 0.85, never further, so it still reads as content.
           if (inner) {
             gsap.fromTo(
               inner,
-              { scale: 1, autoAlpha: 1 },
+              { scale: 1, opacity: 1 },
               {
                 scale: 0.94,
-                autoAlpha: 0.5,
+                opacity: 0.85,
                 ease: "none",
                 scrollTrigger: {
                   trigger: panels[index + 1],
-                  start: "top bottom",
+                  start: "top 55%",
                   end: "top top",
                   scrub: true,
                 },
@@ -265,12 +330,18 @@ export function Projects() {
     };
   }, []);
 
-  const openProject = (project: Project, buttonEl: HTMLElement, articleEl: HTMLElement | undefined) => {
+  const openProject = (
+    project: Project,
+    buttonEl: HTMLElement | null,
+    articleEl: HTMLElement | undefined,
+  ) => {
     if (!project.id) return; // placeholder card, nothing to open
-    // Return focus to the button that opened the dialog; anchor the FLIP morph
-    // on the panel artwork.
-    focusRef.current = buttonEl;
-    originRef.current = articleEl?.querySelector<HTMLElement>(".deck-panel-media") ?? articleEl ?? buttonEl;
+    // Return focus to the "查看詳情" button (also when the artwork was the
+    // click — the artwork isn't in the Tab order); anchor the FLIP morph on the panel
+    // artwork.
+    focusRef.current = buttonEl ?? articleEl?.querySelector<HTMLElement>(".deck-panel-cue") ?? null;
+    originRef.current =
+      articleEl?.querySelector<HTMLElement>(".deck-panel-media") ?? articleEl ?? buttonEl;
     openRoute(project.id);
   };
 
@@ -279,7 +350,7 @@ export function Projects() {
   return (
     <section className="projects-deck" id="projects" ref={sectionRef}>
       <div className="section deck-head">
-        <AvailabilityPill className="inline-availability" />
+        <span className="section-eyebrow" aria-hidden="true">03 / 05</span>
         <MaskHeading text="SELECTED WORKS" />
       </div>
 
@@ -296,9 +367,18 @@ export function Projects() {
             style={{ zIndex: index + 1 }}
           >
             <div className="deck-panel-inner">
-              <PanelMedia project={project} />
+              <PanelMedia
+                project={project}
+                onOpen={
+                  project.id
+                    ? () => openProject(project, null, panelRefs.current[index])
+                    : undefined
+                }
+              />
               <PanelCopy
                 project={project}
+                index={index}
+                total={projects.length}
                 onOpen={(buttonEl) => openProject(project, buttonEl, panelRefs.current[index])}
               />
             </div>

@@ -60,7 +60,7 @@ const SHORT: Record<string, string> = {
   "Next.js 15": "Next.js",
   "Vercel Serverless": "Vercel",
   "GraphRAG / VideoRAG": "GraphRAG",
-  "Claude Code 工作流": "Claude Code",
+  "Claude Code 工作流程": "Claude Code",
   "Claude Code workflows": "Claude Code",
   "LLM integration": "LLM",
   "Frontend Engineering": "Engineering",
@@ -285,8 +285,8 @@ export function SkillsGraph() {
     }
 
     // Entrance: lines grow via stroke-dashoffset, nodes fade + drift up in a
-    // trunk → categories → skills stagger. It resets after leaving the viewport
-    // so scrolling back to Skills replays the full constellation sequence.
+    // trunk → categories → skills stagger. Plays once (like every other reveal
+    // on the site); scrolling back to Skills shows the finished graph.
     const ctx = gsap.context(() => {
       const trunks = root.querySelectorAll(".sg-line-trunk");
       const branchLines = root.querySelectorAll(".sg-line:not(.sg-line-trunk)");
@@ -306,8 +306,7 @@ export function SkillsGraph() {
         scrollTrigger: {
           trigger: root,
           start: "top 78%",
-          end: "bottom 22%",
-          toggleActions: "restart reset restart reset",
+          once: true,
         },
         defaults: { ease: "power3.out" },
       });

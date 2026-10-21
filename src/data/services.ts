@@ -7,7 +7,7 @@ export const services: Record<Locale, Service[]> = {
       items: ["JavaScript", "TypeScript", "React 19", "Next.js 15", "Tailwind", "Flutter"],
     },
     {
-      title: "2. 互動 / 動畫",
+      title: "2. 互動／動畫",
       items: ["GSAP", "Framer Motion", "Tone.js", "Canvas", "IntersectionObserver"],
     },
     {
@@ -15,8 +15,8 @@ export const services: Record<Locale, Service[]> = {
       items: ["Node.js", "Vercel Serverless", "Supabase", "Firebase", "MySQL"],
     },
     {
-      title: "4. AI / 研究",
-      items: ["LLM 串接", "BERT", "GraphRAG / VideoRAG", "Claude Code 工作流"],
+      title: "4. AI／研究",
+      items: ["LLM 串接", "BERT", "GraphRAG / VideoRAG", "Claude Code 工作流程"],
     },
   ],
   en: [

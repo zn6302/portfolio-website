@@ -20,6 +20,11 @@ export default function App() {
 
   return (
     <div className="app">
+      {/* First focusable element: hidden until keyboard focus, then jumps past
+          the hero journey straight to the work (useAnchorScroll moves focus). */}
+      <a className="skip-link" href="#projects">
+        {t.skipToWork}
+      </a>
       <Header />
       <main>
         {/* 全站唯一的 <h1>，視覺上隱藏（`.sr-only`）。刻意放在 <main> 第一個子

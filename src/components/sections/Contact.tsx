@@ -14,27 +14,31 @@ export function Contact() {
           <img src={assets.portrait} alt={t.portraitAlt} width={680} height={952} loading="lazy" />
           <HiBubble small />
         </div>
-        <div className="contact-form contact-direct" data-scroll-reveal data-scroll-reveal-delay="0.16">
+        <div className="contact-form contact-direct">
           <AvailabilityPill className="inline-availability" />
+          <span className="section-eyebrow" aria-hidden="true">05 / 05</span>
           <MaskHeading text="CONTACT" />
-          <p className="lead">{t.contactLead}</p>
-          <div className="contact-direct-links">
-            <a
-              ref={magneticEmail}
-              className="outline-button contact-direct-link"
-              href="mailto:znye.6302@gmail.com"
-            >
-              EMAIL ME ↗
-            </a>
-            <a
-              ref={magneticGithub}
-              className="outline-button contact-direct-link"
-              href="https://github.com/zn6302"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              GITHUB ↗
-            </a>
+          {/* Reveal the content under the heading; the heading has its own mask. */}
+          <div className="contact-direct-body" data-scroll-reveal data-scroll-reveal-delay="0.12">
+            <p className="lead">{t.contactLead}</p>
+            <div className="contact-direct-links">
+              <a
+                ref={magneticEmail}
+                className="outline-button is-primary contact-direct-link"
+                href="mailto:znye.6302@gmail.com"
+              >
+                {t.ctaEmail} ↗
+              </a>
+              <a
+                ref={magneticGithub}
+                className="outline-button is-secondary contact-direct-link"
+                href="https://github.com/zn6302"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t.ctaGithub} ↗
+              </a>
+            </div>
           </div>
         </div>
       </div>

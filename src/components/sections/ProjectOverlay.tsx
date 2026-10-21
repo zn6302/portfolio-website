@@ -25,11 +25,6 @@ interface ProjectOverlayProps {
 
 // FLIP is desktop-only (the deck cards) and skipped under reduced motion; the
 // compact stacked layout and reduced-motion both fall back to the CSS fade.
-function prefersReducedMotion() {
-  if (typeof window === "undefined") return false;
-  return window.matchMedia(REDUCED_MOTION_QUERY).matches;
-}
-
 function canFlip() {
   if (typeof window === "undefined") return false;
   return (
@@ -118,6 +113,9 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef, onN
   const originRectRef = useRef<DOMRect | null>(null);
   const magneticLive = useMagnetic();
   const magneticGithub = useMagnetic();
+  // Same gate as the hero / deck / detail clips: phones (<768px) and reduced
+  // motion get the demo on request only (no autoplay, preload="none").
+  const autoplayDemo = useHeroVideoSources();
   const { locale, t } = useLocale();
   const allProjects = projects[locale];
 
@@ -397,7 +395,12 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef, onN
       ref={backdropRef}
       data-lenis-prevent=""
       onMouseDown={(event) => {
-        if (event.target === event.currentTarget) onClose();
+        if (event.target !== event.currentTarget) return;
+        // Without this, the mousedown's own focus change runs after a close
+        // that finished synchronously (reduced motion, deep link) and drops
+        // the focus we just returned to the card onto <body>.
+        event.preventDefault();
+        onClose();
       }}
     >
       <div
@@ -412,7 +415,7 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef, onN
             type="button"
             className="project-overlay-close"
             onClick={onClose}
-            aria-label="Close project details"
+            aria-label={t.closeProject}
             ref={closeButtonRef}
           >
             <X size={20} />
@@ -488,10 +491,13 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef, onN
             {activeProject.video ? (
               <div className="project-overlay-media-wrap ov-reveal">
                 {/* The clip is silent, so it can just play — but it keeps
-                    `controls` (27s of demo is worth being able to pause/scrub)
-                    and only autoplays when motion is welcome. Keyed so a
-                    prev/next swap tears the element down instead of leaving the
-                    previous project's demo playing. */}
+                    `controls` (27s of demo is worth being able to pause/scrub).
+                    It autoplays only where the hero video would: on phones and
+                    under reduced motion it shows the poster with a play button
+                    and preload="none" fetches nothing until that is pressed
+                    (opening a case study on a phone cost ~0.7MB per demo).
+                    Keyed so a prev/next swap tears the element down instead of
+                    leaving the previous project's demo playing. */}
                 <video
                   key={activeProject.id}
                   ref={(el) => {
@@ -504,9 +510,9 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef, onN
                   muted
                   loop
                   playsInline
-                  autoPlay={!prefersReducedMotion()}
-                  preload="metadata"
-                  aria-label={`${activeProject.title} demo`}
+                  autoPlay={autoplayDemo}
+                  preload={autoplayDemo ? "metadata" : "none"}
+                  aria-label={t.demoLabel(activeProject.title)}
                 />
               </div>
             ) : activeProject.detailImage || activeProject.image ? (
@@ -523,7 +529,10 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef, onN
                         : ""
                   }`}
                   src={activeProject.detailImage ?? activeProject.image}
-                  alt={`${activeProject.title} cover`}
+                  alt={
+                    (!activeProject.detailImage && activeProject.imageAlt) ||
+                    t.coverAlt(activeProject.title)
+                  }
                 />
               </div>
             ) : (

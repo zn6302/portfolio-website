@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useLocale } from "../../hooks";
 import { Socials } from "../ui";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -11,6 +12,7 @@ const makeFooterCurve = (curveY: number) =>
 export function Footer() {
   const footerRef = useRef<HTMLElement>(null);
   const curveRef = useRef<SVGPathElement>(null);
+  const { t } = useLocale();
 
   useEffect(() => {
     const footer = footerRef.current;
@@ -73,24 +75,22 @@ export function Footer() {
       </svg>
       <div className="footer-top">
         <div>
-          <span>Email :</span>
+          <span>{t.emailLabel}:</span>
           <span>
             <a href="mailto:znye.6302@gmail.com">znye.6302@gmail.com</a>
           </span>
         </div>
         <div>
-          <span>Now :</span>
-          <span>OPEN TO 2026 INTERNSHIP</span>
+          <span>{t.nowLabel}:</span>
+          <span>{t.availability}</span>
         </div>
         <div>
-          <span>Social :</span>
+          <span>{t.socialLabel}:</span>
           <Socials compact />
         </div>
       </div>
       <div className="footer-bottom">
-        <p>
-          © 2026 YE Zi-Ni. Portfolio for internship applications.
-        </p>
+        <p>{t.footerCredit}</p>
       </div>
     </footer>
   );

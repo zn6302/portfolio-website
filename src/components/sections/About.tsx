@@ -1,7 +1,7 @@
 import { Fragment, useRef } from "react";
-import { assets } from "../../data";
+import { assets, projects, sketches } from "../../data";
 import { useLocale, useScrollFlip, useMagnetic } from "../../hooks";
-import { AvailabilityPill, MaskHeading, Socials } from "../ui";
+import { MaskHeading, Socials } from "../ui";
 
 const ABOUT_FLIP = {
   from: { rotation: 6, rotateY: -180, rotateX: 14, scale: 0.86, x: -390, y: 80 },
@@ -19,53 +19,58 @@ export function About({ disableCardFlip = false }: AboutProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   useScrollFlip(cardRef, { ...ABOUT_FLIP, triggerRef: sectionRef, disabled: disableCardFlip });
   const magnetic = useMagnetic();
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
 
   return (
     <section className="section about-section" id="about" aria-label={t.aboutLabel} ref={sectionRef}>
       <div className="section-grid about-grid">
-        <div data-scroll-reveal>
-          <AvailabilityPill className="inline-availability" />
+        <div>
+          <span className="section-eyebrow" aria-hidden="true">02 / 05</span>
           <MaskHeading text="ABOUT" />
-          <p className="lead">{t.aboutLead}</p>
-          <p className="lead">
-            {t.aboutIntro.map((line, index) => (
-              <Fragment key={line}>
-                {index > 0 && <br />}
-                {line}
-              </Fragment>
-            ))}
-          </p>
-          <div className="stats-row">
-            <div>
-              <strong>1</strong>
-              <span>{t.statLaunched}</span>
+          {/* Reveal the content under the heading; the heading has its own mask. */}
+          <div data-scroll-reveal data-scroll-reveal-delay="0.12">
+            <p className="lead">{t.aboutLead}</p>
+            <p className="lead">
+              {t.aboutIntro.map((line, index) => (
+                <Fragment key={line}>
+                  {index > 0 && <br />}
+                  {line}
+                </Fragment>
+              ))}
+            </p>
+            {/* Only countable facts, read from the data so they can't drift.
+                No "Now" row: the hero badge and the footer already say it. */}
+            <div className="stats-row">
+              <div>
+                <strong>{projects[locale].length}</strong>
+                <span>{t.statProjects}</span>
+              </div>
+              <div>
+                <strong>{sketches[locale].length}</strong>
+                <span>{t.statSketches}</span>
+              </div>
+              <div>
+                <strong>1</strong>
+                <span>{t.statLaunched}</span>
+              </div>
             </div>
-            <div>
-              <strong>5+</strong>
-              <span>Side Projects</span>
+            <div className="contact-row">
+              <div>
+                <span className="contact-row-label">{t.emailLabel}</span>
+                <span>
+                  <a href="mailto:znye.6302@gmail.com">znye.6302@gmail.com</a>
+                </span>
+              </div>
             </div>
-            <div>
-              <strong>Stack</strong>
-              <span>React · Next.js · Flutter</span>
-            </div>
-          </div>
-          <div className="contact-row">
-            <div>
-              <b>Email :</b>
-              <span>
-                <a href="mailto:znye.6302@gmail.com">znye.6302@gmail.com</a>
+            <Socials />
+            {/* Forward to the work: Projects comes right after About. */}
+            <a ref={magnetic} className="outline-button is-secondary" href="#projects">
+              {t.ctaSeeWork}
+              <span className="outline-button-arrow" aria-hidden="true">
+                ↓
               </span>
-            </div>
-            <div>
-              <b>Now :</b>
-              <span>Open to 2026 internship</span>
-            </div>
+            </a>
           </div>
-          <Socials />
-          <a ref={magnetic} className="outline-button" href="#skills">
-            SKILLS
-          </a>
         </div>
         <div className="tilt-frame about-image scroll-flip-card" ref={cardRef}>
           <img className="scroll-flip-back" src={assets.aboutKeyframe} alt="" aria-hidden="true" />

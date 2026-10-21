@@ -1,9 +1,12 @@
 import type { Locale } from "../types";
 
 // UI copy that lives in components rather than in a content list (projects /
-// sketches / services carry their own per-locale text). Strings that read the
-// same in both languages — nav labels, LIVE SITE ↗, OPEN TO 2026 INTERNSHIP —
-// stay inline in the components.
+// sketches / services carry their own per-locale text). Display labels that
+// read the same in both languages — section h2 words (SKILLS / ABOUT / …), the
+// mono overlay labels (ROLE / STACK / LINKS / HIGHLIGHTS / ← PREV / NEXT →),
+// LIVE SITE ↗ / GITHUB ↗ / OPEN ↗, nav labels, 中 / EN, "Hi" — stay inline in
+// the components. Everything else a visitor reads or hears (incl. alt text and
+// aria-labels) lives here, so wording can change without touching components.
 export interface UiCopy {
   /** The page's one <h1> (App.tsx, visually hidden). */
   h1: string;
@@ -34,69 +37,167 @@ export interface UiCopy {
   avatarAlt: string;
   /** Accessible name of the language toggle — written in the target language. */
   switchLanguage: string;
+
+  // Hero intro overlay (HeroIntro.tsx).
+  heroIntroName: string;
+  /** Hero display role; each "\n" renders as a line break. */
+  heroRole: string;
+  heroConcept: string;
+  scrollHint: string;
+
+  /** Availability pill text (AvailabilityPill.tsx, footer). */
+  availability: string;
+
+  // Call-to-action labels.
+  ctaSeeWork: string;
+  ctaContact: string;
+  ctaEmail: string;
+  ctaGithub: string;
+
+  // Contact / about / footer labels.
+  githubLabel: string;
+  emailLabel: string;
+  nowLabel: string;
+  socialLabel: string;
+  statProjects: string;
+  statSketches: string;
+  footerCredit: string;
+
+  // Accessibility names.
+  skipToWork: string;
+  navPrimaryLabel: string;
+  menuLabel: string;
+  mobileNavLabel: string;
+  socialLinksLabel: string;
+  closeProject: string;
+  /** Fallback alt text for a project's cover image (a project's own
+   *  `imageAlt` wins when the generic wording would mislead). */
+  coverAlt: (title: string) => string;
+  /** Accessible name for a project's demo video. */
+  demoLabel: (title: string) => string;
+
+  // Copy-email control.
+  copyEmail: string;
+  emailCopied: string;
 }
 
 export const ui: Record<Locale, UiCopy> = {
   zh: {
     h1: "葉子倪 YE Zi-Ni — HCI × Creative Coding 作品集",
     heroName: "葉子倪",
-    heroTagline: "我用程式，將世界表現出來。",
+    // The \u00a0 keeps "OpenHCI 2026" on one line.
+    heroTagline: "我在政大讀數位內容學程，主導過 OpenHCI\u00a02026 官網的互動動畫。",
     aboutLabel: "關於我",
     aboutLead:
-      "我相信前端工程師是翻譯者：在設計與程式之間、在人與機器之間。我做的每一件作品，都是一次翻譯練習——把動作翻譯成音樂、把情緒翻譯成氣味、把設計稿裡的故事翻譯成會動的程式碼。",
+      "我寫前端，也做 creative coding。OpenHCI 2026 官網，我寫 UI 元件、維護設計系統，並主導互動動畫；自己做過拍照記熱量的 LINE Bot、用動作演奏的網頁樂器。",
     aboutIntro: [
-      "我是葉子倪，政大數位內容，喜歡 HCI 與互動藝術，",
-      "目標是成為「能把設計、互動、工程和使用者體驗整合起來的前端工程師」。",
+      "我喜歡 HCI 和互動藝術。",
+      "我想做的前端工作，是設計和動畫也能自己動手的那種。",
     ],
-    statLaunched: "個已上線官網",
-    aboutImageAlt: "葉子倪坐在書桌前工作的插畫，擷取自首頁動畫畫格",
-    skillsLabel: "技能棧",
-    skillsHeading: "SKILLS / 技能棧",
-    skillsLead: "前端工程、互動動畫、後端資料到 AI 應用，這是我實際用來做出上線作品的技術棧。",
+    statLaunched: "個已上線的活動官網",
+    aboutImageAlt: "葉子倪在書桌前打鍵盤的插畫，身邊飄著紙張，桌上有盆栽和一杯咖啡",
+    skillsLabel: "技術棧",
+    skillsHeading: "SKILLS / 技術棧",
+    skillsLead: "我用過的技術，依用途分類。",
     skillsRow: (category, items) => `${category}：${items.join("、")}`,
     contactLabel: "聯絡方式",
-    contactLead: "想看更多或聊聊互動專案，歡迎透過以下方式找我。",
-    sketchesLabel: "Playground：Creative Coding 互動作品",
-    sketchesLead: "翻譯的練習簿——把演算法與隨機性，翻譯成可以觀看、可以玩的東西。",
-    viewDetails: "查看詳情 ↗",
-    viewDetailsLabel: (title) => `查看 ${title} 詳情`,
-    detailsLabel: "巧思 DETAILS",
+    contactLead: "我在找前端或 creative coding 實習。寄信找我最快，公開的程式碼在 GitHub。",
+    sketchesLabel: "Playground：p5.js 小品",
+    sketchesLead: "這裡放的是沒有 deadline 的 p5.js 小品，寫來保持手感，點開就能在新分頁玩。",
+    viewDetails: "看作品細節 →",
+    // 「」 around the title keeps the spacing right whether a title ends in
+    // Latin ("Click or Check?") or CJK ("SMILEY 情緒日記").
+    viewDetailsLabel: (title) => `看「${title}」的作品細節`,
+    detailsLabel: "DETAILS",
     otherProjects: "其他作品",
-    backToTop: "回到頂部",
-    portraitAlt: "葉子倪的個人半身照",
+    backToTop: "回到頂端",
+    portraitAlt: "葉子倪的半身照",
     avatarAlt: "葉子倪的個人照",
     switchLanguage: "Switch to English",
+    heroIntroName: "葉子倪 YE ZI-NI",
+    heroRole: "FRONTEND /\nCREATIVE CODER",
+    heroConcept: "把看不見的，翻譯成感覺得到的。",
+    scrollHint: "往下滑",
+    availability: "找實習中",
+    ctaSeeWork: "VIEW WORK",
+    ctaContact: "CONTACT",
+    ctaEmail: "EMAIL ME",
+    ctaGithub: "GITHUB",
+    githubLabel: "GitHub",
+    emailLabel: "Email",
+    nowLabel: "Now",
+    socialLabel: "Social",
+    statProjects: "件作品",
+    statSketches: "件 p5.js 小品",
+    footerCredit: "© 2026 葉子倪 · 用 React、TypeScript 和 GSAP 寫成",
+    skipToWork: "跳到作品",
+    navPrimaryLabel: "主要導覽",
+    menuLabel: "選單",
+    // Screen readers add the "navigation" role after the label.
+    mobileNavLabel: "手機版",
+    socialLinksLabel: "社群連結",
+    closeProject: "關閉作品詳情",
+    coverAlt: (title) => `「${title}」作品畫面`,
+    demoLabel: (title) => `「${title}」示範影片`,
+    copyEmail: "複製",
+    emailCopied: "已複製",
   },
   en: {
     h1: "YE Zi-Ni — HCI × Creative Coding Portfolio",
     heroName: "YE Zi-Ni",
-    heroTagline: "I write code to render the world.",
+    heroTagline: "I study Digital Content at National Chengchi University and led the interactive animation for the OpenHCI\u00a02026 website.",
     aboutLabel: "About me",
     aboutLead:
-      "I believe frontend engineers are translators — between design and code, between people and machines. Every piece I build is a translation exercise: motion into music, emotion into scent, the story inside a design file into code that moves.",
+      "I write frontend code and make creative-coding pieces. On the OpenHCI 2026 website, my part was UI components, design-system maintenance and the interactive animation, which I led. On my own, I've made a LINE bot that logs meals from a photo and a browser instrument played by motion in a video.",
     aboutIntro: [
-      "I'm YE Zi-Ni, studying Digital Content at National Chengchi University (NCCU), with a love for HCI and interactive art.",
-      "My goal: to become a frontend engineer who brings design, interaction, engineering and user experience together.",
+      "I like HCI and interactive art.",
+      "I want frontend work where I shape the design and the motion as well as the code.",
     ],
-    statLaunched: "Official site shipped",
-    aboutImageAlt: "Illustration of YE Zi-Ni working at a desk, a frame from the homepage animation",
+    statLaunched: "live event site",
+    aboutImageAlt:
+      "Illustration of YE Zi-Ni typing at a desk, with papers floating around her, a potted plant and a cup of coffee",
     skillsLabel: "Skills",
     skillsHeading: "SKILLS / STACK",
-    skillsLead:
-      "From frontend engineering and interactive animation to backend data and applied AI — the stack I actually use to ship live work.",
+    skillsLead: "Tools I've used, grouped by what they're for.",
     skillsRow: (category, items) => `${category}: ${items.join(", ")}`,
     contactLabel: "Contact",
-    contactLead: "Want to see more, or talk about an interactive project? Here's where to find me.",
-    sketchesLabel: "Playground: creative coding experiments",
-    sketchesLead:
-      "A translation sketchbook — turning algorithms and randomness into things you can watch and play with.",
-    viewDetails: "View details ↗",
-    viewDetailsLabel: (title) => `View ${title} details`,
+    contactLead:
+      "I'm looking for a frontend or creative-coding internship. Email is the fastest way to reach me; my public code is on GitHub.",
+    sketchesLabel: "Playground: p5.js sketches",
+    sketchesLead: "Small p5.js pieces I make for practice when nothing is due. Each one opens in a new tab, ready to play.",
+    viewDetails: "View details →",
+    viewDetailsLabel: (title) => `View details for ${title}`,
     detailsLabel: "DETAILS",
     otherProjects: "More projects",
     backToTop: "Back to top",
     portraitAlt: "Portrait of YE Zi-Ni",
     avatarAlt: "Photo of YE Zi-Ni",
     switchLanguage: "切換為中文",
+    heroIntroName: "YE ZI-NI",
+    heroRole: "FRONTEND /\nCREATIVE CODER",
+    heroConcept: "I translate the invisible into experience.",
+    scrollHint: "Scroll",
+    availability: "OPEN TO INTERNSHIPS",
+    ctaSeeWork: "VIEW WORK",
+    ctaContact: "CONTACT",
+    ctaEmail: "EMAIL ME",
+    ctaGithub: "GITHUB",
+    githubLabel: "GitHub",
+    emailLabel: "Email",
+    nowLabel: "Now",
+    socialLabel: "Social",
+    statProjects: "projects",
+    statSketches: "p5.js sketches",
+    footerCredit: "© 2026 YE Zi-Ni · Built with React, TypeScript and GSAP",
+    skipToWork: "Skip to projects",
+    navPrimaryLabel: "Primary",
+    menuLabel: "Menu",
+    mobileNavLabel: "Mobile",
+    socialLinksLabel: "Social links",
+    closeProject: "Close project details",
+    coverAlt: (title) => `Screenshot of ${title}`,
+    demoLabel: (title) => `${title} demo`,
+    copyEmail: "Copy",
+    emailCopied: "Copied",
   },
 };

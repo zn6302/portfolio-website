@@ -39,6 +39,10 @@ export interface Project {
   image?: string;
   /** Optional image used only in the detail overlay; the card keeps `image`. */
   detailImage?: string;
+  /** Alt text for `image` when the generic "<title> 作品畫面" / "Screenshot of
+   *  <title>" would mislead (e.g. myBot's cover is a flow diagram). Not used
+   *  for `detailImage`. */
+  imageAlt?: string;
   /** Screenshots are cropped to fill their slot (`cover`); a diagram must be
    *  shown whole instead, or the labels get cut off — those set `contain`. */
   imageFit?: "cover" | "contain";
@@ -72,5 +76,13 @@ export interface Project {
  *  entry, so assets and links can never drift between languages. */
 export type ProjectCopy = Pick<
   Project,
-  "category" | "title" | "description" | "subtitle" | "outcome" | "role" | "overview" | "highlights"
+  | "category"
+  | "title"
+  | "description"
+  | "subtitle"
+  | "outcome"
+  | "role"
+  | "overview"
+  | "highlights"
+  | "imageAlt"
 >;

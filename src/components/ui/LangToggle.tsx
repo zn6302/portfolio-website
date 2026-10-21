@@ -5,11 +5,30 @@ import type { Locale } from "../../types";
 
 const ONE_YEAR = 60 * 60 * 24 * 365;
 
+/** Home sections a reader can be "in", in page order. */
+const PLACE_IDS = ["skills", "about", "projects", "sketches", "contact"];
+
+/** `#id` of the section under the viewport centre — the last one whose top
+ *  has passed it, so the gap under a pin or the footer still counts as the
+ *  section above. Empty while the hero fills the centre. */
+function placeHash() {
+  const centre = window.innerHeight / 2;
+  let hash = "";
+  for (const id of PLACE_IDS) {
+    const section = document.getElementById(id);
+    if (section && section.getBoundingClientRect().top <= centre) hash = `#${id}`;
+  }
+  return hash;
+}
+
 /** Same page in the other locale. Read at click time, not render time: the
- *  project overlay changes the path with pushState without re-rendering this. */
+ *  project overlay changes the path with pushState without re-rendering this.
+ *  On the home page it also carries the reader's place as a hash, which
+ *  useAnchorScroll lands on after the pins are built. */
 function otherLocaleUrl(target: Locale) {
   const { pathname, search } = window.location;
-  return `${localePath(stripLocale(pathname), target)}${search}`;
+  const path = stripLocale(pathname);
+  return `${localePath(path, target)}${search}${path === "/" ? placeHash() : ""}`;
 }
 
 /**
@@ -17,7 +36,8 @@ function otherLocaleUrl(target: Locale) {
  * also works as a crawlable alternate. Clicking it stores the choice in the
  * `lang` cookie, which worker/index.ts honours over the country-based
  * default — otherwise a visitor outside Taiwan who picks 中文 would be sent
- * straight back to /en.
+ * straight back to /en. A plain click keeps the reader's place (otherLocaleUrl);
+ * the href itself stays hash-free so crawlers see a clean alternate.
  */
 export function LangToggle({ className = "" }: { className?: string }) {
   const { locale, t } = useLocale();

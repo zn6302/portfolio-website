@@ -156,9 +156,12 @@ export function HeroCardJourney() {
           borderRadius: 0,
           autoAlpha: 1,
         });
-        gsap.set(intro, { autoAlpha: 1 });
+        gsap.set(intro, { autoAlpha: 1, y: 0 });
         gsap.set(profile, { autoAlpha: 0 });
 
+        // Normalised 0–1 over the shrink window below. The two text layers get
+        // separate windows (intro out 0–0.4, profile in 0.4–0.9) instead of one
+        // shared cross-fade, so the two type systems never ghost over each other.
         timeline = gsap.timeline({ paused: true });
         timeline
           .to(
@@ -169,12 +172,13 @@ export function HeroCardJourney() {
               x: () => target.x,
               y: () => target.y,
               borderRadius: () => target.radius,
+              duration: 1,
               ease: "none",
             },
             0,
           )
-          .to(intro, { autoAlpha: 0, ease: "none" }, 0)
-          .to(profile, { autoAlpha: 1, ease: "none" }, 0);
+          .to(intro, { autoAlpha: 0, y: -24, duration: 0.4, ease: "none" }, 0)
+          .to(profile, { autoAlpha: 1, duration: 0.5, ease: "none" }, 0.4);
 
         // Finish the shrink at ~72% of the pin so the formed card rests a beat
         // before .hero-sticky releases and the whole hero scrolls away.
@@ -284,8 +288,13 @@ export function HeroCardJourney() {
         });
         gsap.set(videoLayer, { autoAlpha: 1 });
         gsap.set(portraitLayer, { autoAlpha: 0 });
-        gsap.set(intro, { autoAlpha: 1 });
+        gsap.set(intro, { autoAlpha: 1, y: 0 });
         gsap.set(profile, { autoAlpha: 0 });
+        // `--hero-converge` pushes HCI (left) and CODING (right) outward; the
+        // ≥1081 CSS holds its 40px start and turns it into a `translate`, so
+        // GSAP never parses the columns' translateY(-50%). Drop any inline
+        // value from a previous build so the tween starts from the CSS value.
+        profile.style.removeProperty("--hero-converge");
 
         const a = state.shrink;
         const b = state.servicesScroll - state.shrink;
@@ -294,11 +303,21 @@ export function HeroCardJourney() {
 
         timeline = gsap.timeline({ paused: true });
 
-        // Phase 1 — shrink full-screen mp4 into the hero card + cross-fade text.
+        // Phase 1 — shrink the full-screen mp4 into the hero card. The text
+        // layers get separate windows instead of one cross-fade over the whole
+        // shrink (that left both type systems at ~50% over the card): the intro
+        // lifts out over the first 35% of the pin, the profile assembles around
+        // the card over 35–70% with its two columns closing in on it, and the
+        // formed hero then holds still for the last 30% before phase 2 at `a`.
         timeline
-          .to(card, { ...rectVars("profile"), rotateY: 0, rotateX: 0, scale: 1, duration: a, ease: "none" }, 0)
-          .to(intro, { autoAlpha: 0, duration: a, ease: "none" }, 0)
-          .to(profile, { autoAlpha: 1, duration: a, ease: "none" }, 0)
+          .to(card, { ...rectVars("profile"), rotateY: 0, rotateX: 0, scale: 1, duration: a * 0.65, ease: "none" }, 0)
+          .to(intro, { autoAlpha: 0, y: -24, duration: a * 0.35, ease: "none" }, 0)
+          .to(profile, { autoAlpha: 1, duration: a * 0.35, ease: "none" }, a * 0.35)
+          .to(profile, { "--hero-converge": "0px", duration: a * 0.35, ease: "power2.out" }, a * 0.35)
+          // The hero scrolls away from `a`: clear the profile text in the first
+          // 20% of phase 2 so HCI / CODING and the CTAs never sit over the card
+          // while it turns toward Skills.
+          .to(profile, { autoAlpha: 0, duration: b * 0.2, ease: "none" }, a)
           // Phase 2/3 mirrors ScrollFlipCard: keep the card box stable and
           // rotate/scale it as one object. The thin edge comes naturally
           // from rotateY + perspective instead of squeezing width/height.

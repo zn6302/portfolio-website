@@ -125,8 +125,8 @@ const TOKENS = {
 // Per-locale strings of the prerendered markup (labels like ROLE / STACK are
 // English in both, matching the overlay).
 const PAGE_COPY = {
-  zh: { coverAlt: (title) => `${title} 專案畫面`, home: "/" },
-  en: { coverAlt: (title) => `${title} project screenshot`, home: "/en" },
+  zh: { coverAlt: (title) => `「${title}」作品畫面`, home: "/" },
+  en: { coverAlt: (title) => `Screenshot of ${title}`, home: "/en" },
 };
 
 function renderProjectHtml(project, locale) {
@@ -145,7 +145,7 @@ function renderProjectHtml(project, locale) {
   } = project;
 
   const cover = image
-    ? `<img src="${escapeAttr(image)}" alt="${escapeAttr(copy.coverAlt(title))}" width="1200" height="675" style="width:100%;height:auto;display:block;border-radius:12px;border:2px solid ${TOKENS.ink};margin:0 0 24px;object-fit:cover;" />`
+    ? `<img src="${escapeAttr(image)}" alt="${escapeAttr(project.imageAlt ?? copy.coverAlt(title))}" width="1200" height="675" style="width:100%;height:auto;display:block;border-radius:12px;border:2px solid ${TOKENS.ink};margin:0 0 24px;object-fit:cover;" />`
     : "";
 
   const metaCols = [];
@@ -231,7 +231,7 @@ const PERSON_LD = {
     "GSAP",
     "p5.js",
   ],
-  alumniOf: { "@type": "CollegeOrUniversity", name: "國立政治大學 數位內容學程" },
+  alumniOf: { "@type": "CollegeOrUniversity", name: "國立政治大學數位內容學程" },
   sameAs: ["https://github.com/zn6302"],
   email: "znye.6302@gmail.com",
 };
