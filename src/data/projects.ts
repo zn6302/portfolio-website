@@ -9,7 +9,7 @@ const projectsZh: Project[] = [
     category: "INTERACTIVE / CREATIVE CODING",
     title: "All Things Scored",
     description:
-      "畫面上有一條線。走過的人、跳上桌的貓，任何東西穿過它都會發出一個音符：穿過的位置決定音高，動作越大，音就越大聲。",
+      "動作是看不見的旋律。世界上所有會動的東西都在演奏，只是我們聽不見。我畫了一條線，讓任何穿過它的動作都被翻譯成音符。",
     image: "/projects/all-things-scored.webp",
     video: "/projects/all-things-scored.mp4",
     tech: ["React", "TypeScript", "Tone.js", "Canvas"],
@@ -63,7 +63,7 @@ const projectsZh: Project[] = [
     tech: ["React 19", "Vite", "Tailwind"],
     subtitle: "在流量與公信力之間取捨的新聞遊戲",
     outcome: "媒體識讀遊戲 · 可線上試玩 · 程式碼公開",
-    role: "獨立開發",
+    role: "團隊專案",
     overview:
       "每則新聞依標題多聳動、內容是真是假計分，頂部的雙軸數值條即時更新。遊戲用 React 19 和 Vite 寫，部署在 Vercel。",
     highlights: [
@@ -106,7 +106,7 @@ const projectsZh: Project[] = [
     category: "CAPSTONE / PRODUCT",
     title: "SMILEY 情緒日記",
     description:
-      "SMILEY 是一本會回話的日記。寫完一篇，App 會找出裡面最主要的情緒，回你一個顏色、一首歌和一種精油。",
+      "療癒，從感受情緒開始。SMILEY 把日記裡說不出口的情緒，翻譯成顏色、音樂與氣味，讓察覺自然而然的發生。",
     image: "/projects/smiley-cover.webp",
     imageAlt: "SMILEY 主頁的插畫小房間：角色坐在日記本旁，周圍的手機畫面是盆栽、精油和音樂推薦",
     detailImage: "/projects/smiley.webp",

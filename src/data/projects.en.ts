@@ -12,7 +12,7 @@ export const projectCopyEn: Record<string, ProjectCopy> = {
     category: "INTERACTIVE / CREATIVE CODING",
     title: "All Things Scored",
     description:
-      "A line runs across the video. Anything that crosses it (a person walking past, a cat jumping onto a table) plays a note: where it crosses sets the pitch, and bigger movements hit harder.",
+      "Motion is an unheard melody. Everything that moves is playing music we can't hear. I drew a line, and any movement that crosses it is translated into notes.",
     subtitle: "A browser instrument played by motion",
     // \u00a0 keeps each item whole, so a narrow card wraps only at a " · ".
     outcome: "Solo\u00a0project · steady\u00a060fps · playable\u00a0online",
@@ -49,7 +49,7 @@ export const projectCopyEn: Record<string, ProjectCopy> = {
       "You're the news editor. Before you hit \"Share\" on a story, you decide whether to check it. Checking costs time, a sensational headline buys traffic, and credibility drains away.",
     subtitle: "A news game about trading traffic against credibility",
     outcome: "Media-literacy game · playable online · code on GitHub",
-    role: "Solo developer",
+    role: "Team project",
     overview:
       "Each story is scored on how sensational its headline is and whether it's true, and the two-axis bar at the top updates as you play. The game is a React 19 and Vite app, hosted on Vercel.",
     highlights: [
@@ -81,7 +81,7 @@ export const projectCopyEn: Record<string, ProjectCopy> = {
     category: "CAPSTONE / PRODUCT",
     title: "SMILEY Emotion Journal",
     description:
-      "SMILEY is a journal that writes back. Finish an entry and the app picks out its main emotion, then answers with a color, a song and an essential oil.",
+      "Healing begins with feeling. SMILEY translates the emotions you can't put into words in your journal into color, music and scent, so awareness can happen naturally.",
     subtitle: "A journal app that reads emotion with BERT",
     imageAlt:
       "SMILEY's home screen, an illustrated room with a character beside a diary, surrounded by phone screens recommending a plant, an essential oil and music",

@@ -84,10 +84,10 @@ export const ui: Record<Locale, UiCopy> = {
     h1: "葉子倪 YE Zi-Ni — HCI × Creative Coding 作品集",
     heroName: "葉子倪",
     // The \u00a0 keeps "OpenHCI 2026" on one line.
-    heroTagline: "我在政大讀數位內容學程，主導過 OpenHCI\u00a02026 官網的互動動畫。",
+    heroTagline: "我用程式，將世界表現出來。",
     aboutLabel: "關於我",
     aboutLead:
-      "我寫前端，也做 creative coding。在 OpenHCI 2026 官網，我寫 UI 元件、維護設計系統，並主導互動動畫；自己做過拍照記熱量的 LINE Bot 和用動作演奏的網頁樂器。",
+      "我相信前端工程師是翻譯者：在設計與程式之間、在人與機器之間。我做的每一件作品，都是一次翻譯練習——把動作翻譯成音樂、把情緒翻譯成氣味、把設計稿裡的故事翻譯成會動的程式碼。",
     aboutIntro: [
       "我喜歡 HCI 和互動藝術。",
       "我想找的前端工作，是設計和動畫也能自己動手做的那種。",
@@ -99,7 +99,7 @@ export const ui: Record<Locale, UiCopy> = {
     skillsLead: "我用過的技術，依用途分類。",
     skillsRow: (category, items) => `${category}：${items.join("、")}`,
     contactLabel: "聯絡方式",
-    contactLead: "我在找前端或 creative coding 實習。寄信找我最快，公開的程式碼在 GitHub。",
+    contactLead: "歡迎聯絡我！",
     sketchesLabel: "Playground：p5.js 小品",
     sketchesLead: "這些是沒有 deadline、寫來保持手感的小品，點一下會在新分頁開啟，可以直接玩。",
     viewDetails: "看作品細節 →",
@@ -141,10 +141,10 @@ export const ui: Record<Locale, UiCopy> = {
   en: {
     h1: "YE Zi-Ni — HCI × Creative Coding Portfolio",
     heroName: "YE Zi-Ni",
-    heroTagline: "I study Digital Content at National Chengchi University and led the interactive animation for the OpenHCI\u00a02026 website.",
+    heroTagline: "I write code to render the world.",
     aboutLabel: "About me",
     aboutLead:
-      "I write frontend code and make creative-coding pieces. On the OpenHCI 2026 website I wrote UI components, maintained the design system and led the interactive animation. On my own, I've made a LINE bot that logs meals from a photo and a browser instrument played by motion in a video.",
+      "I believe frontend engineers are translators — between design and code, between people and machines. Every piece I build is a translation exercise: motion into music, emotion into scent, the story inside a design file into code that moves.",
     aboutIntro: [
       "I like HCI and interactive art.",
       "I want frontend work where I shape the design and the motion as well as the code.",
@@ -157,8 +157,7 @@ export const ui: Record<Locale, UiCopy> = {
     skillsLead: "Tools I've used, grouped by what they're for.",
     skillsRow: (category, items) => `${category}: ${items.join(", ")}`,
     contactLabel: "Contact",
-    contactLead:
-      "I'm looking for a frontend or creative-coding internship. Email is the fastest way to reach me; my public code is on GitHub.",
+    contactLead: "Feel free to get in touch!",
     sketchesLabel: "Playground: p5.js sketches",
     sketchesLead: "I make these small pieces for practice when nothing is due. Each one opens in a new tab, ready to play.",
     viewDetails: "View details →",
