@@ -14,7 +14,7 @@ export function Contact() {
           so the Hi bubble never hangs over the heading. */}
       <div className="contact-grid">
         <div className="contact-form contact-direct">
-          <span className="section-eyebrow" aria-hidden="true">05 / 05</span>
+          <span className="section-eyebrow" aria-hidden="true">07 / 07</span>
           <MaskHeading text="CONTACT" />
           {/* Reveal the content under the heading; the heading has its own mask. */}
           <div className="contact-direct-body" data-scroll-reveal data-scroll-reveal-delay="0.12">

@@ -19,7 +19,7 @@ export function Sketches() {
   return (
     <section className="section sketches-section" id="sketches" aria-label={t.sketchesLabel}>
       <div className="section-head">
-        <span className="section-eyebrow" aria-hidden="true">04 / 05</span>
+        <span className="section-eyebrow" aria-hidden="true">05 / 07</span>
         <MaskHeading text="PLAYGROUND" />
         {/* Reveal the lead only; the heading has its own mask reveal. */}
         <p className="lead" data-scroll-reveal data-scroll-reveal-delay="0.12">

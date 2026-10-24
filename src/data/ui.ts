@@ -27,6 +27,17 @@ export interface UiCopy {
   contactLead: string;
   sketchesLabel: string;
   sketchesLead: string;
+  hackathonsLabel: string;
+  hackathonsLead: string;
+  freelanceLabel: string;
+  freelanceLead: string;
+  freelanceOffersHeading: string;
+  freelanceCasesHeading: string;
+  /** Sentence before the freelance email button. */
+  freelanceCtaLead: string;
+  freelanceCta: string;
+  /** Subject line prefilled in the freelance mailto link. */
+  freelanceMailSubject: string;
   viewDetails: string;
   viewDetailsLabel: (title: string) => string;
   /** Overlay section label for per-detail demo clips. */
@@ -102,6 +113,15 @@ export const ui: Record<Locale, UiCopy> = {
     contactLead: "歡迎聯絡我！",
     sketchesLabel: "Playground：p5.js 小品",
     sketchesLead: "這些是沒有 deadline、寫來保持手感的小品，點一下會在新分頁開啟，可以直接玩。",
+    hackathonsLabel: "黑客松作品",
+    hackathonsLead: "在黑客松裡和隊友一起做出來、而且真的上線的作品。",
+    freelanceLabel: "接案：自動化",
+    freelanceLead: "我接自動化的案子：把重複、繁瑣、容易出錯的行政流程交給程式，需要判斷的地方留給人確認。",
+    freelanceOffersHeading: "可以接的案子",
+    freelanceCasesHeading: "做過的案子與實務經驗",
+    freelanceCtaLead: "手上有想自動化的流程？寄信跟我說說看。",
+    freelanceCta: "START A PROJECT",
+    freelanceMailSubject: "自動化接案洽詢",
     viewDetails: "看作品細節 →",
     // 「」 around the title keeps the spacing right whether a title ends in
     // Latin ("Click or Check?") or CJK ("SMILEY 情緒日記").
@@ -116,7 +136,7 @@ export const ui: Record<Locale, UiCopy> = {
     heroRole: "FRONTEND /\nCREATIVE CODER",
     heroConcept: "把看不見的，翻譯成感覺得到的。",
     scrollHint: "往下滑",
-    availability: "找實習中",
+    availability: "接案・兼職中",
     ctaSeeWork: "VIEW WORK",
     ctaContact: "CONTACT",
     ctaEmail: "EMAIL ME",
@@ -160,6 +180,15 @@ export const ui: Record<Locale, UiCopy> = {
     contactLead: "Feel free to get in touch!",
     sketchesLabel: "Playground: p5.js sketches",
     sketchesLead: "I make these small pieces for practice when nothing is due. Each one opens in a new tab, ready to play.",
+    hackathonsLabel: "Hackathon projects",
+    hackathonsLead: "Built with teammates during a hackathon, and actually shipped.",
+    freelanceLabel: "Freelance: automation",
+    freelanceLead: "I take on automation work: handing repetitive, error-prone admin tasks to code, and leaving the judgment calls to people.",
+    freelanceOffersHeading: "What I take on",
+    freelanceCasesHeading: "Delivered and in-house work",
+    freelanceCtaLead: "Got a process you'd like automated? Send me a note.",
+    freelanceCta: "START A PROJECT",
+    freelanceMailSubject: "Automation project inquiry",
     viewDetails: "View details →",
     viewDetailsLabel: (title) => `View details for ${title}`,
     detailsLabel: "DETAILS",
@@ -172,7 +201,7 @@ export const ui: Record<Locale, UiCopy> = {
     heroRole: "FRONTEND /\nCREATIVE CODER",
     heroConcept: "I translate the invisible into experience.",
     scrollHint: "Scroll",
-    availability: "OPEN TO INTERNSHIPS",
+    availability: "FREELANCE & PART-TIME",
     ctaSeeWork: "VIEW WORK",
     ctaContact: "CONTACT",
     ctaEmail: "EMAIL ME",

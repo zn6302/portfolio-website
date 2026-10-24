@@ -25,7 +25,7 @@ export function About({ disableCardFlip = false }: AboutProps) {
     <section className="section about-section" id="about" aria-label={t.aboutLabel} ref={sectionRef}>
       <div className="section-grid about-grid">
         <div>
-          <span className="section-eyebrow" aria-hidden="true">02 / 05</span>
+          <span className="section-eyebrow" aria-hidden="true">02 / 07</span>
           <MaskHeading text="ABOUT" />
           {/* Reveal the content under the heading; the heading has its own mask. */}
           <div data-scroll-reveal data-scroll-reveal-delay="0.12">

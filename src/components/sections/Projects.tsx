@@ -350,7 +350,7 @@ export function Projects() {
   return (
     <section className="projects-deck" id="projects" ref={sectionRef}>
       <div className="section deck-head">
-        <span className="section-eyebrow" aria-hidden="true">03 / 05</span>
+        <span className="section-eyebrow" aria-hidden="true">03 / 07</span>
         <MaskHeading text="SELECTED WORKS" />
       </div>
 

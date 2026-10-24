@@ -14,7 +14,7 @@
 3. **每次 UI 修改後必須檢查五個尺寸**：1440 / 1120 / 768 / 390 / 320（1120 與 320 是歷史破版帶，詳見 `docs/RWD指南.md`）。可用 `node scripts/rwd-scan.mjs` 自動掃水平溢出，或以截圖驗證。
 4. 動畫語言上限四種：Hero 卡片翻轉旅程（HeroCardJourney）、區塊 GSAP ScrollTrigger 進場、卡片 hover、hero 影片。全站捲動驅動動畫統一用 GSAP ScrollTrigger（`useScrollFlip`），不要引入第二套動畫函式庫（Framer Motion／R3F 均未採用，見「技術棧」；Lenis 有用，但它只做捲動慣性不做動畫）。文字遮罩進場（`MaskHeading`）、磁吸 hover（`useMagnetic`）、hero 視差（`useHeroParallax`）是既有四種語言的參數變體，不算第五種。不要加真正的第五種動畫語言。
 5. 所有動畫必須尊重 `prefers-reduced-motion`（現有 pattern 見 `useHeroVideoSources.ts`、`useAnchorScroll.ts`、`useLenis.ts`；ScrollTrigger 動畫需個別檢查 `window.matchMedia('(prefers-reduced-motion: reduce)')` 後降級或跳過）。**注意 `display:none` 的祖先無法用子層 `visibility:visible` 逃脫**——需要在所有動態狀態下都保持可存取的元素（例如全站唯一的 `<h1>`），必須放在不受動畫容器影響的位置，見 `App.tsx`。
-6. 網站定位是「HCI × creative coding 學生作品集」。禁止加入接案顧問式區塊（Process、Testimonials、FAQ、假 Blog）。注意：`src/components/sections/Services.tsx` 檔名沿用舊稱，實際內容是技能分類表（`src/data/services.ts`：前端工程/互動動畫/後端資料/AI 研究），不是接案服務項目，不違反本條。
+6. 網站定位是「HCI × creative coding 作品集＋自動化接案」（2026/10/24 起，業主要求加入接案區塊）。允許的接案內容只有 `Freelance.tsx`：能接的案子類型＋**真的交付過的案例**＋一個 email CTA。仍禁止 Process、Testimonials、FAQ、假 Blog、報價表。注意：`src/components/sections/Services.tsx` 檔名沿用舊稱，實際內容是技能分類表（`src/data/services.ts`），不是接案服務項目。
 7. 沒完成的內容直接不放，禁止「coming soon」死連結。
 
 ## 技術棧
@@ -36,6 +36,8 @@ src/
 │   ├── projects.ts              # 5 件作品的完整內容（zh 為底；匯出 projects.zh / projects.en）
 │   ├── projects.en.ts           # 作品英文文案（只放文字欄位，依 id 對應）
 │   ├── sketches.ts              # Playground creative coding 小品（外連 GitHub Pages）
+│   ├── hackathons.ts            # 黑客松團隊作品（目前：NOXFLOW），zh 為底＋同檔英文
+│   ├── freelance.ts             # 接案區塊：offers（能接的類型）＋ cases（交付過的案例），zh／en 同檔
 │   ├── services.ts              # 技能分類（Services 區塊實際顯示為技能表，非接案服務）
 │   ├── ui.ts                    # 元件內的介面文案（zh/en）
 │   ├── locale.ts                # 語系 ↔ 網址（/en 前綴）的共用 helper，Worker 也用
@@ -59,14 +61,16 @@ src/
 │   └── useHeroVideoSources.ts   # <768px 或 reduced-motion 時完全不設定影片 src，只留 poster
 └── components/
     ├── sections/
-    │   ├── Header.tsx           # 膠囊導覽（桌機常駐）+ 找實習中 / OPEN TO INTERNSHIPS 徽章
+    │   ├── Header.tsx           # 膠囊導覽（桌機常駐）+ 接案・兼職中 / FREELANCE & PART-TIME 徽章
     │   ├── HeroCardJourney.tsx  # 頂層捲動編排：同一張卡從 hero 一路 flip 到 Services/About 卡槽
     │   │   ├── HeroTransition.tsx（內含 HeroIntro.tsx 打字標題 + HeroProfile.tsx 人像卡）
     │   │   ├── Services.tsx     # 技能表卡（disableCardFlip 模式，非接案服務項目）
     │   │   │   └── SkillsGraph.tsx  # 技能星座圖，窄螢幕退化成 tag grid
     │   │   └── About.tsx        # About / NOW / Contact 前導卡
     │   ├── Projects.tsx         # 精選作品清單卡，點卡開 ProjectOverlay.tsx（全螢幕詳情覆蓋層）
+    │   ├── Hackathons.tsx       # 黑客松作品卡（截圖＋事實，不開 overlay、不 pin）
     │   ├── Sketches.tsx         # Playground 作品牆
+    │   ├── Freelance.tsx        # 接案：能接的類型、案例卡、email CTA（is-secondary，clay 留給 Contact）
     │   ├── Contact.tsx
     │   └── Footer.tsx
     └── ui/
@@ -299,6 +303,9 @@ Hero 影片規則：`<768px` 或 `prefers-reduced-motion: reduce` 時，`useHero
 - [x] 2026/10/22：夜間打磨（Awwwards 評分基準 5.2 → 約 6.6）：桌機導覽常駐、skip link、按鈕系統與 clay 每屏一次、
       hero 收合節奏、作品卡與 overlay（返回鍵行為）、Contact／Footer 對齊、Playground 卡片、中英文案去 AI 味
       （元件內寫死的文案已集中到 `ui.ts`）。回滾點：tag `pre-polish-20261022`
+- [x] 2026/10/24：新增 HACKATHON（NOXFLOW）與 FREELANCE（政大校友遴選系統、ranktool、醫美新創實習）兩區；
+      區塊順序 Skills 01 → About 02 → Work 03 → Hackathon 04 → Playground 05 → Freelance 06 → Contact 07；
+      導覽列加兩項，761–960px 收緊間距避免溢出；徽章改「接案・兼職中」
 - [ ] Google Search Console：提交 `https://znye6302.com/sitemap.xml`，並對 5 個作品頁要求建立索引
 - [ ] 確認 Cloudflare 的 Content Signals 設定沒有蓋掉自產的 `robots.txt`（部署後 curl 一次，
       看得到 `Sitemap:` 那行才算數；改動前線上 `/robots.txt` 是 Cloudflare 代管的純註解檔）

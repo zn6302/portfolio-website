@@ -1,6 +1,8 @@
 import {
   Contact,
   Footer,
+  Freelance,
+  Hackathons,
   Header,
   HeroCardJourney,
   Projects,
@@ -41,7 +43,9 @@ export default function App() {
             here, it isn't a separate sibling section. */}
         <HeroCardJourney />
         <Projects />
+        <Hackathons />
         <Sketches />
+        <Freelance />
         <Contact />
       </main>
       <Footer />

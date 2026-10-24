@@ -19,6 +19,36 @@ export interface Sketch {
   githubUrl: string;
 }
 
+export interface Hackathon {
+  slug: string;
+  title: string;
+  /** Mono meta strip above the title, e.g. "HACKATHON · 2026/09 · 5 人團隊". */
+  meta: string;
+  description: string;
+  role: string;
+  /** Hard-fact bullets, same voice as a project's highlights. */
+  points: string[];
+  image: string;
+  alt: string;
+  tech: string[];
+  liveUrl?: string;
+  githubUrl?: string;
+}
+
+/** One delivered automation job in the Freelance section. */
+export interface FreelanceCase {
+  slug: string;
+  /** Mono meta strip, e.g. "付費接案 · 2026/06–". */
+  meta: string;
+  title: string;
+  /** Who it was for, in a plain phrase. */
+  client: string;
+  description: string;
+  /** Hard-fact bullets: what was built and how it holds up. */
+  points: string[];
+  tech: string[];
+}
+
 export interface ProjectClip {
   src: string;
   /** Short headline for the detail being shown, e.g. 「故障解碼進場」. */

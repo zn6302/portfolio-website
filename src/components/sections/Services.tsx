@@ -28,7 +28,7 @@ export function Services({ disableCardFlip = false }: ServicesProps) {
     <section className="section services" id="skills" aria-label={t.skillsLabel} ref={sectionRef}>
       <div className="section-grid">
         <div>
-          <span className="section-eyebrow" aria-hidden="true">01 / 05</span>
+          <span className="section-eyebrow" aria-hidden="true">01 / 07</span>
           <MaskHeading text={t.skillsHeading} />
           {/* The reveal fades the content under the heading, not the heading
               itself, which already has its own mask reveal. */}

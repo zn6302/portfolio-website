@@ -9,6 +9,8 @@ export interface NavItem {
 // Contact is rendered separately as the last, filled pill.
 export const navItems: NavItem[] = [
   { label: "Work", href: "#projects" },
+  { label: "Hackathon", href: "#hackathons" },
+  { label: "Freelance", href: "#freelance" },
   { label: "Skills", href: "#skills" },
   { label: "About", href: "#about" },
   { label: "Playground", href: "#sketches" },
