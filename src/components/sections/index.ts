@@ -5,6 +5,8 @@ export { Services } from "./Services";
 export { About } from "./About";
 export { Projects } from "./Projects";
 export { Sketches } from "./Sketches";
+export { Hackathons } from "./Hackathons";
+export { Freelance } from "./Freelance";
 export { ProjectOverlay } from "./ProjectOverlay";
 export { Contact } from "./Contact";
 export { Footer } from "./Footer";

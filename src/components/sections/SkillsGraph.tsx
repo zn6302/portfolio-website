@@ -2,6 +2,7 @@ import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { services } from "../../data";
+import { useLocale } from "../../hooks";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -50,13 +51,21 @@ const BRANCHES = [
 ];
 
 // Compact labels for the graph only; the full name stays in the data, the
-// sr-only list and the mobile tag grid.
+// sr-only list and the mobile tag grid. Applies to category titles too: the
+// English ones run about twice the width of the zh ones, which crowds the
+// relax solver into visible overlaps — the trunk node already reads
+// "Frontend", so the branches can drop it.
 const SHORT: Record<string, string> = {
   IntersectionObserver: "Observer",
   "Next.js 15": "Next.js",
   "Vercel Serverless": "Vercel",
   "GraphRAG / VideoRAG": "GraphRAG",
-  "Claude Code 工作流": "Claude Code",
+  "Claude Code 工作流程": "Claude Code",
+  "Claude Code workflows": "Claude Code",
+  "LLM integration": "LLM",
+  "Frontend Engineering": "Engineering",
+  "Interaction / Motion": "Motion",
+  "Backend & Data": "Backend",
 };
 
 const stripIndex = (title: string) => title.replace(/^\d+\.\s*/, "");
@@ -97,9 +106,10 @@ interface BranchLayout {
 }
 
 function useLayout(): BranchLayout[] {
+  const { locale } = useLocale();
   return useMemo(
     () =>
-      services.map((service, i) => {
+      services[locale].map((service, i) => {
         const { angle, accent } = BRANCHES[i % BRANCHES.length];
         const cat = pt(angle, R_CAT);
         const n = service.items.length;
@@ -120,7 +130,7 @@ function useLayout(): BranchLayout[] {
           };
         });
         return {
-          title: stripIndex(service.title),
+          title: short(stripIndex(service.title)),
           accent,
           x: cat.x,
           y: cat.y,
@@ -128,7 +138,7 @@ function useLayout(): BranchLayout[] {
           subs,
         };
       }),
-    [],
+    [locale],
   );
 }
 
@@ -275,8 +285,8 @@ export function SkillsGraph() {
     }
 
     // Entrance: lines grow via stroke-dashoffset, nodes fade + drift up in a
-    // trunk → categories → skills stagger. It resets after leaving the viewport
-    // so scrolling back to Skills replays the full constellation sequence.
+    // trunk → categories → skills stagger. Plays once (like every other reveal
+    // on the site); scrolling back to Skills shows the finished graph.
     const ctx = gsap.context(() => {
       const trunks = root.querySelectorAll(".sg-line-trunk");
       const branchLines = root.querySelectorAll(".sg-line:not(.sg-line-trunk)");
@@ -296,8 +306,7 @@ export function SkillsGraph() {
         scrollTrigger: {
           trigger: root,
           start: "top 78%",
-          end: "bottom 22%",
-          toggleActions: "restart reset restart reset",
+          once: true,
         },
         defaults: { ease: "power3.out" },
       });

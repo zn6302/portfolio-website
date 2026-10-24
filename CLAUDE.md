@@ -14,7 +14,7 @@
 3. **每次 UI 修改後必須檢查五個尺寸**：1440 / 1120 / 768 / 390 / 320（1120 與 320 是歷史破版帶，詳見 `docs/RWD指南.md`）。可用 `node scripts/rwd-scan.mjs` 自動掃水平溢出，或以截圖驗證。
 4. 動畫語言上限四種：Hero 卡片翻轉旅程（HeroCardJourney）、區塊 GSAP ScrollTrigger 進場、卡片 hover、hero 影片。全站捲動驅動動畫統一用 GSAP ScrollTrigger（`useScrollFlip`），不要引入第二套動畫函式庫（Framer Motion／R3F 均未採用，見「技術棧」；Lenis 有用，但它只做捲動慣性不做動畫）。文字遮罩進場（`MaskHeading`）、磁吸 hover（`useMagnetic`）、hero 視差（`useHeroParallax`）是既有四種語言的參數變體，不算第五種。不要加真正的第五種動畫語言。
 5. 所有動畫必須尊重 `prefers-reduced-motion`（現有 pattern 見 `useHeroVideoSources.ts`、`useAnchorScroll.ts`、`useLenis.ts`；ScrollTrigger 動畫需個別檢查 `window.matchMedia('(prefers-reduced-motion: reduce)')` 後降級或跳過）。**注意 `display:none` 的祖先無法用子層 `visibility:visible` 逃脫**——需要在所有動態狀態下都保持可存取的元素（例如全站唯一的 `<h1>`），必須放在不受動畫容器影響的位置，見 `App.tsx`。
-6. 網站定位是「HCI × creative coding 學生作品集」。禁止加入接案顧問式區塊（Process、Testimonials、FAQ、假 Blog）。注意：`src/components/sections/Services.tsx` 檔名沿用舊稱，實際內容是技能分類表（`src/data/services.ts`：前端工程/互動動畫/後端資料/AI 研究），不是接案服務項目，不違反本條。
+6. 網站定位是「HCI × creative coding 作品集＋自動化接案」（2026/10/24 起，業主要求加入接案區塊）。允許的接案內容只有 `Freelance.tsx`：能接的案子類型＋**真的交付過的案例**＋一個 email CTA。仍禁止 Process、Testimonials、FAQ、假 Blog、報價表。注意：`src/components/sections/Services.tsx` 檔名沿用舊稱，實際內容是技能分類表（`src/data/services.ts`），不是接案服務項目。
 7. 沒完成的內容直接不放，禁止「coming soon」死連結。
 
 ## 技術棧
@@ -32,10 +32,15 @@
 src/
 ├── App.tsx                      # 組裝根：掛 useLenis/useAnchorScroll/useScrollReveal，
 │                                #   並持有全站唯一的 <h1>（.sr-only，見下方 SEO 章節）
-├── data/                        # 唯一內容來源，改文案只改這裡
-│   ├── projects.ts              # 5 件作品的完整內容（title/highlights/links…）
+├── data/                        # 唯一內容來源，改文案只改這裡（中英文都在這裡，見「雙語」）
+│   ├── projects.ts              # 5 件作品的完整內容（zh 為底；匯出 projects.zh / projects.en）
+│   ├── projects.en.ts           # 作品英文文案（只放文字欄位，依 id 對應）
 │   ├── sketches.ts              # Playground creative coding 小品（外連 GitHub Pages）
+│   ├── hackathons.ts            # 黑客松團隊作品（目前：NOXFLOW），zh 為底＋同檔英文
+│   ├── freelance.ts             # 接案區塊：offers（能接的類型）＋ cases（交付過的案例），zh／en 同檔
 │   ├── services.ts              # 技能分類（Services 區塊實際顯示為技能表，非接案服務）
+│   ├── ui.ts                    # 元件內的介面文案（zh/en）
+│   ├── locale.ts                # 語系 ↔ 網址（/en 前綴）的共用 helper，Worker 也用
 │   ├── navigation.ts            # 導覽項目
 │   ├── assets.ts                # 圖片路徑集中管理
 │   └── seo.ts                   # 每件作品的 seoTitle/seoDescription/og/canonical
@@ -43,7 +48,8 @@ src/
 │   ├── useScrollFlip.ts         # GSAP ScrollTrigger 包裝：捲動驅動的 from/to transform
 │   ├── useScrollReveal.ts       # section 進場 reveal
 │   ├── useLenis.ts              # 桌機平滑捲動（reduced-motion 與觸控裝置會跳過）
-│   ├── useProjectRoute.ts       # History API：/projects/<slug> ↔ ProjectOverlay 開關
+│   ├── useLocale.ts             # 由網址判斷語系，回傳 { locale, t }
+│   ├── useProjectRoute.ts       # History API：(/en)/projects/<slug> ↔ ProjectOverlay 開關
 │   ├── useCountUp.ts            # 數字滾動計數（cubic ease-out，非 GSAP）
 │   ├── useMagnetic.ts           # 磁吸 hover
 │   ├── useHeroParallax.ts       # hero 視差
@@ -55,18 +61,21 @@ src/
 │   └── useHeroVideoSources.ts   # <768px 或 reduced-motion 時完全不設定影片 src，只留 poster
 └── components/
     ├── sections/
-    │   ├── Header.tsx           # 膠囊導覽 + OPEN TO 2026 INTERNSHIP 徽章
+    │   ├── Header.tsx           # 膠囊導覽（桌機常駐）+ 接案・兼職中 / FREELANCE & PART-TIME 徽章
     │   ├── HeroCardJourney.tsx  # 頂層捲動編排：同一張卡從 hero 一路 flip 到 Services/About 卡槽
     │   │   ├── HeroTransition.tsx（內含 HeroIntro.tsx 打字標題 + HeroProfile.tsx 人像卡）
     │   │   ├── Services.tsx     # 技能表卡（disableCardFlip 模式，非接案服務項目）
     │   │   │   └── SkillsGraph.tsx  # 技能星座圖，窄螢幕退化成 tag grid
     │   │   └── About.tsx        # About / NOW / Contact 前導卡
     │   ├── Projects.tsx         # 精選作品清單卡，點卡開 ProjectOverlay.tsx（全螢幕詳情覆蓋層）
+    │   ├── Hackathons.tsx       # 黑客松作品卡（截圖＋事實，不開 overlay、不 pin）
     │   ├── Sketches.tsx         # Playground 作品牆
+    │   ├── Freelance.tsx        # 接案：能接的類型、案例卡、email CTA（is-secondary，clay 留給 Contact）
     │   ├── Contact.tsx
     │   └── Footer.tsx
     └── ui/
         ├── AvailabilityPill.tsx # 唯一用 Tailwind utility 寫的元件
+        ├── LangToggle.tsx       # 中 / EN 切換（導覽列 + 手機選單）
         ├── MaskHeading.tsx      # 文字遮罩進場標題（預設 as="h2"，各 section 的區塊標題）
         ├── BackToTop.tsx
         ├── HiBubble.tsx
@@ -74,6 +83,8 @@ src/
 ```
 
 沒有獨立的「Reveal.tsx」統一進場元件——各 section 的進場動畫直接寫在自己的 GSAP ScrollTrigger / CSS transition 裡（見下方動態系統）。
+
+`worker/index.ts`：Cloudflare Worker，只負責依國家決定預設語系（見「雙語」）。
 
 `scripts/` 下有三支：`prerender.mjs`（build 後產生作品頁靜態 HTML + sitemap + robots）、
 `rwd-scan.mjs`（RWD 水平溢出掃描，需先手動 `npm i -D puppeteer-core`，刻意不列入依賴）、
@@ -224,7 +235,7 @@ Hero 影片規則：`<768px` 或 `prefers-reduced-motion: reduce` 時，`useHero
 
 ## 效能底線
 
-- 主 bundle（JS）gzip ≤ 150KB（現況：`npm run build` 約 134KB gzip）
+- 主 bundle（JS）gzip ≤ 150KB（現況：`npm run build` 約 141KB gzip）
 - 圖片上線前壓縮（截圖轉 webp，單張 ≤ 300KB；`public/projects/*.webp`、`public/hero/*.webp` 已依此處理）
 - Lighthouse Performance 手機 ≥ 80 才算過（尚未實測，見待辦）
 
@@ -249,11 +260,31 @@ Hero 影片規則：`<768px` 或 `prefers-reduced-motion: reduce` 時，`useHero
 - `scripts/prerender.mjs`：`npm run build` 最後一步。以 `dist/index.html` 為模板，為每件作品產生
   `dist/projects/<slug>/index.html`——各自的 title/description/canonical/OG，`Person`+`CreativeWork`
   JSON-LD，以及塞在 `#root` 裡的完整語意化內容（React 掛載時會清空並接手）。同時產生 sitemap.xml
-  與 robots.txt（非 `main` 分支自動 `Disallow: /`，避免 preview 站與正式站重複內容）。
+  與 robots.txt（build 一律產生允許索引的正式版；`worker/index.ts` 依請求網域，在
+  znye6302.com 以外的網域——dev、workers.dev、preview——一律回 `Disallow: /`，避免重複內容。
+  不再依 build 分支判斷：哪個分支部署到哪個網域是 Cloudflare 後台設定，build 看不到）。
 - `wrangler.jsonc` 的 `html_handling: "drop-trailing-slash"` 讓無斜線的 canonical 網址直接命中，
   且**刻意不用** `single-page-application`——那會讓所有錯誤路徑回 200，製造 soft 404。
 - 文案長度用「顯示寬度」而非字元數（全形計 2、半形計 1）：title ≤ 60、description ≤ 155。
   中文全形佔兩倍寬，套用英文的「155 字元」標準會被 Google 截斷。
+
+## 雙語（2026/10/21 建立）
+
+- **網址**：中文是根目錄（`/`、`/projects/<slug>`），英文鏡像在 `/en`（`/en`、`/en/projects/<slug>`）。
+  每一頁都是 prerender 出來的真實檔案，`<html lang>`、title/description/OG、`og:locale`
+  與 hreflang（zh-Hant / en / x-default→中文）都由 `scripts/prerender.mjs` 依語系改寫。
+  中文首頁的 head 仍手寫在 `index.html`；英文首頁文案在 `src/data/seo.ts` 的 `HOME_SEO_EN`。
+- **語系在一次載入內固定**（`useLocale` 讀網址）；`LangToggle` 是導向另一語系同一頁的真連結，
+  不在原地重繪——避免 GSAP 的 pin／技能圖量測對到舊文案。
+- **文案**：作品英文只寫在 `projects.en.ts`（媒體、tech、links 從 zh 繼承，不會兩邊漂移）；
+  sketches／services 同檔並列；元件內文案在 `ui.ts`。改中文文案時要一併更新英文。
+  英文 highlight 以第一個 `": "` 切粗體標題（`ProjectOverlay` 的 `splitHighlight`），
+  沒有標題的 highlight 不能含 `": "`。英文文案用直引號 `"`，彎引號在 Noto Sans TC 會變全形。
+- **依國家預設語系**：`worker/index.ts`（`wrangler.jsonc` 的 `run_worker_first` 只讓 `/` 與
+  `/projects/*` 經過它）。台灣、香港、澳門、中國以外的訪客第一次進中文頁 → 302 到 `/en` 同一頁。
+  `lang` cookie（切換按鈕寫入）優先於國家；`/en` 網址一律不轉回中文；爬蟲與連結預覽不轉址
+  （Googlebot 從美國爬，轉了中文頁就收錄不到）；含 `.` 的路徑（作品圖片／影片）一律放行。
+  國家清單在 `ZH_COUNTRIES`。
 
 ## 目前狀態與待辦（隨進度更新此節）
 
@@ -268,6 +299,13 @@ Hero 影片規則：`<768px` 或 `prefers-reduced-motion: reduce` 時，`useHero
 - [x] F1–F4 動效精修已合併（`MaskHeading`、`useMagnetic`、`useHeroParallax` 都已在用），`feat/animations` 分支已移除
 - [x] 2026/8/13：SEO 改造——5 件作品獨立 URL + 預渲染 + sitemap/robots + JSON-LD；
       修正全站兩個 `<h1>`（原本是「HCI」「CODING」）為單一含姓名的 `<h1>`；圖片 alt 全面改寫
+- [x] 2026/10/21：英文版上線（`/en` 全站 + 作品頁）、中 / EN 切換、依國家預設語系（見「雙語」）
+- [x] 2026/10/22：夜間打磨（Awwwards 評分基準 5.2 → 約 6.6）：桌機導覽常駐、skip link、按鈕系統與 clay 每屏一次、
+      hero 收合節奏、作品卡與 overlay（返回鍵行為）、Contact／Footer 對齊、Playground 卡片、中英文案去 AI 味
+      （元件內寫死的文案已集中到 `ui.ts`）。回滾點：tag `pre-polish-20261022`
+- [x] 2026/10/24：新增 HACKATHON（NOXFLOW）與 FREELANCE（政大校友遴選系統、ranktool、醫美新創實習）兩區；
+      區塊順序 Skills 01 → About 02 → Work 03 → Hackathon 04 → Playground 05 → Freelance 06 → Contact 07；
+      導覽列加兩項，761–960px 收緊間距避免溢出；徽章改「接案・兼職中」
 - [ ] Google Search Console：提交 `https://znye6302.com/sitemap.xml`，並對 5 個作品頁要求建立索引
 - [ ] 確認 Cloudflare 的 Content Signals 設定沒有蓋掉自產的 `robots.txt`（部署後 curl 一次，
       看得到 `Sitemap:` 那行才算數；改動前線上 `/robots.txt` 是 Cloudflare 代管的純註解檔）

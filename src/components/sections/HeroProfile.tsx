@@ -1,6 +1,6 @@
 import { forwardRef, type RefObject } from "react";
 import { assets } from "../../data";
-import { useMagnetic } from "../../hooks";
+import { useLocale, useMagnetic } from "../../hooks";
 import { AvailabilityPill } from "../ui";
 
 interface HeroProfileProps {
@@ -17,7 +17,11 @@ export const HeroProfile = forwardRef<HTMLDivElement, HeroProfileProps>(function
   { slotRef },
   ref,
 ) {
-  const magnetic = useMagnetic();
+  // One hook per button: useMagnetic keeps a single cleanup slot, so a shared
+  // ref would unwire the first button when the second one attaches.
+  const magneticWork = useMagnetic();
+  const magneticContact = useMagnetic();
+  const { t } = useLocale();
 
   return (
     <div className="hero-profile" ref={ref}>
@@ -37,7 +41,7 @@ export const HeroProfile = forwardRef<HTMLDivElement, HeroProfileProps>(function
           `.hero-card-journey { color: var(--color-paper-light) }`, same as
           before — untouched. */}
       <div className="hero-left">
-        <p className="eyebrow">葉子倪</p>
+        <p className="hero-name">{t.heroName}</p>
         <span className="hero-visual-title">HCI</span>
       </div>
 
@@ -60,14 +64,22 @@ export const HeroProfile = forwardRef<HTMLDivElement, HeroProfileProps>(function
 
       <div className="hero-right">
         <span className="hero-visual-title">CODING</span>
-        <p>
-          我用程式，將世界表現出來。
-        </p>
+        <p>{t.heroTagline}</p>
+        {/* Badge on its own line, then the CTA pair: the work first (the one
+            clay button in this frame), contact second. The pair wraps at 320. */}
         <div className="hero-profile-actions">
           <AvailabilityPill className="hero-profile-badge" />
-          <a ref={magnetic} className="outline-button hero-profile-cta" href="#contact">
-            CONTACT
-          </a>
+          <div className="hero-profile-ctas">
+            <a ref={magneticWork} className="outline-button is-primary hero-profile-cta" href="#projects">
+              {t.ctaSeeWork}
+              <span className="hero-profile-cta-arrow" aria-hidden="true">
+                ↓
+              </span>
+            </a>
+            <a ref={magneticContact} className="outline-button is-secondary hero-profile-cta" href="#contact">
+              {t.ctaContact}
+            </a>
+          </div>
         </div>
       </div>
     </div>

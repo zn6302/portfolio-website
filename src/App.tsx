@@ -1,13 +1,15 @@
 import {
   Contact,
   Footer,
+  Freelance,
+  Hackathons,
   Header,
   HeroCardJourney,
   Projects,
   Sketches,
 } from "./components/sections";
 import { BackToTop } from "./components/ui";
-import { useAnchorScroll, useLenis, useScrollReveal } from "./hooks";
+import { useAnchorScroll, useLenis, useLocale, useScrollReveal } from "./hooks";
 
 export default function App() {
   // Lenis owns window scroll on desktop (skipped under reduced-motion and on
@@ -16,9 +18,15 @@ export default function App() {
   useLenis();
   useAnchorScroll();
   useScrollReveal();
+  const { t } = useLocale();
 
   return (
     <div className="app">
+      {/* First focusable element: hidden until keyboard focus, then jumps past
+          the hero journey straight to the work (useAnchorScroll moves focus). */}
+      <a className="skip-link" href="#projects">
+        {t.skipToWork}
+      </a>
       <Header />
       <main>
         {/* 全站唯一的 <h1>，視覺上隱藏（`.sr-only`）。刻意放在 <main> 第一個子
@@ -28,14 +36,16 @@ export default function App() {
             有某個狀態會讓它整個離開渲染樹與無障礙樹（display:none 無法用子層
             的 visibility:visible 逃脫，實測確認）。放在這裡則不受任何動畫狀態
             影響，也同時是 DOM 中的第一個標題。 */}
-        <h1 className="sr-only">葉子倪 YE Zi-Ni — HCI × Creative Coding 作品集</h1>
+        <h1 className="sr-only">{t.h1}</h1>
         {/* HeroCardJourney renders Hero + Services (Skills constellation,
             disableCardFlip) + About (disableCardFlip) as one scroll-jacked
             card animation — Skills already sits between Hero and Projects
             here, it isn't a separate sibling section. */}
         <HeroCardJourney />
         <Projects />
+        <Hackathons />
         <Sketches />
+        <Freelance />
         <Contact />
       </main>
       <Footer />

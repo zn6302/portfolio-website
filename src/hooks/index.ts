@@ -11,3 +11,4 @@ export { useBackToTop } from "./useBackToTop";
 export { useLenis, getLenis } from "./useLenis";
 export { useScrollReveal } from "./useScrollReveal";
 export { useProjectRoute } from "./useProjectRoute";
+export { useLocale } from "./useLocale";

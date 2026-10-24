@@ -1,3 +1,6 @@
+/** Site language. `zh` (Traditional Chinese) is the root site, `en` lives under /en. */
+export type Locale = "zh" | "en";
+
 export interface Service {
   title: string;
   items: string[];
@@ -14,6 +17,36 @@ export interface Sketch {
   alt: string;
   liveUrl: string;
   githubUrl: string;
+}
+
+export interface Hackathon {
+  slug: string;
+  title: string;
+  /** Mono meta strip above the title, e.g. "HACKATHON · 2026/09 · 5 人團隊". */
+  meta: string;
+  description: string;
+  role: string;
+  /** Hard-fact bullets, same voice as a project's highlights. */
+  points: string[];
+  image: string;
+  alt: string;
+  tech: string[];
+  liveUrl?: string;
+  githubUrl?: string;
+}
+
+/** One delivered automation job in the Freelance section. */
+export interface FreelanceCase {
+  slug: string;
+  /** Mono meta strip, e.g. "付費接案 · 2026/06–". */
+  meta: string;
+  title: string;
+  /** Who it was for, in a plain phrase. */
+  client: string;
+  description: string;
+  /** Hard-fact bullets: what was built and how it holds up. */
+  points: string[];
+  tech: string[];
 }
 
 export interface ProjectClip {
@@ -36,6 +69,10 @@ export interface Project {
   image?: string;
   /** Optional image used only in the detail overlay; the card keeps `image`. */
   detailImage?: string;
+  /** Alt text for `image` when the generic "<title> 作品畫面" / "Screenshot of
+   *  <title>" would mislead (e.g. myBot's cover is a flow diagram). Not used
+   *  for `detailImage`. */
+  imageAlt?: string;
   /** Screenshots are cropped to fill their slot (`cover`); a diagram must be
    *  shown whole instead, or the labels get cut off — those set `contain`. */
   imageFit?: "cover" | "contain";
@@ -63,3 +100,19 @@ export interface Project {
     github?: string;
   };
 }
+
+/** The translatable text fields of a Project. Other locales supply these per
+ *  project id and inherit everything else (media, tech, links) from the zh
+ *  entry, so assets and links can never drift between languages. */
+export type ProjectCopy = Pick<
+  Project,
+  | "category"
+  | "title"
+  | "description"
+  | "subtitle"
+  | "outcome"
+  | "role"
+  | "overview"
+  | "highlights"
+  | "imageAlt"
+>;

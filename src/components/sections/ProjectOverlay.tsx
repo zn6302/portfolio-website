@@ -2,9 +2,9 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import gsap from "gsap";
-import type { Project, ProjectClip } from "../../types";
-import { getLenis, useHeroVideoSources, useInViewVideo, useMagnetic } from "../../hooks";
-import { projects as allProjects } from "../../data";
+import type { Locale, Project, ProjectClip } from "../../types";
+import { getLenis, useHeroVideoSources, useInViewVideo, useLocale, useMagnetic } from "../../hooks";
+import { projects } from "../../data";
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 const FLIP_QUERY = "(min-width: 1081px)";
@@ -25,11 +25,6 @@ interface ProjectOverlayProps {
 
 // FLIP is desktop-only (the deck cards) and skipped under reduced motion; the
 // compact stacked layout and reduced-motion both fall back to the CSS fade.
-function prefersReducedMotion() {
-  if (typeof window === "undefined") return false;
-  return window.matchMedia(REDUCED_MOTION_QUERY).matches;
-}
-
 function canFlip() {
   if (typeof window === "undefined") return false;
   return (
@@ -38,20 +33,26 @@ function canFlip() {
   );
 }
 
-// Every highlight is naturally "short headline + separator + explanation"
-// (either full-width "：" or an em-dash "——"). Split on whichever comes
-// first so the headline can render bold — the data itself is untouched.
-function splitHighlight(text: string): { label: string | null; rest: string } {
-  const colonIdx = text.indexOf("：");
-  const dashIdx = text.indexOf("——");
+// Every highlight is naturally "short headline + separator + explanation".
+// zh uses a full-width "：" or an em-dash "——"; en uses ": " (projects.en.ts
+// keeps ": " out of highlights that have no headline). Split on whichever
+// comes first so the headline can render bold — the data itself is untouched.
+// Separators are per locale because zh copy can contain an ASCII ": " inside
+// a code snippet (e.g. "output: export") that must not become a headline.
+const HIGHLIGHT_SEPARATORS: Record<Locale, string[]> = {
+  zh: ["：", "——"],
+  en: [": "],
+};
+
+function splitHighlight(text: string, locale: Locale): { label: string | null; rest: string } {
   let idx = -1;
   let sepLen = 0;
-  if (colonIdx !== -1 && (dashIdx === -1 || colonIdx < dashIdx)) {
-    idx = colonIdx;
-    sepLen = 1;
-  } else if (dashIdx !== -1) {
-    idx = dashIdx;
-    sepLen = 2;
+  for (const separator of HIGHLIGHT_SEPARATORS[locale]) {
+    const found = text.indexOf(separator);
+    if (found !== -1 && (idx === -1 || found < idx)) {
+      idx = found;
+      sepLen = separator.length;
+    }
   }
   if (idx === -1) return { label: null, rest: text };
   return { label: text.slice(0, idx), rest: text.slice(idx + sepLen) };
@@ -112,6 +113,11 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef, onN
   const originRectRef = useRef<DOMRect | null>(null);
   const magneticLive = useMagnetic();
   const magneticGithub = useMagnetic();
+  // Same gate as the hero / deck / detail clips: phones (<768px) and reduced
+  // motion get the demo on request only (no autoplay, preload="none").
+  const autoplayDemo = useHeroVideoSources();
+  const { locale, t } = useLocale();
+  const allProjects = projects[locale];
 
   const [rendered, setRendered] = useState<Project | null>(null);
   const [flip, setFlip] = useState(false);
@@ -389,7 +395,12 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef, onN
       ref={backdropRef}
       data-lenis-prevent=""
       onMouseDown={(event) => {
-        if (event.target === event.currentTarget) onClose();
+        if (event.target !== event.currentTarget) return;
+        // Without this, the mousedown's own focus change runs after a close
+        // that finished synchronously (reduced motion, deep link) and drops
+        // the focus we just returned to the card onto <body>.
+        event.preventDefault();
+        onClose();
       }}
     >
       <div
@@ -404,7 +415,7 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef, onN
             type="button"
             className="project-overlay-close"
             onClick={onClose}
-            aria-label="Close project details"
+            aria-label={t.closeProject}
             ref={closeButtonRef}
           >
             <X size={20} />
@@ -480,10 +491,13 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef, onN
             {activeProject.video ? (
               <div className="project-overlay-media-wrap ov-reveal">
                 {/* The clip is silent, so it can just play — but it keeps
-                    `controls` (27s of demo is worth being able to pause/scrub)
-                    and only autoplays when motion is welcome. Keyed so a
-                    prev/next swap tears the element down instead of leaving the
-                    previous project's demo playing. */}
+                    `controls` (27s of demo is worth being able to pause/scrub).
+                    It autoplays only where the hero video would: on phones and
+                    under reduced motion it shows the poster with a play button
+                    and preload="none" fetches nothing until that is pressed
+                    (opening a case study on a phone cost ~0.7MB per demo).
+                    Keyed so a prev/next swap tears the element down instead of
+                    leaving the previous project's demo playing. */}
                 <video
                   key={activeProject.id}
                   ref={(el) => {
@@ -496,9 +510,9 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef, onN
                   muted
                   loop
                   playsInline
-                  autoPlay={!prefersReducedMotion()}
-                  preload="metadata"
-                  aria-label={`${activeProject.title} demo`}
+                  autoPlay={autoplayDemo}
+                  preload={autoplayDemo ? "metadata" : "none"}
+                  aria-label={t.demoLabel(activeProject.title)}
                 />
               </div>
             ) : activeProject.detailImage || activeProject.image ? (
@@ -515,7 +529,10 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef, onN
                         : ""
                   }`}
                   src={activeProject.detailImage ?? activeProject.image}
-                  alt={`${activeProject.title} cover`}
+                  alt={
+                    (!activeProject.detailImage && activeProject.imageAlt) ||
+                    t.coverAlt(activeProject.title)
+                  }
                 />
               </div>
             ) : (
@@ -544,7 +561,7 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef, onN
                 <span className="project-overlay-label">HIGHLIGHTS</span>
                 <ol className="project-overlay-highlight-list">
                   {activeProject.highlights.map((highlight, index) => {
-                    const { label, rest } = splitHighlight(highlight);
+                    const { label, rest } = splitHighlight(highlight, locale);
                     return (
                       <li className="project-overlay-highlight" key={highlight}>
                         <span className="project-overlay-highlight-num">
@@ -563,7 +580,7 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef, onN
 
             {activeProject.clips && activeProject.clips.length > 0 && (
               <div className="project-overlay-clips ov-reveal">
-                <span className="project-overlay-label">巧思 DETAILS</span>
+                <span className="project-overlay-label">{t.detailsLabel}</span>
                 <ul className="project-overlay-clip-list">
                   {activeProject.clips.map((clip) => (
                     <ClipDetail clip={clip} key={clip.src} />
@@ -574,7 +591,7 @@ export function ProjectOverlay({ project, originEl, onClose, returnFocusRef, onN
           </div>
 
           {prevProject && nextProject && (
-            <nav className="project-overlay-navrow" aria-label="其他作品">
+            <nav className="project-overlay-navrow" aria-label={t.otherProjects}>
               <button
                 type="button"
                 className="project-overlay-navbtn project-overlay-navbtn-prev"
